@@ -7,8 +7,14 @@ export class User {
   id: number;
 
   @Column()
-  nickname: string;
+  email: string;
 
   @Column()
-  password: string;
+  provider: string;
+
+  @Column()
+  providerId: string;
+
+  @Column()
+  name: string;
 }
