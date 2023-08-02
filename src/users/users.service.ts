@@ -11,10 +11,6 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
 
   ) {}
-  
-  createUser(createUserDto: CreateUserDto) {
-    return 'dddd';
-  }
 
   async findByGoogleIdOrSave(googleUser: GoogleUser) {
     const { providerId, provider, email, name } = googleUser;
@@ -34,5 +30,9 @@ export class UsersService {
     await this.userRepository.save(newUser);
 
     return newUser;
+  }
+
+  updateHashedRefreshToken(id: number, refreshToken: string) {
+    throw new Error('Method not implemented.');
   }
 }

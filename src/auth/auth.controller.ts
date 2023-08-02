@@ -29,7 +29,12 @@ export class AuthController {
 
     const { accessToken, refreshToken } = this.authService.getToken(payload);
 
-    
+    res.cookie('access-token', accessToken);
+    res.cookie('refresh-token', refreshToken);
+
+    await this.usersService.updateHashedRefreshToken(user.id, refreshToken);
+
+    res.redirect(String(process.env.DOMAIN));
   }
 }
 function Res(): (target: AuthController, propertyKey: "googleAuthCallback", parameterIndex: 1) => void {
