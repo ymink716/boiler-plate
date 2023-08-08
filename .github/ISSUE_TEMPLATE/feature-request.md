@@ -3,7 +3,7 @@ name: Feature request
 about: Feature 작업 사항을 입력해주세요.
 title: "[Feature]"
 labels: enhancement
-assignees: ''
+assignees: ymink716
 
 ---
 
@@ -15,9 +15,9 @@ assignees: ''
 
 ## Todo
 
-- [] todo1
-- [] todo2
-- [] todo3
+- [ ] todo1
+- [ ] todo2
+- [ ] todo3
 
 <br>
 
