@@ -8,11 +8,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entity/user.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtRefreshStrategy } from './strategy/jwt-refresh.strategy';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     JwtModule.register({}),
     TypeOrmModule.forFeature([User]),
+    ConfigModule,
+
   ],
   controllers: [AuthController],
   providers: [

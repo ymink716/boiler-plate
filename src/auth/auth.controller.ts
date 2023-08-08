@@ -32,7 +32,7 @@ export class AuthController {
 
     await this.usersService.updateHashedRefreshToken(user.id, refreshToken);
 
-    res.json({accessToken, refreshToken });
+    res.json({ accessToken, refreshToken });
   }
 
   @Post('refresh')
