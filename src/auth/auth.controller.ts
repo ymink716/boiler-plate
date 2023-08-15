@@ -1,5 +1,5 @@
 import { UsersService } from './../users/users.service';
-import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -34,6 +34,7 @@ export class AuthController {
 
   // TODO: 타입 지정 방식 변경
   @Post('refresh')
+  @HttpCode(201)
   @UseGuards(AuthGuard('jwt-refresh'))
   async refreshJwtToken(@Req() req: Request, @Res() res: Response) {
     const { refreshToken, sub, email } = req.user as JwtPayload  & {

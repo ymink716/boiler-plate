@@ -1,3 +1,4 @@
+import { UserProvider } from "src/common/enum/user-provider.enum";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('users')
@@ -9,8 +10,8 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
-  provider: string;
+  @Column({ type: 'enum', enum: UserProvider })
+  provider: UserProvider;
 
   @Column()
   providerId: string;

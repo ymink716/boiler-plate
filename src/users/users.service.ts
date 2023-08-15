@@ -4,6 +4,7 @@ import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { ErrorType } from '../common/exception/error-type';
+import { UserProvider } from 'src/common/enum/user-provider.enum';
 const { TokenHasExpired, UserNotExist } = ErrorType;
 
 @Injectable()
@@ -13,9 +14,10 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
 
   ) {}
-
+  
+  // TODO: 객체 생성 부분 변경
   async findByGoogleIdOrSave(googleUser: GoogleUser) {
-    const { providerId, provider, email, name } = googleUser;
+    const { providerId, email, name } = googleUser;
 
     const user = await this.userRepository.findOne({ where: { providerId }});
 
@@ -24,7 +26,7 @@ export class UsersService {
     }
 
     const newUser = new User();
-    newUser.provider = provider;
+    newUser.provider = UserProvider.GOOGLE;
     newUser.providerId = providerId;
     newUser.email = email;
     newUser.name = name;
@@ -48,7 +50,7 @@ export class UsersService {
   async findUserByIdAndRefreshToken(sub: number, refreshToken: string): Promise<User> {
     const user = await this.findUserById(sub);
     
-    this.checkRefreshToken(refreshToken, user.hashedRefreshToken);
+    await this.checkRefreshToken(refreshToken, user.hashedRefreshToken);
 
     return user;
   }
@@ -63,7 +65,7 @@ export class UsersService {
     return user;
   }
 
-  async checkRefreshToken(clientToken, savedToken): Promise<void> {
+  async checkRefreshToken(clientToken: string, savedToken: string): Promise<void> {
     const isRefreshTokenMatched = await bcrypt.compare(clientToken, savedToken);
 
     if (!isRefreshTokenMatched) { 
