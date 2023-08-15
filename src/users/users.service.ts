@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { ErrorType } from '../common/exception/error-type';
+const { TokenHasExpired, UserNotExist } = ErrorType;
 
 @Injectable()
 export class UsersService {
@@ -36,27 +38,38 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
     
-    await this.userRepository
-      .createQueryBuilder()
-      .update(User)
-      .set({ hashedRefreshToken })
-      .where('id = :id', { id })
-      .execute();
+    const user = await this.findUserById(id);
+
+    user.hashedRefreshToken = hashedRefreshToken;
+    
+    await this.userRepository.save(user);
   }
 
-  async findByIdAndCheckRefreshToken(sub: number, refreshToken: string) {
-    const user = await this.userRepository.findOne({ where: { id: sub }});
-
-    if (!user) {
-      throw new NotFoundException('user not found');
-    }
+  async findUserByIdAndRefreshToken(sub: number, refreshToken: string): Promise<User> {
+    const user = await this.findUserById(sub);
     
-    const isRefreshTokenMatched = await bcrypt.compare(refreshToken, user.hashedRefreshToken);
-
-    if (!isRefreshTokenMatched) { 
-      throw new UnauthorizedException('unauthorized user');
-    } 
+    this.checkRefreshToken(refreshToken, user.hashedRefreshToken);
 
     return user;
+  }
+
+  async findUserById(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id }});
+
+    if (!user) {
+      throw new NotFoundException(UserNotExist.message, UserNotExist.name);
+    }
+
+    return user;
+  }
+
+  async checkRefreshToken(clientToken, savedToken): Promise<void> {
+    const isRefreshTokenMatched = await bcrypt.compare(clientToken, savedToken);
+
+    if (!isRefreshTokenMatched) { 
+      throw new UnauthorizedException(TokenHasExpired.message, TokenHasExpired.name);
+    }
+
+    return;
   }
 }

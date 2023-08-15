@@ -17,10 +17,7 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  async getGoogleAuthCallback(
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+  async getGoogleAuthCallback(@Req() req: Request, @Res() res: Response) {
     const user = await this.usersService.findByGoogleIdOrSave(req.user as GoogleUser);
     
     const payload: JwtPayload = { sub: user.id, email: user.email };
@@ -35,6 +32,7 @@ export class AuthController {
     res.json({ accessToken, refreshToken });
   }
 
+  // TODO: 타입 지정 방식 변경
   @Post('refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
   async refreshJwtToken(@Req() req: Request, @Res() res: Response) {
@@ -42,7 +40,7 @@ export class AuthController {
       refreshToken: string;
     };
 
-    const user = await this.usersService.findByIdAndCheckRefreshToken(sub, refreshToken);
+    const user = await this.usersService.findUserByIdAndRefreshToken(sub, refreshToken);
 
     const token = this.authService.getToken({ sub, email });
 
@@ -51,7 +49,7 @@ export class AuthController {
 
     await this.usersService.updateHashedRefreshToken(user.id, refreshToken);
 
-    return res.redirect('/');
+    return { accessToken: token.accessToken, refreshToken: token.refreshToken };
   }
 }
 
