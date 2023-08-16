@@ -1,8 +1,12 @@
 import { UsersService } from './../users/users.service';
-import { Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get, Req, Res, UseGuards, Post } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { GoogleOauthGuard } from './guards/google-oauth.guard';
+import { JwtPayload } from 'src/common/interface/jwt-payload';
+import { OauthPayload } from 'src/common/interface/oauth-payload';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { RefreshPayload } from 'src/common/interface/refresh-payload';
 
 @Controller('auth')
 export class AuthController {
@@ -12,17 +16,17 @@ export class AuthController {
   ) {}
 
   @Get('google')
-  @UseGuards(AuthGuard('google'))
-  async redirectGoogleAuthPage(@Res() res: Response): Promise<void> {}
+  @UseGuards(GoogleOauthGuard)
+  async redirectGoogleAuthPage(): Promise<void> {}
 
-  @Get('google/redirect')
-  @UseGuards(AuthGuard('google'))
-  async getGoogleAuthCallback(@Req() req: Request, @Res() res: Response) {
-    const user = await this.usersService.findByGoogleIdOrSave(req.user as GoogleUser);
+  @Get('google/callback')
+  @UseGuards(GoogleOauthGuard)
+  async signInWithGoogle(@Req() req: Request, @Res() res: Response) {
+    const user = await this.usersService.findByProviderIdOrSave(req.user as OauthPayload);
     
-    const payload: JwtPayload = { sub: user.id, email: user.email };
+    const jwtPayload: JwtPayload = { sub: user.id, email: user.email };
 
-    const { accessToken, refreshToken } = this.authService.getToken(payload);
+    const { accessToken, refreshToken } = this.authService.getToken(jwtPayload);
 
     res.cookie('Authentication', accessToken);
     res.cookie('Refresh', refreshToken);
@@ -34,12 +38,9 @@ export class AuthController {
 
   // TODO: 타입 지정 방식 변경
   @Post('refresh')
-  @HttpCode(201)
-  @UseGuards(AuthGuard('jwt-refresh'))
-  async refreshJwtToken(@Req() req: Request, @Res() res: Response) {
-    const { refreshToken, sub, email } = req.user as JwtPayload  & {
-      refreshToken: string;
-    };
+  @UseGuards(JwtRefreshGuard)
+  async refreshJwtToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const { refreshToken, sub, email } = req.user as RefreshPayload;
 
     const user = await this.usersService.findUserByIdAndRefreshToken(sub, refreshToken);
 
@@ -49,8 +50,7 @@ export class AuthController {
     res.cookie('Refresh', token.refreshToken);
 
     await this.usersService.updateHashedRefreshToken(user.id, refreshToken);
-
+    
     return { accessToken: token.accessToken, refreshToken: token.refreshToken };
   }
 }
-

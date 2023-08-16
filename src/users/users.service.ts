@@ -4,7 +4,7 @@ import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { ErrorType } from '../common/exception/error-type';
-import { UserProvider } from 'src/common/enum/user-provider.enum';
+import { OauthPayload } from 'src/common/interface/oauth-payload';
 const { TokenHasExpired, UserNotExist } = ErrorType;
 
 @Injectable()
@@ -12,24 +12,23 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-
   ) {}
   
-  // TODO: 객체 생성 부분 변경
-  async findByGoogleIdOrSave(googleUser: GoogleUser) {
-    const { providerId, email, name } = googleUser;
+  async findByProviderIdOrSave(payload: OauthPayload) {
+    const { providerId, email, name, provider, picture } = payload;
 
-    const user = await this.userRepository.findOne({ where: { providerId }});
+    const existedUser = await this.userRepository.findOne({ where: { providerId }});
 
-    if (user) {
-      return user;
+    if (existedUser) {
+      return existedUser;
     }
 
     const newUser = new User();
-    newUser.provider = UserProvider.GOOGLE;
+    newUser.provider = provider;
     newUser.providerId = providerId;
     newUser.email = email;
     newUser.name = name;
+    newUser.picture = picture;
 
     await this.userRepository.save(newUser);
 
@@ -71,7 +70,5 @@ export class UsersService {
     if (!isRefreshTokenMatched) { 
       throw new UnauthorizedException(TokenHasExpired.message, TokenHasExpired.name);
     }
-
-    return;
   }
 }
