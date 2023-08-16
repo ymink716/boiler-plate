@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { UserProvider } from "src/common/enum/user-provider.enum";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('users')
 export class User {
@@ -7,8 +8,36 @@ export class User {
   id: number;
 
   @Column()
-  nickname: string;
+  email: string;
+
+  @Column({ type: 'enum', enum: UserProvider })
+  provider: UserProvider;
 
   @Column()
-  password: string;
+  providerId: string;
+
+  @Column()
+  name: string;
+
+  @Column()
+  picture: string;
+
+  @Column({ 
+    type: String,
+    unique: true,
+    nullable: true, 
+  })
+  hashedRefreshToken!: string | null;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }

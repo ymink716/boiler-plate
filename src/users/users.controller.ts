@@ -1,18 +1,15 @@
-import { CreateUserDto } from './dto/create-user.dto';
+import { Request } from 'express';
 import { UsersService } from './users.service';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  // 회원 가입
-  @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    const user = await this.usersService.createUser(createUserDto);
-
-    return user;
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  getProfile(@Req() req: Request) {
+    return req.user;
   }
-
-  // 내 정보 조회
 }
