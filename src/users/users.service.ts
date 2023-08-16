@@ -46,14 +46,6 @@ export class UsersService {
     await this.userRepository.save(user);
   }
 
-  async findUserByIdAndRefreshToken(sub: number, refreshToken: string): Promise<User> {
-    const user = await this.findUserById(sub);
-    
-    await this.checkRefreshToken(refreshToken, user.hashedRefreshToken);
-
-    return user;
-  }
-
   async findUserById(id: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id }});
 
@@ -64,11 +56,17 @@ export class UsersService {
     return user;
   }
 
-  async checkRefreshToken(clientToken: string, savedToken: string): Promise<void> {
+  async checkRefreshToken(clientToken: string, savedToken: string | null): Promise<void> {
     const isRefreshTokenMatched = await bcrypt.compare(clientToken, savedToken);
 
     if (!isRefreshTokenMatched) { 
       throw new UnauthorizedException(TokenHasExpired.message, TokenHasExpired.name);
     }
+  }
+
+  async removeRefreshToken(id: number): Promise<void> {
+    await this.userRepository.update(id, {
+      hashedRefreshToken: null,
+    });
   }
 }

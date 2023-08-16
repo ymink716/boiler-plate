@@ -19,6 +19,7 @@ export class AuthController {
   @UseGuards(GoogleOauthGuard)
   async redirectGoogleAuthPage(): Promise<void> {}
 
+  // TODO: 타입 지정 방식 변경
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
   async signInWithGoogle(@Req() req: Request, @Res() res: Response) {
@@ -37,12 +38,14 @@ export class AuthController {
   }
 
   // TODO: 타입 지정 방식 변경
-  @Post('refresh')
+  @Get('access-token')
   @UseGuards(JwtRefreshGuard)
-  async refreshJwtToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async reissueToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const { refreshToken, sub, email } = req.user as RefreshPayload;
 
-    const user = await this.usersService.findUserByIdAndRefreshToken(sub, refreshToken);
+    const user = await this.usersService.findUserById(sub);
+
+    await this.usersService.checkRefreshToken(refreshToken, user.hashedRefreshToken);
 
     const token = this.authService.getToken({ sub, email });
 
@@ -52,5 +55,18 @@ export class AuthController {
     await this.usersService.updateHashedRefreshToken(user.id, refreshToken);
     
     return { accessToken: token.accessToken, refreshToken: token.refreshToken };
+  }
+
+  @Post('logout')
+  @UseGuards(JwtRefreshGuard)
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const { sub } = req.user as RefreshPayload;
+    
+    await this.usersService.removeRefreshToken(sub);
+
+    res.cookie('Authentication', '');
+    res.cookie('Refresh', '');
+    
+    res.json({ success: true });
   }
 }

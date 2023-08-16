@@ -22,8 +22,12 @@ export class User {
   @Column()
   picture: string;
 
-  @Column({ default: null })
-  hashedRefreshToken: string;
+  @Column({ 
+    type: String,
+    unique: true,
+    nullable: true, 
+  })
+  hashedRefreshToken!: string | null;
 
   @CreateDateColumn({
     type: 'timestamp',
