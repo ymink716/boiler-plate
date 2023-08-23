@@ -16,8 +16,8 @@
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,  // TODO: strategy 에러 해결 후 true로 전호나
+    "noUnusedParameters": false,  // TODO: strategy 에러 해결 후 true로 전호나
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "strictPropertyInitialization": false

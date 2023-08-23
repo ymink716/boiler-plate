@@ -12,11 +12,9 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>
-,    @Inject('USERS_REPOSITORY')
+,   @Inject('USERS_REPOSITORY')
     private readonly usersRepository: UsersRepository
-  ) {
-    console.log(usersRepository)
-  }
+  ) {}
   
   async findByProviderIdOrSave(payload: OauthPayload) {
     const { providerId, email, name, provider, picture } = payload;
@@ -34,7 +32,7 @@ export class UsersService {
     return newUser;
   }
 
-  async updateHashedRefreshToken(id: number, refreshToken: string): Promise<void> {
+  async updateHashedRefreshToken(id: number, refreshToken: string) {
     const salt = await bcrypt.genSalt();
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
     
@@ -45,19 +43,15 @@ export class UsersService {
     await this.userRepository.save(user);
   }
 
-  async findUserById(id: number): Promise<User> {
+  async getUserIfRefreshTokenisMatched(refreshToken: string, userId: number) {
+    const user = await this.findUserById(userId);
     
-    //const user = await this.userRepository.findOne({ where: { id }});
-    const user = await this.usersRepository.findOneById(id);
-
-    if (!user) {
-      throw new NotFoundException(UserNotExist.message, UserNotExist.name);
-    }
-
+    await this.checkRefreshToken(refreshToken, user.hashedRefreshToken);
+    
     return user;
   }
 
-  async checkRefreshToken(clientToken: string, savedToken: string | null): Promise<void> {
+  async checkRefreshToken(clientToken: string, savedToken: string | null) {
     const isRefreshTokenMatched = await bcrypt.compare(clientToken, savedToken);
 
     if (!isRefreshTokenMatched) { 
@@ -65,9 +59,21 @@ export class UsersService {
     }
   }
 
-  async removeRefreshToken(id: number): Promise<void> {
+  // TODO: update -> save
+  async removeRefreshToken(id: number) {
     await this.userRepository.update(id, {
       hashedRefreshToken: null,
     });
+  }
+
+  // TODO: 레파지토리로 이동
+  async findUserById(id: number) {
+    const user = await this.usersRepository.findOneById(id);
+
+    // if (!user) {
+    //   throw new NotFoundException(UserNotExist.message, UserNotExist.name);
+    // }
+
+    return user;
   }
 }
