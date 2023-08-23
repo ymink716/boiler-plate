@@ -11,8 +11,6 @@ export class User {
     name: string;
     picture: string;
   }) {
-    console.log('ddd');
-    console.log(options);
     if (options) {
       this.email = options.email;
       this.provider = options.provider;

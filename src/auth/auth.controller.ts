@@ -20,7 +20,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
   async signInWithGoogle(@GetUser('id') userId: number) {
-    const { accessToken, refreshToken } = await this.authService.issueTokens(userId);
+    const { accessToken, refreshToken } = await this.authService.signIn(userId);
 
     return { 
       access_token: accessToken, 
@@ -28,10 +28,10 @@ export class AuthController {
     };
   }
 
-  @Get('token')
+  @Get('tokens')
   @UseGuards(JwtRefreshGuard)
   async reissueTokens(@GetUser('id') userId: number) {
-    const { accessToken, refreshToken } = await this.authService.issueTokens(userId);
+    const { accessToken, refreshToken } = await this.authService.reissueTokens(userId);
 
     return { 
       access_token: accessToken, 
@@ -42,7 +42,7 @@ export class AuthController {
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   async logout(@GetUser('id') userId: number) {
-    await this.usersService.removeRefreshToken(userId);
+    await this.authService.logout(userId);
     
     return { success: true };
   }
