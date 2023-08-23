@@ -1,4 +1,4 @@
-import { UserProvider } from "../enum/user-provider.enum";
+import { UserProvider } from "../enums/user-provider.enum";
 
 export interface OauthPayload {
   provider: UserProvider;

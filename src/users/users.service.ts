@@ -1,18 +1,22 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { ErrorType } from '../common/exception/error-type';
+import { TokenHasExpired, UserNotExist } from '../common/exception/error-types';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
-const { TokenHasExpired, UserNotExist } = ErrorType;
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+    private readonly userRepository: Repository<User>
+,    @Inject('USERS_REPOSITORY')
+    private readonly usersRepository: UsersRepository
+  ) {
+    console.log(usersRepository)
+  }
   
   async findByProviderIdOrSave(payload: OauthPayload) {
     const { providerId, email, name, provider, picture } = payload;
@@ -23,12 +27,7 @@ export class UsersService {
       return existedUser;
     }
 
-    const newUser = new User();
-    newUser.provider = provider;
-    newUser.providerId = providerId;
-    newUser.email = email;
-    newUser.name = name;
-    newUser.picture = picture;
+    const newUser = new User({ provider, providerId, name, picture, email });
 
     await this.userRepository.save(newUser);
 
@@ -47,7 +46,9 @@ export class UsersService {
   }
 
   async findUserById(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id }});
+    
+    //const user = await this.userRepository.findOne({ where: { id }});
+    const user = await this.usersRepository.findOneById(id);
 
     if (!user) {
       throw new NotFoundException(UserNotExist.message, UserNotExist.name);

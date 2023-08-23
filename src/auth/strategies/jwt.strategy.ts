@@ -7,9 +7,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from 'src/common/interface/jwt-payload';
 import { User } from 'src/users/entity/user.entity';
 import { Repository } from 'typeorm';
-import { ErrorType } from '../../common/exception/error-type';
-
-const { UnauthorizedUser } = ErrorType;
+import { UnauthorizedUser } from '../../common/exception/error-types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
