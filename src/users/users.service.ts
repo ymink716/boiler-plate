@@ -1,62 +1,61 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from './entity/user.entity';
-import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { ErrorType } from '../common/exception/error-type';
+import { TokenHasExpired, UserNotExist } from '../common/exception/error-types';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
-const { TokenHasExpired, UserNotExist } = ErrorType;
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject('USERS_REPOSITORY')
+    private readonly usersRepository: UsersRepository
   ) {}
   
   async findByProviderIdOrSave(payload: OauthPayload) {
     const { providerId, email, name, provider, picture } = payload;
 
-    const existedUser = await this.userRepository.findOne({ where: { providerId }});
+    const existedUser = await this.usersRepository.findByProviderId(providerId);
 
     if (existedUser) {
       return existedUser;
     }
-
-    const newUser = new User();
-    newUser.provider = provider;
-    newUser.providerId = providerId;
-    newUser.email = email;
-    newUser.name = name;
-    newUser.picture = picture;
-
-    await this.userRepository.save(newUser);
+     
+    const newUser = await this.usersRepository.save(new User({ 
+      provider, providerId, name, picture, email 
+    }));
 
     return newUser;
   }
 
-  async updateHashedRefreshToken(id: number, refreshToken: string): Promise<void> {
+  async updateHashedRefreshToken(id: number, refreshToken: string) {
     const salt = await bcrypt.genSalt();
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
     
-    const user = await this.findUserById(id);
-
-    user.hashedRefreshToken = hashedRefreshToken;
-    
-    await this.userRepository.save(user);
-  }
-
-  async findUserById(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id }});
+    const user = await this.usersRepository.findOneById(id);
 
     if (!user) {
       throw new NotFoundException(UserNotExist.message, UserNotExist.name);
     }
 
+    user.hashedRefreshToken = hashedRefreshToken;
+    
+    await this.usersRepository.save(user);
+  }
+
+  async getUserIfRefreshTokenisMatched(refreshToken: string, userId: number) {
+    const user = await this.usersRepository.findOneById(userId);
+    
+    if (!user) {
+      throw new NotFoundException(UserNotExist.message, UserNotExist.name);
+    }
+
+    await this.checkRefreshToken(refreshToken, user.hashedRefreshToken);
+    
     return user;
   }
 
-  async checkRefreshToken(clientToken: string, savedToken: string | null): Promise<void> {
+  async checkRefreshToken(clientToken: string, savedToken: string | null) {
     const isRefreshTokenMatched = await bcrypt.compare(clientToken, savedToken);
 
     if (!isRefreshTokenMatched) { 
@@ -64,9 +63,21 @@ export class UsersService {
     }
   }
 
-  async removeRefreshToken(id: number): Promise<void> {
-    await this.userRepository.update(id, {
-      hashedRefreshToken: null,
-    });
+  async removeRefreshToken(id: number) {
+    const user = await this.usersRepository.findOneById(id);
+
+    if (!user) {
+      throw new NotFoundException(UserNotExist.message, UserNotExist.name);
+    }
+    
+    user.hashedRefreshToken = null;
+    
+    await this.usersRepository.save(user);
+  }
+
+  async findUserById(userId: number) {
+    const user = await this.usersRepository.findOneById(userId);
+
+    return user;
   }
 }

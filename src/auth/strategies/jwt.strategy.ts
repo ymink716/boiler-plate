@@ -2,42 +2,33 @@ import { UsersService } from './../../users/users.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from 'src/common/interface/jwt-payload';
-import { User } from 'src/users/entity/user.entity';
-import { Repository } from 'typeorm';
-import { ErrorType } from '../../common/exception/error-type';
-
-const { UnauthorizedUser } = ErrorType;
+import { UnauthorizedUser } from '../../common/exception/error-types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  // TODO: configService never used 에러 해결
   constructor(
     private readonly configService: ConfigService,
     private readonly usersService: UsersService,
-    ) {
+  ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (request) => {
-          return request?.cookies?.Authentication;
-        },
-      ]),      
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),      
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
     });
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.usersService.findUserById(payload.sub);
+    const userId = payload.sub;
+
+    const user = await this.usersService.findUserById(userId);
 
     if (!user) {
       throw new UnauthorizedException(UnauthorizedUser.message, UnauthorizedUser.name);
     }
 
-    return {
-      id: user.id,
-      email: user.email,
-    };
+    return user;
   }
 }

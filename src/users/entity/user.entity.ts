@@ -1,8 +1,24 @@
-import { UserProvider } from "src/common/enum/user-provider.enum";
+import { UserProvider } from "src/common/enums/user-provider.enum";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('users')
 export class User {
+
+  constructor(options: {
+    email: string;
+    provider: UserProvider;
+    providerId: string;
+    name: string;
+    picture: string;
+  }) {
+    if (options) {
+      this.email = options.email;
+      this.provider = options.provider;
+      this.providerId = options.providerId;
+      this.name = options.name;
+      this.picture = options.picture;
+    }
+  }
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -27,7 +43,7 @@ export class User {
     unique: true,
     nullable: true, 
   })
-  hashedRefreshToken!: string | null;
+  hashedRefreshToken: string | null;
 
   @CreateDateColumn({
     type: 'timestamp',
