@@ -13,3 +13,9 @@ export const UserNotExist = {
   name: 'UserNotExist',
   message: '해당 사용자를 찾을 수 없습니다.',
 }
+
+// Question
+export const QuestionNotFound = {
+  name: 'QuestionNotFound',
+  message: '해당 질문을 찾을 수 없습니다.',
+}

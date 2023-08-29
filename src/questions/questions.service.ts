@@ -1,8 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { QuestionsRepository } from './questions.repository';
 import { Question } from './entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
+import { QuestionNotFound } from 'src/common/exception/error-types';
 
 @Injectable()
 export class QuestionsService {
@@ -26,8 +27,14 @@ export class QuestionsService {
     return await this.questionsRepository.findAll();
   }
 
-  getQuestion() {
-    throw new Error('Method not implemented.');
+  async getQuestion(questionId: number) {
+    const question = await this.questionsRepository.findOneById(questionId);
+
+    if (!question) {
+      throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
+    }
+
+    return question;
   }
 
   updateQuestion() {

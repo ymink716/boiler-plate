@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, UseGuards, Param, ParseIntPipe } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -28,8 +28,10 @@ export class QuestionsController {
   }
 
   @Get('/:questionId')
-  async getQuestionDetail() {
-    const question = await this.questionsService.getQuestion();
+  async getQuestionDetail(@Param('questionId', ParseIntPipe) questionId: number) {
+    const question = await this.questionsService.getQuestion(questionId);
+
+    return { question };
   }
 
   @Put('/:questionId')
