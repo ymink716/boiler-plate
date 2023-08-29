@@ -1,15 +1,14 @@
-import { UsersService } from './../users/users.service';
-import { Controller, Get, UseGuards, Post } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly usersService: UsersService,
     private readonly authService: AuthService,
   ) {}
 
@@ -19,8 +18,13 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  async signInWithGoogle(@GetUser('id') userId: number) {
+  async signInWithGoogle(
+    @GetUser('id') userId: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const { accessToken, refreshToken } = await this.authService.signIn(userId);
+
+    res.setHeader('Authorization', 'Bearer ' + accessToken);
 
     return { 
       access_token: accessToken, 
@@ -28,10 +32,15 @@ export class AuthController {
     };
   }
 
-  @Get('tokens')
+  @Post('refresh')
   @UseGuards(JwtRefreshGuard)
-  async reissueTokens(@GetUser('id') userId: number) {
-    const { accessToken, refreshToken } = await this.authService.reissueTokens(userId);
+  async reissueTokens(
+    @GetUser('id') userId: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken, refreshToken } = await this.authService.refresh(userId);
+
+    res.setHeader('Authorization', 'Bearer ' + accessToken);
 
     return { 
       access_token: accessToken, 

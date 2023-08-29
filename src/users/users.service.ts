@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from './entity/user.entity';
 import * as bcrypt from 'bcryptjs';
-import { TokenHasExpired, UserNotExist } from '../common/exception/error-types';
+import { InvalidToken, UserNotExist } from '../common/exception/error-types';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
 import { UsersRepository } from './users.repository';
 
@@ -59,7 +59,7 @@ export class UsersService {
     const isRefreshTokenMatched = await bcrypt.compare(clientToken, savedToken);
 
     if (!isRefreshTokenMatched) { 
-      throw new UnauthorizedException(TokenHasExpired.message, TokenHasExpired.name);
+      throw new UnauthorizedException(InvalidToken.message, InvalidToken.name);
     }
   }
 

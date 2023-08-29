@@ -16,35 +16,40 @@ export class AuthService {
     return await this.issueTokens(userId);
   }
 
-  async reissueTokens(userId: number) {
+  async refresh(userId: number) {
     return await this.issueTokens(userId);
-  }
-
-  async logout(userId: number) {
-    await this.usersService.removeRefreshToken(userId);
   }
 
   async issueTokens(userId: number) {
     const jwtPayload: JwtPayload = { sub: userId };
 
-    const { accessToken, refreshToken } = this.createJwtTokens(jwtPayload);
+    const accessToken = this.generateAccessToken(jwtPayload);
+    const refreshToken = this.generateRefreshToken(jwtPayload);
 
     await this.usersService.updateHashedRefreshToken(userId, refreshToken);
 
     return { accessToken, refreshToken };
   }
 
-  createJwtTokens(jwtPayload: JwtPayload) {
+  generateAccessToken(jwtPayload: JwtPayload) {
     const accessToken = this.jwtService.sign(jwtPayload, {
       expiresIn: this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
       secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
     });
 
+    return accessToken;
+  }
+
+  generateRefreshToken(jwtPayload: JwtPayload) {
     const refreshToken = this.jwtService.sign(jwtPayload, {
       expiresIn: this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
       secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
     });
 
-    return { accessToken, refreshToken };
+    return refreshToken;
+  }
+
+  async logout(userId: number) {
+    await this.usersService.removeRefreshToken(userId);
   }
 }

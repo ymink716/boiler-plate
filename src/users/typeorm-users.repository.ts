@@ -24,8 +24,8 @@ export class TypeormUsersRepository implements UsersRepository {
   }
 
   async save(user: User): Promise<User> {
-    const newUser = await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
 
-    return newUser;
+    return savedUser;
   }
 }
