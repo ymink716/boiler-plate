@@ -4,7 +4,7 @@ export const UnauthorizedUser = {
   message: '인증되지 않은 사용자입니다.', 
 }
 
-export const TokenHasExpired = {
+export const InvalidToken = {
   name: 'TokenHasExpired',
   message: '만료되거나 유효하지 않은 토큰입니다.',
 }
