@@ -59,5 +59,5 @@ export class User {
   updatedAt: Date;
 
   @OneToMany(() => Question, question => question.writer)
-  posts: Question[];
+  questions: Question[];
 }

@@ -30,7 +30,7 @@ export class Question {
   @Column({ nullable: false, type: 'varchar' })
   title: string;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: false, type: 'text' })
   content: string;
 
   @CreateDateColumn({

@@ -20,7 +20,7 @@ export class AuthController {
   @UseGuards(GoogleOauthGuard)
   async signInWithGoogle(
     @GetUser('id') userId: number,
-    @Res({ passthrough: true}) res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { accessToken, refreshToken } = await this.authService.signIn(userId);
 
@@ -36,7 +36,7 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   async reissueTokens(
     @GetUser('id') userId: number,
-    @Res({ passthrough: true}) res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { accessToken, refreshToken } = await this.authService.refresh(userId);
 

@@ -8,24 +8,24 @@ import { User } from './entity/user.entity';
 export class TypeormUsersRepository implements UsersRepository {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   async findOneById(id: number): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { id }});
+    const user = await this.usersRepository.findOne({ where: { id }});
 
     return user;
   }
 
   async findByProviderId(providerId: string): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { providerId }});
+    const user = await this.usersRepository.findOne({ where: { providerId }});
 
     return user;
   }
 
   async save(user: User): Promise<User> {
-    const newUser = await this.userRepository.save(user);
+    const savedUser = await this.usersRepository.save(user);
 
-    return newUser;
+    return savedUser;
   }
 }
