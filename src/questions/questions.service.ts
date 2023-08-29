@@ -22,8 +22,8 @@ export class QuestionsService {
     return newQuestion;
   }
 
-  getQuestions() {
-    throw new Error('Method not implemented.');
+  async getQuestions() {
+    return await this.questionsRepository.findAll();
   }
 
   getQuestion() {

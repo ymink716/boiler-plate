@@ -8,18 +8,24 @@ import { Question } from "./entity/question.entity";
 export class TypeormQuestionsRepository implements QuestionsRepository {
   constructor(
     @InjectRepository(Question)
-    private readonly questionsRepository: Repository<Question>,
+    private readonly questionRepository: Repository<Question>,
   ) {}
 
   async findOneById(id: number): Promise<Question | null> {
-    const question = await this.questionsRepository.findOne({ where: { id }});
+    const question = await this.questionRepository.findOne({ where: { id }});
 
     return question;
   }
 
   async save(question: Question): Promise<Question> {
-    const savedQuestion = await this.questionsRepository.save(question);
+    const savedQuestion = await this.questionRepository.save(question);
 
     return savedQuestion;
+  }
+
+  async findAll(): Promise<Question[]> {
+    const questions = await this.questionRepository.find();
+
+    return questions;
   }
 }
