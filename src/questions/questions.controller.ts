@@ -4,6 +4,7 @@ import { CreateQuestionDto } from './dto/create-question.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { User } from 'src/users/entity/user.entity';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Controller('questions')
 export class QuestionsController {
@@ -36,8 +37,14 @@ export class QuestionsController {
 
   @Put('/:questionId')
   @UseGuards(JwtAuthGuard)
-  async updateQuestion() {
-    const updatedQuestion = await this.questionsService.updateQuestion();
+  async updateQuestion(
+    @Param('questionId', ParseIntPipe) questionId: number,
+    @GetUser() user: User,
+    @Body() updateQuestionDto: UpdateQuestionDto,
+  ) {
+    const updatedQuestion = await this.questionsService.updateQuestion(questionId, user, updateQuestionDto);
+
+    return { updatedQuestion };
   }
 
   @Delete('/:questionId')

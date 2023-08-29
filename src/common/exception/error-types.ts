@@ -19,3 +19,8 @@ export const QuestionNotFound = {
   name: 'QuestionNotFound',
   message: '해당 질문을 찾을 수 없습니다.',
 }
+
+export const IsNotWriter = {
+  name: 'IsNotWriter',
+  message: '작성자가 아니면 접근할 수 없습니다.',
+}

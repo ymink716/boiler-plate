@@ -12,7 +12,10 @@ export class TypeormQuestionsRepository implements QuestionsRepository {
   ) {}
 
   async findOneById(id: number): Promise<Question | null> {
-    const question = await this.questionRepository.findOne({ where: { id }});
+    const question = await this.questionRepository.findOne({ 
+      where: { id },
+      relations: ['writer'],
+    });
 
     return question;
   }
@@ -27,5 +30,14 @@ export class TypeormQuestionsRepository implements QuestionsRepository {
     const questions = await this.questionRepository.find();
 
     return questions;
+  }
+
+  async update(question: Question, title: string, content: string): Promise<Question> {
+    question.title = title;
+    question.content = content;
+
+    const updatedQuestion = await this.questionRepository.save(question);
+
+    return updatedQuestion;
   }
 }
