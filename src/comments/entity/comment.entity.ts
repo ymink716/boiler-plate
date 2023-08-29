@@ -1,5 +1,5 @@
+import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
-import { Comment } from 'src/comments/entity/comment.entity';
 import {
   Column,
   Entity,
@@ -8,29 +8,25 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 
 
 @Entity()
-export class Question {
+export class Comment {
   constructor(options: {
-    title: string;
     content: string;
-    writer: User,
+    writer: User;
+    question: Question;
   }) {
     if (options) {
-      this.title = options.title;
       this.content = options.content;
       this.writer = options.writer;
+      this.question = options.question;
     }
   }
 
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ nullable: false, type: 'varchar' })
-  title: string;
 
   @Column({ nullable: false, type: 'text' })
   content: string;
@@ -57,6 +53,9 @@ export class Question {
   @ManyToOne(() => User, writer => writer.questions)
   writer: User;
 
-  @OneToMany(() => Comment, comment => comment.question)
-  comments: Comment[];
+  @ManyToOne(() => Question, question => question.comments, {
+    onDelete: 'CASCADE',
+    nullable: false
+  })
+  question: Question;
 }

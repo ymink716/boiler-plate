@@ -6,6 +6,7 @@ import { TypeOrmConfigService } from './config/typeorm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { QuestionsModule } from './questions/questions.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { QuestionsModule } from './questions/questions.module';
     AuthModule,
     UsersModule,
     QuestionsModule,
+    CommentsModule,
   ],
 })
 
