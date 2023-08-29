@@ -20,10 +20,6 @@ export class AuthService {
     return await this.issueTokens(userId);
   }
 
-  async logout(userId: number) {
-    await this.usersService.removeRefreshToken(userId);
-  }
-
   async issueTokens(userId: number) {
     const jwtPayload: JwtPayload = { sub: userId };
 
@@ -46,5 +42,9 @@ export class AuthService {
     });
 
     return { accessToken, refreshToken };
+  }
+
+  async logout(userId: number) {
+    await this.usersService.removeRefreshToken(userId);
   }
 }
