@@ -40,4 +40,8 @@ export class TypeormQuestionsRepository implements QuestionsRepository {
 
     return updatedQuestion;
   }
+
+  async softDelete(id: number): Promise<void> {
+    await this.questionRepository.softDelete({ id });
+  }
 }

@@ -49,7 +49,12 @@ export class QuestionsController {
 
   @Delete('/:questionId')
   @UseGuards(JwtAuthGuard)
-  async deleteQuestion() {
+  async deleteQuestion(
+    @Param('questionId', ParseIntPipe) questionId: number,
+    @GetUser() user: User,
+  ) {
+    await this.questionsService.deleteQuestion(questionId, user);
 
+    return { success: true };
   }
 }

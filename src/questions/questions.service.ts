@@ -40,14 +40,36 @@ export class QuestionsService {
   async updateQuestion(questionId: number, user: User, updateQuestionDto: UpdateQuestionDto) {
     const question = await this.questionsRepository.findOneById(questionId);
     
-    if (question?.writer.id !== user.id) {
-      throw new ForbiddenException(IsNotWriter.message, IsNotWriter.name);
+    if (!question) {
+      throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
+
+    this.isWriter(question, user);
 
     const { title, content } = updateQuestionDto;
 
     const updatedQuestion = await this.questionsRepository.update(question, title, content);
 
     return updatedQuestion;
+  }
+
+  async deleteQuestion(questionId: number, user: User) {
+    const question = await this.questionsRepository.findOneById(questionId);
+
+    if (!question) {
+      throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
+    }
+
+    this.isWriter(question, user);
+
+    await this.questionsRepository.softDelete(questionId);
+  }
+
+  isWriter(question: Question, writer: User) {
+    const isWriter = question.writer.id === writer.id;
+    
+    if (!isWriter) {
+      throw new ForbiddenException(IsNotWriter.message, IsNotWriter.name);
+    }
   }
 }

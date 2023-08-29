@@ -5,4 +5,5 @@ export interface QuestionsRepository {
   save(question: Question): Promise<Question>;
   findAll(): Promise<Question[]>;
   update(question: Question, title: string, content: string): Promise<Question>;
+  softDelete(id: number): Promise<void>;
 }
