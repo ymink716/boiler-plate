@@ -15,11 +15,13 @@ import {
 export class Comment {
   constructor(options: {
     content: string;
-    writer: User,
+    writer: User;
+    question: Question;
   }) {
     if (options) {
       this.content = options.content;
       this.writer = options.writer;
+      this.question = options.question;
     }
   }
 

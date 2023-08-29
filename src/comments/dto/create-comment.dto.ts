@@ -9,5 +9,5 @@ export class CreateCommentDto {
 
   @IsNumber()
   @IsNotEmpty()
-  readonly postId: number;
+  readonly questionId: number;
 }

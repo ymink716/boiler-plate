@@ -14,6 +14,7 @@ import { TypeormQuestionsRepository } from './typeorm-questions.repository';
       provide: 'QUESTIONS_REPOSITORY',
       useClass: TypeormQuestionsRepository,
     }
-  ]
+  ],
+  exports: [QuestionsService],
 })
 export class QuestionsModule {}

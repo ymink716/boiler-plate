@@ -3,6 +3,8 @@ import { CommentsRepository } from "./comments.repository";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Comment } from "./entity/comment.entity";
+import { User } from "src/users/entity/user.entity";
+import { Question } from "src/questions/entity/question.entity";
 
 @Injectable()
 export class TypeormCommentsRepository implements CommentsRepository {
@@ -20,10 +22,12 @@ export class TypeormCommentsRepository implements CommentsRepository {
     return comment;
   }
 
-  async save(comment: Comment): Promise<Comment> {
-    const savedQuestion = await this.commentRepository.save(comment);
-
-    return savedQuestion;
+  async save(
+    content: string, writer: User, question: Question
+  ): Promise<Comment> {
+    return await this.commentRepository.save(new Comment({
+      content, writer, question
+    }));
   }
 
   async findAll(): Promise<Comment[]> {
