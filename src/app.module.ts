@@ -5,6 +5,7 @@ import { configModuleOptions } from './config/config-module-options';
 import { TypeOrmConfigService } from './config/typeorm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { QuestionsModule } from './questions/questions.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     AuthModule,
     UsersModule,
+    QuestionsModule,
   ],
 })
 
