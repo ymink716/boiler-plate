@@ -39,9 +39,9 @@ export class TypeormCommentsRepository implements CommentsRepository {
   async update(comment: Comment, content: string): Promise<Comment> {
     comment.content = content;
 
-    const updatedQuestion = await this.commentRepository.save(comment);
+    const updatedComment = await this.commentRepository.save(comment);
 
-    return updatedQuestion;
+    return updatedComment;
   }
 
   async softDelete(id: number): Promise<void> {

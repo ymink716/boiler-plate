@@ -3,7 +3,7 @@ import { CreateQuestionDto } from './dto/create-question.dto';
 import { QuestionsRepository } from './questions.repository';
 import { Question } from './entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
-import { IsNotWriter, QuestionNotFound } from 'src/common/exception/error-types';
+import { IsNotQuestionWriter, QuestionNotFound } from 'src/common/exception/error-types';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Injectable()
@@ -66,10 +66,10 @@ export class QuestionsService {
   }
 
   isWriter(question: Question, writer: User) {
-    const isWriter = question.writer.id === writer.id;
+    const isWriter = (question.writer.id === writer.id);
     
     if (!isWriter) {
-      throw new ForbiddenException(IsNotWriter.message, IsNotWriter.name);
+      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
     }
   }
 }
