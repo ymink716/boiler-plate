@@ -10,6 +10,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
+import { QuestionLike } from 'src/likes/entity/question-like.entity';
 
 
 @Entity()
@@ -59,4 +60,7 @@ export class Question {
 
   @OneToMany(() => Comment, comment => comment.question)
   comments: Comment[];
+
+  @OneToMany(() => QuestionLike, questionLike => questionLike.question)
+  likes: QuestionLike[];
 }
