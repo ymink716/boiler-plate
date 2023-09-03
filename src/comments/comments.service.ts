@@ -66,9 +66,10 @@ export class CommentsService {
     }
   }
 
-  async findComment(commentId: number): Promise<Comment> {
+  async getComment(commentId: number): Promise<Comment> {
+    console.log(commentId);
     const comment = await this.commentsRepository.findOneById(commentId);
-
+    
     if (!comment) {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }

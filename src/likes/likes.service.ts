@@ -39,7 +39,7 @@ export class LikesService {
   }
 
   async uplikeComment(commentId: number, user: User): Promise<void> {
-    const comment = await this.commentsService.findComment(commentId);
+    const comment = await this.commentsService.getComment(commentId);
 
     const userId = user.id;
     const commentLikesCount = await this.questionLikesRepository.count(userId, commentId);
