@@ -3,10 +3,8 @@ import { User } from 'src/users/entity/user.entity';
 import { QuestionLikesRepository } from './question-likes.repository';
 import { QuestionsService } from 'src/questions/questions.service';
 import { CommentAlreadyLiked, QuestionAlreadyLiked } from 'src/common/exception/error-types';
-import { QuestionLike } from './entity/question-like.entity';
 import { CommentLikesRepository } from './comment-likes.repository';
 import { CommentsService } from 'src/comments/comments.service';
-import { CommentLike } from './entity/comment-like.entity';
 
 @Injectable()
 export class LikesService {
@@ -51,5 +49,13 @@ export class LikesService {
     }
 
     await this.commentLikesRepository.save(user, comment);
+  }
+
+  async unlikeComment(commentId: number, userId: number): Promise<void> {
+    const commentLikes = await this.commentLikesRepository.findByUserIdAndCommentId(userId, commentId);
+
+    commentLikes.forEach(
+      async (commentLike) => await this.commentLikesRepository.delete(commentLike.id)
+    );
   }
 }
