@@ -19,10 +19,10 @@ export class LikesController {
 
   @Delete('/questions/:questionId')
   async unlikeQuestion(
-    @GetUser() user: User,
+    @GetUser('id') userId: number,
     @Param('questionId', ParseIntPipe) questionId: number, 
   ) {
-    await this.likesService.unlikeQuestion(questionId, user);
+    await this.likesService.unlikeQuestion(questionId, userId);
 
     return { success: true };
   }

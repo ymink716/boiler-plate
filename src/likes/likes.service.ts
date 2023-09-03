@@ -28,7 +28,11 @@ export class LikesService {
     await this.questionLikesRepository.save(questionLike);
   }
 
-  async unlikeQuestion(questionId: number, user: User) {
-    throw new Error('Method not implemented.');
+  async unlikeQuestion(questionId: number, userId: number): Promise<void> {
+    const questionLikes = await this.questionLikesRepository.findByUserIdAndQeustionId(userId, questionId);
+
+    questionLikes.forEach(
+      async (questionLike) => await this.questionLikesRepository.delete(questionLike.id)
+    );
   }
 }

@@ -12,14 +12,6 @@ export class TypeormQuestionLikesRepository implements QuestionLikesRepository {
     @InjectRepository(QuestionLike)
     private readonly questionLikesRepository: Repository<QuestionLike>,
   ) {}
-  async findOneById(id: number): Promise<QuestionLike | null> {
-    const questionLike = await this.questionLikesRepository.findOne({ 
-      where: { id },
-      relations: ['user', 'question'],
-    });
-
-    return questionLike;
-  }
 
   async count(userId: number, questionId: number): Promise<number> {
     const questionLikesCount = await this.questionLikesRepository.count({
@@ -46,7 +38,26 @@ export class TypeormQuestionLikesRepository implements QuestionLikesRepository {
     return savedQuestionLike;
   }
 
-  async delete(id: number): Promise<void> {
-    await this.questionLikesRepository.delete({ id });
+  async findByUserIdAndQeustionId(userId: number, questionId: number): Promise<QuestionLike[]> {
+    const questionLikes = await this.questionLikesRepository.find({
+      relations: {
+        user: true,
+        question: true,
+      },      
+      where: {
+        user: {
+          id: userId,
+        },
+        question: {
+          id: questionId,
+        }
+      },
+    });
+
+    return questionLikes;
+  }
+
+  async delete(questionLikeId: number): Promise<void> {
+    await this.questionLikesRepository.delete(questionLikeId);
   }
 }
