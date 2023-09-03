@@ -32,10 +32,10 @@ export class TypeormQuestionLikesRepository implements QuestionLikesRepository {
     return questionLikesCount;
   }
 
-  async save(questionLike: QuestionLike): Promise<QuestionLike> {
-    const savedQuestionLike = await this.questionLikesRepository.save(questionLike);
+  async save(user: User, question: Question): Promise<QuestionLike> {
+    const questionLike = new QuestionLike({ user, question });
 
-    return savedQuestionLike;
+    return await this.questionLikesRepository.save(questionLike);
   }
 
   async findByUserIdAndQeustionId(userId: number, questionId: number): Promise<QuestionLike[]> {

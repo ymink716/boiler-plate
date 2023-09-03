@@ -5,11 +5,15 @@ import { QuestionLike } from './entity/question-like.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeormQuestionLikesRepository } from './typeorm-question-likes.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
+import { CommentLike } from './entity/comment-like.entity';
+import { TypeormCommentLikesRepository } from './typeorm-comment-likes.repository';
+import { CommentsModule } from 'src/comments/comments.module';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([QuestionLike]),
+    TypeOrmModule.forFeature([QuestionLike, CommentLike]),
     QuestionsModule,
+    CommentsModule
   ],
   controllers: [LikesController],
   providers: [
@@ -17,7 +21,11 @@ import { QuestionsModule } from 'src/questions/questions.module';
     {
       provide: 'QUESTION_LIKES_REPOSITORY',
       useClass: TypeormQuestionLikesRepository,
-    }
+    },
+    {
+      provide: 'COMMENT_LIKES_REPOSITORY',
+      useClass: TypeormCommentLikesRepository,
+    },
   ]
 })
 export class LikesModule {}
