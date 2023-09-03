@@ -5,7 +5,7 @@ import { CommentsRepository } from './comments.repository';
 import { QuestionsService } from 'src/questions/questions.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentNotFound, IsNotCommentor } from 'src/common/exception/error-types';
-
+import { Comment } from './entity/comment.entity'
 @Injectable()
 export class CommentsService {
   constructor(
@@ -14,7 +14,7 @@ export class CommentsService {
     private readonly questionsService: QuestionsService,
   ) {}
 
-  async writeComment(createCommentDto: CreateCommentDto, user: User) {
+  async writeComment(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
     const { content, questionId } = createCommentDto;
 
     const question = await this.questionsService.getQuestion(questionId);
@@ -24,7 +24,7 @@ export class CommentsService {
     return comment;
   }
 
-  async editComment(updateCommentDto: UpdateCommentDto, commentId: number, user: User) {
+  async editComment(updateCommentDto: UpdateCommentDto, commentId: number, user: User): Promise<Comment> {
     const comment = await this.commentsRepository.findOneById(commentId);
 
     if (!comment) {
@@ -43,12 +43,13 @@ export class CommentsService {
     return updatedComment;
   }
 
-  async deleteComment(commentId: number, user: User) {
+  async deleteComment(commentId: number, user: User): Promise<void> {
     const comment = await this.commentsRepository.findOneById(commentId);
 
     if (!comment) {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
+    
     const writerId = comment.writer.id;
     const userId = user.id;
     
@@ -57,12 +58,22 @@ export class CommentsService {
     await this.commentsRepository.softDelete(commentId);
   }
 
-  isWriter(writerId: number, userId: number) {
+  isWriter(writerId: number, userId: number): void {
     const isWriter = (writerId === userId);
 
     if (!isWriter) {
       throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
     }
+  }
+
+  async findComment(commentId: number): Promise<Comment> {
+    const comment = await this.commentsRepository.findOneById(commentId);
+
+    if (!comment) {
+      throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
+    }
+
+    return comment;
   }
 }
 
