@@ -15,7 +15,7 @@ export class LikesService {
 
   async uplikeQuestion(questionId: number, user: User): Promise<void> {
     const question = await this.questionsService.getQuestion(questionId);
-
+    
     const userId = user.id;
     const questionLikesCount = await this.questionLikesRepository.count(userId, questionId);
 
