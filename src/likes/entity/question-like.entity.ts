@@ -9,6 +9,16 @@ import {
 
 @Entity()
 export class QuestionLike {
+  constructor(options: {
+    user: User,
+    question: Question
+  }) {
+    if (options) {
+      this.user = options.user;
+      this.question = options.question;
+    }
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
