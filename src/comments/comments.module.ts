@@ -18,6 +18,7 @@ import { QuestionsModule } from 'src/questions/questions.module';
       provide: 'COMMENTS_REPOSITORY',
       useClass: TypeormCommentsRepository,
     }
-  ]
+  ],
+  exports: [CommentsService],
 })
 export class CommentsModule {}

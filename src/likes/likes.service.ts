@@ -4,6 +4,8 @@ import { QuestionLikesRepository } from './question-likes.repository';
 import { QuestionsService } from 'src/questions/questions.service';
 import { QuestionsAlreadyLiked } from 'src/common/exception/error-types';
 import { QuestionLike } from './entity/question-like.entity';
+import { CommentLikesRepository } from './comment-likes.repository';
+import { CommentsService } from 'src/comments/comments.service';
 
 @Injectable()
 export class LikesService {
@@ -11,6 +13,9 @@ export class LikesService {
     @Inject('QUESTION_LIKES_REPOSITORY')
     private readonly questionLikesRepository: QuestionLikesRepository,
     private readonly questionsService: QuestionsService,
+    @Inject('COMMENT_LIKES_REPOSITORY')
+    private readonly commentLikesRepository: CommentLikesRepository,
+    private readonly commentsService: CommentsService,
   ) {}
 
   async uplikeQuestion(questionId: number, user: User): Promise<void> {
@@ -34,5 +39,9 @@ export class LikesService {
     questionLikes.forEach(
       async (questionLike) => await this.questionLikesRepository.delete(questionLike.id)
     );
+  }
+
+  async uplikeComment(commentId: number, user: User) {
+
   }
 }

@@ -29,4 +29,26 @@ export class LikesController {
 
     return { success: true };
   }
+
+  @Post('/comments/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async uplikeComment(
+    @GetUser() user: User,
+    @Param('commentId', ParseIntPipe) commentId: number, 
+  ) {
+    await this.likesService.uplikeComment(commentId, user);
+
+    return { success: true };
+  }
+
+  @Delete('/comments/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async unlikeComment(
+    @GetUser('id') userId: number,
+    @Param('commentId', ParseIntPipe) commentId: number, 
+  ) {
+    await this.likesService.unlikeComment(commentId, userId);
+
+    return { success: true };
+  }
 }

@@ -1,3 +1,4 @@
+import { CommentLike } from 'src/likes/entity/comment-like.entity';
 import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import {
@@ -8,8 +9,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
-
 
 @Entity()
 export class Comment {
@@ -58,4 +59,7 @@ export class Comment {
     nullable: false
   })
   question: Question;
+
+  @OneToMany(() => CommentLike, commentLike => commentLike.comment)
+  likes: CommentLike[];
 }
