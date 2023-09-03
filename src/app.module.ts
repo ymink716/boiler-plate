@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { QuestionsModule } from './questions/questions.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
+import { BookmarksModule } from './bookmarks/bookmarks.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { LikesModule } from './likes/likes.module';
     QuestionsModule,
     CommentsModule,
     LikesModule,
+    BookmarksModule,
   ],
 })
 

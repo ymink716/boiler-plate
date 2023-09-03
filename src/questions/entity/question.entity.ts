@@ -11,6 +11,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { QuestionLike } from 'src/likes/entity/question-like.entity';
+import { Bookmark } from 'src/bookmarks/entity/bookmark.entity';
 
 
 @Entity()
@@ -63,4 +64,7 @@ export class Question {
 
   @OneToMany(() => QuestionLike, questionLike => questionLike.question)
   likes: QuestionLike[];
+
+  @OneToMany(() => Bookmark, bookmark => bookmark.question)
+  bookmarks: Bookmark[];
 }

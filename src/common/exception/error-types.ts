@@ -40,5 +40,10 @@ export const QuestionAlreadyLiked = {
 
 export const CommentAlreadyLiked = {
   name: 'CommentAlreadyLiked',
-  message: '이미 좋아요를 누른 답변입니다.'
+  message: '이미 좋아요를 누른 답변입니다.',
+}
+
+export const QuestionAlreadyBookmarked = {
+  name: 'QuestionAlreadyBookmarked',
+  message: '이미 북마크한 질문입니다.',
 }
