@@ -32,3 +32,8 @@ export const IsNotCommentor = {
   name: 'IsNotQuestionWriter',
   message: '답변 작성자가 아니면 접근할 수 없습니다.',
 }
+
+export const QuestionsAlreadyLiked = {
+  name: 'QuestionsAlreadyLiked',
+  message: '이미 좋아요를 누른 질문입니다.'
+}

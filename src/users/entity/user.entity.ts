@@ -1,4 +1,5 @@
 import { UserProvider } from "src/common/enums/user-provider.enum";
+import { QuestionLike } from "src/likes/entity/question-like.entity";
 import { Question } from "src/questions/entity/question.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -60,4 +61,7 @@ export class User {
 
   @OneToMany(() => Question, question => question.writer)
   questions: Question[];
+
+  @OneToMany(() => QuestionLike, questionLike => questionLike.user)
+  questionLikes: QuestionLike[];
 }
