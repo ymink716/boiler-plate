@@ -73,7 +73,7 @@ describe('QuestionsController (e2e)', () => {
     question2 = await dataSource.manager.save(new Question({
       title: '테스트 질문 제목2',
       content: '테스트 질문 내용2',
-      writer: user1,
+      writer: user2,
     }));
   });
 
@@ -114,7 +114,7 @@ describe('QuestionsController (e2e)', () => {
 
     test('존재하지 않는 question이라면 404로 응답한다.', async () => {
       const response = await request(app.getHttpServer()).get('/questions/0');
-
+      
       expect(response.status).toBe(404);
     });
   });
@@ -132,5 +132,62 @@ describe('QuestionsController (e2e)', () => {
       expect(response.body.newQuestion).toBeDefined();
       expect(response.body.newQuestion.title).toBe('test question title');
     });
-  })
+  });
+
+  describe('PUT /questions/:questionId', () => {
+    test('status code 200으로 응답하고, 수정된 question을 리턴한다.', async () => {
+      const response = await request(app.getHttpServer())
+        .put(`/questions/${question1.id}`)
+        .send({
+          title: 'test question title(수정)',
+          content: 'test question content...(수정)'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.updatedQuestion).toBeDefined();
+      expect(response.body.updatedQuestion.title).toBe('test question title(수정)');  
+    });
+
+    test('존재하지 않는 question이라면 404로 응답한다.', async () => {
+      const response = await request(app.getHttpServer())
+        .put(`/questions/0`)
+        .send({
+          title: 'test question title(수정)',
+          content: 'test question content...(수정)'
+        });
+
+      expect(response.status).toBe(404);
+    });
+
+    test('작성자가 아니라면 403으로 응답한다.', async () => {
+      const response = await request(app.getHttpServer())
+      .put(`/questions/2`)
+      .send({
+        title: 'test question title(수정)',
+        content: 'test question content...(수정)'
+      });
+    
+      expect(response.status).toBe(404);
+    });
+  });
+
+  describe('DELETE /questions/:questionId', () => {
+    test('status code 200으로 응답한다.', async () => {
+      const response = await request(app.getHttpServer()).delete(`/questions/${question1.id}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    test('존재하지 않는 question이라면 404로 응답한다.', async () => {
+      const response = await request(app.getHttpServer()).delete(`/questions/0`);
+
+      expect(response.status).toBe(404);
+    });
+
+    test('작성자가 아니라면 403으로 응답한다.', async () => {
+      const response = await request(app.getHttpServer()).delete(`/questions/2`);
+
+      expect(response.status).toBe(404);
+    });
+  });
 });
