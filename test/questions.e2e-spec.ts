@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { ExecutionContext, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { QuestionsRepository } from 'src/questions/questions.repository';
@@ -7,6 +7,7 @@ import { DataSource } from "typeorm"
 import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 describe('QuestionsController (e2e)', () => {
   let app: INestApplication;
@@ -19,7 +20,16 @@ describe('QuestionsController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+    .overrideGuard(JwtAuthGuard)
+    .useValue({
+      canActivate: (context: ExecutionContext) => {
+        const request = context.switchToHttp().getRequest();
+        request['user'] = { id: 1 };
+        return true;
+      },
+    })
+    .compile();
 
     app = moduleFixture.createNestApplication();
 
@@ -30,7 +40,7 @@ describe('QuestionsController (e2e)', () => {
         transform: true,
       })
     );
-
+    
     await app.init();
 
     questionsRepository = app.get('QUESTIONS_REPOSITORY');
@@ -77,7 +87,7 @@ describe('QuestionsController (e2e)', () => {
   });  
 
   describe('GET /questions', () => {
-    test('status code 200으로 응답, question 리스트를 리턴한다.', async () => {
+    test('status code 200으로 응답하고, question 리스트를 리턴한다.', async () => {
       const response = await request(app.getHttpServer()).get('/questions');
 
       expect(response.status).toBe(200);
@@ -88,7 +98,7 @@ describe('QuestionsController (e2e)', () => {
   });
 
   describe('GET /questions/:questionId', () => {
-    test('status code 200, 해당 id의 question을 리턴한다.', async () => {
+    test('status code 200로 응답하고, 해당 id의 question을 리턴한다.', async () => {
       const question = await dataSource.manager.save(new Question({
         title: 'test',
         content: 'testtesttest',
@@ -108,4 +118,19 @@ describe('QuestionsController (e2e)', () => {
       expect(response.status).toBe(404);
     });
   });
+
+  describe('POST /questions', () => {
+    test('status code 201로 응답하고, 생성된 question을 리턴한다.', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/questions')
+        .send({
+          title: 'test question title',
+          content: 'test question content...'
+        });
+      
+      expect(response.status).toBe(201);
+      expect(response.body.newQuestion).toBeDefined();
+      expect(response.body.newQuestion.title).toBe('test question title');
+    });
+  })
 });
