@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { QuestionsRepository } from 'src/questions/questions.repository';
 import { DataSource } from "typeorm"
 import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
@@ -11,11 +10,12 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 describe('QuestionsController (e2e)', () => {
   let app: INestApplication;
-  let questionsRepository: QuestionsRepository;
   let dataSource: DataSource;
 
   let user1, user2;
   let question1, question2;
+
+  jest.setTimeout(30000);
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -43,7 +43,6 @@ describe('QuestionsController (e2e)', () => {
     
     await app.init();
 
-    questionsRepository = app.get('QUESTIONS_REPOSITORY');
     dataSource = app.get(DataSource);
 
     user1 = await dataSource.manager.save(new User({
@@ -132,6 +131,14 @@ describe('QuestionsController (e2e)', () => {
       expect(response.body.newQuestion).toBeDefined();
       expect(response.body.newQuestion.title).toBe('test question title');
     });
+
+    test('request body의 값이 올바르지 않다면 status code 400으로 응답한다.', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/questions')
+        .send({ title: 't' });
+      
+      expect(response.status).toBe(400);
+    });
   });
 
   describe('PUT /questions/:questionId', () => {
@@ -148,6 +155,14 @@ describe('QuestionsController (e2e)', () => {
       expect(response.body.updatedQuestion.title).toBe('test question title(수정)');  
     });
 
+    test('request body의 값이 올바르지 않다면 status code 400으로 응답한다.', async () => {
+      const response = await request(app.getHttpServer())
+        .put(`/questions/${question1.id}`)
+        .send({ title: 't', content: 1234 });
+      
+      expect(response.status).toBe(400);
+    });
+
     test('존재하지 않는 question이라면 404로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
         .put(`/questions/0`)
@@ -161,13 +176,13 @@ describe('QuestionsController (e2e)', () => {
 
     test('작성자가 아니라면 403으로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
-      .put(`/questions/2`)
+      .put(`/questions/${question2.id}`)
       .send({
         title: 'test question title(수정)',
         content: 'test question content...(수정)'
       });
     
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(403);
     });
   });
 
@@ -185,9 +200,9 @@ describe('QuestionsController (e2e)', () => {
     });
 
     test('작성자가 아니라면 403으로 응답한다.', async () => {
-      const response = await request(app.getHttpServer()).delete(`/questions/2`);
+      const response = await request(app.getHttpServer()).delete(`/questions/${question2.id}`);
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(403);
     });
   });
 });
