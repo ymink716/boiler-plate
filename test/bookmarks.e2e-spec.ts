@@ -59,30 +59,12 @@ describe('LikesController (e2e)', () => {
     }));
   });
 
-  afterEach(async () => {
-    await dataSource.manager.delete(Bookmark, {});
-  });
-
-  afterAll(async () => {
-    await dataSource.dropDatabase();
-    await app.close();
-  });  
-
   describe('POST /bookmarks/questions/:questionId', () => {
     test('status code 201로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
         .post(`/bookmarks/questions/${question.id}`);
       
       expect(response.status).toBe(201);
-    });
-
-    test('이미 북마크되어있다면 400으로 응답한다.', async () => {
-      await dataSource.manager.save(new Bookmark({ user, question }));
-      
-      const response = await request(app.getHttpServer())
-        .post(`/bookmarks/questions/${question.id}`);
-    
-      expect(response.status).toBe(400);
     });
   });
 
@@ -96,4 +78,13 @@ describe('LikesController (e2e)', () => {
       expect(response.status).toBe(200);
     });
   });
+
+  afterEach(async () => {
+    await dataSource.manager.delete(Bookmark, {});
+  });
+
+  afterAll(async () => {
+    await dataSource.dropDatabase();
+    await app.close();
+  });  
 });

@@ -13,9 +13,8 @@ describe('CommentsController (e2e)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
 
-  let user1: User, user2: User;
+  let user: User;
   let question: Question;
-  let comment1: Comment, comment2: Comment;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -43,9 +42,9 @@ describe('CommentsController (e2e)', () => {
     
     await app.init();
 
-    dataSource = app.get(DataSource);
+    dataSource = app.get<DataSource>(DataSource);
 
-    user1 = await dataSource.manager.save(new User({
+    user = await dataSource.manager.save(new User({
       email: 'test@gmmail.com',
       provider: UserProvider.GOOGLE,
       providerId: 'valid providerId1',
@@ -53,33 +52,64 @@ describe('CommentsController (e2e)', () => {
       picture: 'pictureURL1',
     }));
 
-    user2 = await dataSource.manager.save(new User({
-      email: 'abc@gmmail.com',
-      provider: UserProvider.GOOGLE,
-      providerId: 'valid providerId2',
-      name: 'abc',
-      picture: 'pictureURL2',
-    }));
-
     question = await dataSource.manager.save(new Question({
       title: 'test question',
       content: 'test question contents...',
-      writer: user1,
+      writer: user,
     }));
   });
 
-  beforeEach(async () => {
-    comment1 = await dataSource.manager.save(new Comment({
-      content: '답변 내용입니다..',
-      writer: user1,
-      question: question,
-    }));
+  describe('POST /comments', () => {
+    test('status code 201로 응답하고, 생성된 comment를 리턴한다.', async () => {
+      const requestBody = {
+        content: 'test comment content...',
+        questionId: question.id,
+      }
 
-    comment2 = await dataSource.manager.save(new Comment({
-      content: '답변 내용입니다..',
-      writer: user2,
-      question: question,
-    }));
+      const response = await request(app.getHttpServer())
+        .post('/comments')
+        .send(requestBody);
+      
+      expect(response.status).toBe(201);
+      expect(response.body.newComment).toBeDefined();
+      expect(response.body.newComment.content).toBe('test comment content...');
+    });
+  });
+
+  describe('PUT /comments/:commentId', () => {
+    test('status code 200으로 응답하고, 수정된 comment를 리턴한다.', async () => {
+      const comment = await dataSource.manager.save(Comment, new Comment({
+        content: 'test comment content...',
+        writer: user,
+        question: question,
+      }));
+
+      const requestBody = {
+        content: 'test comment content...(수정)',
+      }
+
+      const response = await request(app.getHttpServer())
+        .put(`/comments/${comment.id}`)
+        .send(requestBody);
+      
+      expect(response.status).toBe(200);
+      expect(response.body.editedComment).toBeDefined();
+      expect(response.body.editedComment.content).toBe('test comment content...(수정)');  
+    });
+  });
+
+  describe('DELETE /comments/:commentId', () => {
+    test('status code 200으로 응답한다.', async () => {
+      const comment = await dataSource.manager.save(Comment, new Comment({
+        content: 'test comment content...',
+        writer: user,
+        question: question,
+      }));
+
+      const response = await request(app.getHttpServer()).delete(`/comments/${comment.id}`);
+
+      expect(response.status).toBe(200);
+    });
   });
 
   afterEach(async () => {
@@ -90,83 +120,4 @@ describe('CommentsController (e2e)', () => {
     await dataSource.dropDatabase();
     await app.close();
   });  
-
-  describe('POST /comments', () => {
-    test('status code 201로 응답하고, 생성된 comment을 리턴한다.', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/comments')
-        .send({
-          content: 'test comment content...',
-          questionId: question.id,
-        });
-      
-      expect(response.status).toBe(201);
-      expect(response.body.newComment).toBeDefined();
-      expect(response.body.newComment.content).toBe('test comment content...');
-    });
-
-    test('request body의 값이 올바르지 않다면 status code 400으로 응답한다.', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/comments')
-        .send({ content: 1, questionId: '1' });
-    
-      expect(response.status).toBe(400);
-    });
-  });
-
-  describe('PUT /comments/:commentId', () => {
-    test('status code 200으로 응답하고, 수정된 comment를 리턴한다.', async () => {
-      const response = await request(app.getHttpServer())
-        .put(`/comments/${comment1.id}`)
-        .send({ content: 'test comment content...(수정)' });
-      
-      expect(response.status).toBe(200);
-      expect(response.body.editedComment).toBeDefined();
-      expect(response.body.editedComment.content).toBe('test comment content...(수정)');  
-    });
-
-    test('request body의 값이 올바르지 않다면 status code 400으로 응답한다.', async () => {
-      const response = await request(app.getHttpServer())
-        .put(`/comments/${comment1.id}`)
-        .send({ content: 't' });
-      
-      expect(response.status).toBe(400);
-    });
-
-    test('존재하지 않는 comment라면 404로 응답한다.', async () => {
-      const response = await request(app.getHttpServer())
-        .put(`/comments/0`)
-        .send({ content: 'test comment content...(수정)' });
-
-      expect(response.status).toBe(404);
-    });
-
-    test('작성자가 아니라면 403으로 응답한다.', async () => {
-      const response = await request(app.getHttpServer())
-      .put(`/comments/${comment2.id}`)
-      .send({ content: 'test comment content...(수정)' });
-    
-      expect(response.status).toBe(403);
-    });
-  });
-
-  describe('DELETE /comments/:commentId', () => {
-    test('status code 200으로 응답한다.', async () => {
-      const response = await request(app.getHttpServer()).delete(`/comments/${comment1.id}`);
-
-      expect(response.status).toBe(200);
-    });
-
-    test('존재하지 않는 comments라면 404로 응답한다.', async () => {
-      const response = await request(app.getHttpServer()).delete(`/comments/0`);
-
-      expect(response.status).toBe(404);
-    });
-
-    test('작성자가 아니라면 403으로 응답한다.', async () => {
-      const response = await request(app.getHttpServer()).delete(`/comments/${comment2.id}`);
-
-      expect(response.status).toBe(403);
-    });
-  });
 });

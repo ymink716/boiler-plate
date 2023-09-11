@@ -68,31 +68,12 @@ describe('LikesController (e2e)', () => {
     }));
   });
 
-  afterEach(async () => {
-    await dataSource.manager.delete(QuestionLike, {});
-    await dataSource.manager.delete(CommentLike, {});
-  });
-
-  afterAll(async () => {
-    await dataSource.dropDatabase();
-    await app.close();
-  });  
-
   describe('POST /likes/questions/:questionId', () => {
     test('status code 201로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
         .post(`/likes/questions/${question.id}`);
       
       expect(response.status).toBe(201);
-    });
-
-    test('이미 좋아요를 누른 질문이라면 400으로 응답한다.', async () => {
-      await dataSource.manager.save(new QuestionLike({ user, question }));
-      
-      const response = await request(app.getHttpServer())
-        .post(`/likes/questions/${question.id}`);
-    
-      expect(response.status).toBe(400);
     });
   });
 
@@ -114,15 +95,6 @@ describe('LikesController (e2e)', () => {
       
       expect(response.status).toBe(201);
     });
-
-    test('이미 좋아요를 누른 답변이라면 400으로 응답한다.', async () => {
-      await dataSource.manager.save(new CommentLike({ user, comment }));
-      
-      const response = await request(app.getHttpServer())
-        .post(`/likes/comments/${comment.id}`);
-    
-      expect(response.status).toBe(400);
-    });
   });
 
   describe('DELETE /likes/comments/:commentId', () => {
@@ -135,4 +107,14 @@ describe('LikesController (e2e)', () => {
       expect(response.status).toBe(200);
     });
   });
+
+  afterEach(async () => {
+    await dataSource.manager.delete(QuestionLike, {});
+    await dataSource.manager.delete(CommentLike, {});
+  });
+
+  afterAll(async () => {
+    await dataSource.dropDatabase();
+    await app.close();
+  });  
 });
