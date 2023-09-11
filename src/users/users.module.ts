@@ -12,7 +12,7 @@ import { TypeormUsersRepository } from './typeorm-users.repository';
     UsersService,
     {
       provide: 'USERS_REPOSITORY',
-      useClass: TypeormUsersRepository
+      useClass: TypeormUsersRepository,
     }
   ],
   exports: [UsersService]
