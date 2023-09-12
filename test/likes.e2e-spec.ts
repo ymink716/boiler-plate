@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExecutionContext, INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { DataSource } from "typeorm"
@@ -10,6 +10,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Comment } from 'src/comments/entity/comment.entity';
 import { CommentLike } from 'src/likes/entity/comment-like.entity';
 import { QuestionLike } from 'src/likes/entity/question-like.entity';
+import { mockAuthGuard } from './mock-auth.guard';
 
 describe('LikesController (e2e)', () => {
   let app: INestApplication;
@@ -24,13 +25,7 @@ describe('LikesController (e2e)', () => {
       imports: [AppModule],
     })
     .overrideGuard(JwtAuthGuard)
-    .useValue({
-      canActivate: (context: ExecutionContext) => {
-        const request = context.switchToHttp().getRequest();
-        request['user'] = { id: 1 };
-        return true;
-      },
-    })
+    .useValue(mockAuthGuard)
     .compile();
 
     app = moduleFixture.createNestApplication();
