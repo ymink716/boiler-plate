@@ -6,11 +6,12 @@ import { AppModule } from 'src/app.module';
 import { mockAuthGuard } from '../../../test/mock-auth.guard';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 
-jest.mock('../comments.service');
+jest.mock('../likes.service');
 
 describe('CommentsController', () => {
   let app: INestApplication;
 
+  const questionId = 1;
   const commentId = 1;
 
   beforeAll(async () => {
@@ -27,62 +28,37 @@ describe('CommentsController', () => {
     await app.init();
   });
 
-  describe('POST /comments', () => {
+  describe('POST /likes/questions/:questionId', () => {
     test('status code 201로 응답한다.', async () => {
-      const requestBody = {
-        content: "test comment content...",
-        questionId: 1,
-      }
-
       const response = await request(app.getHttpServer())
-        .post('/comments')
-        .send(requestBody);
+        .post(`/likes/questions/${questionId}`);
       
       expect(response.status).toBe(201);
     });
-
-    test('request body에 유효하지 않은 값이 들어가면 400으로 응답한다.', async () => {
-      const invalidRequestBody = {
-        title: "title??",
-        content: "o",
-      }
-      
-      const response = await request(app.getHttpServer())
-        .post('/comments')
-        .send(invalidRequestBody);
-      
-      expect(response.status).toBe(400);
-    });
   });
 
-  describe('PUT /comments/:commentId', () => {
+  describe('DELETE /likes/questions/:questionId', () => {
     test('status code 200으로 응답한다.', async () => {
-      const requestBody = {
-        content: "test comment content...(updated)",
-      }
-
       const response = await request(app.getHttpServer())
-        .put(`/comments/${commentId}`)
-        .send(requestBody);
+        .delete(`/likes/questions/${questionId}`);
       
       expect(response.status).toBe(200);
     });
+  });
 
-    test('request body에 유효하지 않은 값이 들어가면 400으로 응답한다.', async () => {
-      const requestBody = { content: 3000 };
-
+  describe('POST /likes/comments/:commentId', () => {
+    test('status code 201로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
-        .put(`/comments/${commentId}`)
-        .send(requestBody);
+        .post(`/likes/comments/${commentId}`);
       
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(201);
     });
   });
 
-  describe('DELETE /comments/:commentId', () => {
+  describe('DELETE /likes/comments/:commentId', () => {
     test('status code 200으로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
-        .delete(`/comments/${commentId}`);
+        .delete(`/likes/comments/${commentId}`);
       
       expect(response.status).toBe(200);
     });
