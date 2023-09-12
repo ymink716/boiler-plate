@@ -49,7 +49,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtRefreshGuard)
   async logout(@GetUser('id') userId: number) {
     await this.authService.logout(userId);
     

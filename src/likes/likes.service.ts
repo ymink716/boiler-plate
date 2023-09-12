@@ -42,7 +42,7 @@ export class LikesService {
     const comment = await this.commentsService.getComment(commentId);
 
     const userId = user.id;
-    const commentLikesCount = await this.questionLikesRepository.count(userId, commentId);
+    const commentLikesCount = await this.commentLikesRepository.count(userId, commentId);
 
     if (commentLikesCount > 0) {
       throw new BadRequestException(CommentAlreadyLiked.message, CommentAlreadyLiked.name);

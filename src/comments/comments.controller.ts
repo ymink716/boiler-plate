@@ -18,7 +18,7 @@ export class CommentsController {
   ) {
     const newComment = await this.commentsService.writeComment(createCommentDto, user);
 
-    return newComment;
+    return { newComment };
   }
 
   @Put('/:commentId')
@@ -32,7 +32,7 @@ export class CommentsController {
       updateCommentDto, commentId, user
     );
 
-    return editedComment;
+    return { editedComment };
   }
 
   @Delete('/:commentId')
