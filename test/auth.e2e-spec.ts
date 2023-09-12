@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { DataSource } from "typeorm"
@@ -8,6 +8,7 @@ import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { GoogleOauthGuard } from 'src/auth/guards/google-oauth.guard';
 import { JwtRefreshGuard } from 'src/auth/guards/jwt-refresh.guard';
 import { mockAuthGuard } from './mock-auth.guard';
+import { setUpTestingAppModule } from 'src/config/app-test.config';
 
 describe('QuestionsController (e2e)', () => {
   let app: INestApplication;
@@ -26,15 +27,7 @@ describe('QuestionsController (e2e)', () => {
     .compile();
 
     app = moduleFixture.createNestApplication();
-
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transform: true,
-      })
-    );
-    
+    setUpTestingAppModule(app);
     await app.init();
 
     dataSource = app.get<DataSource>(DataSource);
