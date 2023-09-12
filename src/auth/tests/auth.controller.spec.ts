@@ -1,24 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AppModule } from 'src/app.module';
 import { mockAuthGuard } from '../../../test/mock-auth.guard';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
+import { GoogleOauthGuard } from '../guards/google-oauth.guard';
+import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
+import { AuthService } from '../auth.service';
 
-jest.mock('../likes.service');
-
-describe('LikesController', () => {
+describe('AuthController', () => {
   let app: INestApplication;
-
-  const questionId = 1;
-  const commentId = 1;
+  let authService: AuthService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-    .overrideGuard(JwtAuthGuard)
+    .overrideGuard(GoogleOauthGuard)
+    .useValue(mockAuthGuard)
+    .overrideGuard(JwtRefreshGuard)
     .useValue(mockAuthGuard)
     .compile();
 
@@ -26,41 +26,44 @@ describe('LikesController', () => {
     setUpTestingAppModule(app);
 
     await app.init();
+
+    authService = app.get<AuthService>(AuthService);
   });
 
-  describe('POST /likes/questions/:questionId', () => {
-    test('status code 201로 응답한다.', async () => {
-      const response = await request(app.getHttpServer())
-        .post(`/likes/questions/${questionId}`);
-      
-      expect(response.status).toBe(201);
-    });
-  });
-
-  describe('DELETE /likes/questions/:questionId', () => {
+  describe('GET /auth/google/callback', () => {
     test('status code 200으로 응답한다.', async () => {
+      jest.spyOn(authService, 'signIn').mockResolvedValue({
+        accessToken: 'valid access token',
+        refreshToken: 'valid refresh token',
+      });
+
       const response = await request(app.getHttpServer())
-        .delete(`/likes/questions/${questionId}`);
+        .get(`/auth/google/callback`);
       
       expect(response.status).toBe(200);
     });
   });
 
-  describe('POST /likes/comments/:commentId', () => {
+  describe('POST /auth/refresh', () => {
     test('status code 201로 응답한다.', async () => {
+      jest.spyOn(authService, 'refresh').mockResolvedValue({
+        accessToken: 'valid access token',
+        refreshToken: 'valid refresh token',
+      });
+
       const response = await request(app.getHttpServer())
-        .post(`/likes/comments/${commentId}`);
+        .post(`/auth/refresh`);
       
-      expect(response.status).toBe(201);
+      expect(response.status).toBe(201);    
     });
   });
 
-  describe('DELETE /likes/comments/:commentId', () => {
-    test('status code 200으로 응답한다.', async () => {
+  describe('POST /auth/logout', () => {
+    test('status code 201로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
-        .delete(`/likes/comments/${commentId}`);
+        .post(`/auth/logout`);
       
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);    
     });
   });
 

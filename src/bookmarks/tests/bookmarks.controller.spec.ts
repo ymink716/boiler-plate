@@ -8,7 +8,7 @@ import { setUpTestingAppModule } from 'src/config/app-test.config';
 
 jest.mock('../bookmarks.service');
 
-describe('CommentsController', () => {
+describe('BookmarksController', () => {
   let app: INestApplication;
 
   const questionId = 1;

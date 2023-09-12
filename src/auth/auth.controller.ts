@@ -18,13 +18,8 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  async signInWithGoogle(
-    @GetUser('id') userId: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async signInWithGoogle(@GetUser('id') userId: number) {
     const { accessToken, refreshToken } = await this.authService.signIn(userId);
-
-    res.setHeader('Authorization', 'Bearer ' + accessToken);
 
     return { 
       access_token: accessToken, 
@@ -34,13 +29,8 @@ export class AuthController {
 
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
-  async reissueTokens(
-    @GetUser('id') userId: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async reissueTokens(@GetUser('id') userId: number) {
     const { accessToken, refreshToken } = await this.authService.refresh(userId);
-
-    res.setHeader('Authorization', 'Bearer ' + accessToken);
 
     return { 
       access_token: accessToken, 
