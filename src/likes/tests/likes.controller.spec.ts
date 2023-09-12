@@ -6,12 +6,12 @@ import { AppModule } from 'src/app.module';
 import { mockAuthGuard } from '../../../test/mock-auth.guard';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 
-jest.mock('../questions.service');
+jest.mock('../comments.service');
 
-describe('QuestionsController', () => {
+describe('CommentsController', () => {
   let app: INestApplication;
 
-  const questionId = 1;
+  const commentId = 1;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -27,15 +27,15 @@ describe('QuestionsController', () => {
     await app.init();
   });
 
-  describe('POST /questions', () => {
+  describe('POST /comments', () => {
     test('status code 201로 응답한다.', async () => {
       const requestBody = {
-        title: "test question title",
-        content: "test qustion content...",
+        content: "test comment content...",
+        questionId: 1,
       }
 
       const response = await request(app.getHttpServer())
-        .post('/questions')
+        .post('/comments')
         .send(requestBody);
       
       expect(response.status).toBe(201);
@@ -43,64 +43,46 @@ describe('QuestionsController', () => {
 
     test('request body에 유효하지 않은 값이 들어가면 400으로 응답한다.', async () => {
       const invalidRequestBody = {
-        title: "t",
-        content: 1234,
+        title: "title??",
+        content: "o",
       }
       
       const response = await request(app.getHttpServer())
-        .post('/questions')
+        .post('/comments')
         .send(invalidRequestBody);
       
       expect(response.status).toBe(400);
     });
   });
 
-  describe('GET /questions', () => {
-    test('status code 200으로 응답한다.', async () => {
-      const response = await request(app.getHttpServer()).get('/questions');
-      
-      expect(response.status).toBe(200);
-    });
-  });
-
-  describe('GET /questions/:questionId', () => {
-    test('status code 200으로 응답한다.', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`/questions/${questionId}`);
-      
-      expect(response.status).toBe(200);
-    });
-  });
-
-  describe('PUT /questions/:questionId', () => {
+  describe('PUT /comments/:commentId', () => {
     test('status code 200으로 응답한다.', async () => {
       const requestBody = {
-        title: "test question title(updated)",
-        content: "test qustion content...(updated)",
+        content: "test comment content...(updated)",
       }
 
       const response = await request(app.getHttpServer())
-        .put(`/questions/${questionId}`)
+        .put(`/comments/${commentId}`)
         .send(requestBody);
       
       expect(response.status).toBe(200);
     });
 
     test('request body에 유효하지 않은 값이 들어가면 400으로 응답한다.', async () => {
-      const requestBody = { title: "" }
+      const requestBody = { content: 3000 };
 
       const response = await request(app.getHttpServer())
-        .put(`/questions/${questionId}`)
+        .put(`/comments/${commentId}`)
         .send(requestBody);
       
       expect(response.status).toBe(400);
     });
   });
 
-  describe('DELETE /questions/:questionId', () => {
+  describe('DELETE /comments/:commentId', () => {
     test('status code 200으로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
-        .delete(`/questions/${questionId}`);
+        .delete(`/comments/${commentId}`);
       
       expect(response.status).toBe(200);
     });
