@@ -10,7 +10,7 @@ import { Comment } from 'src/comments/entity/comment.entity';
 import { Question } from 'src/questions/entity/question.entity';
 import { CommentLike } from '../entity/comment-like.entity';
 
-describe('CommentsRepository', () => {
+describe('CommentLikesRepository', () => {
   let app: INestApplication;
   let commentLikesRepository: CommentLikesRepository;
   let dataSource: DataSource;

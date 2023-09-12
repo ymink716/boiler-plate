@@ -9,7 +9,7 @@ import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QuestionLikesRepository } from '../question-likes.repository';
 import { QuestionLike } from '../entity/question-like.entity';
 
-describe('CommentsRepository', () => {
+describe('QuestionLikesRepository', () => {
   let app: INestApplication;
   let questionLikesRepository: QuestionLikesRepository;
   let dataSource: DataSource;
