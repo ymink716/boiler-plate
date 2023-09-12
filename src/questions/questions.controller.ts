@@ -24,8 +24,6 @@ export class QuestionsController {
   @Get()
   async getQuestions() {
     const questions = await this.questionsService.getQuestions();
-    console.log("-------------------------")
-    console.log(questions);
 
     return { questions };
   }
