@@ -114,11 +114,11 @@ describe('QuestionsService', () => {
 
   describe('getQuestion()', () => {
     test('DB에 question의 데이터가 있다면, question 데이터를 리턴한다.', async () => {
-      questionsRepository.save(question);
+      const savedQeustion = await questionsRepository.save(question);
 
-      const result = await questionsService.getQuestion(question.id);
+      const result = await questionsService.getQuestion(savedQeustion.id);
 
-      expect(result).toEqual(question);
+      expect(result).toEqual(savedQeustion);
     });
 
     test('DB에 question의 데이터가 없다면, NotFoundException이 발생한다.', async () => {
@@ -135,12 +135,12 @@ describe('QuestionsService', () => {
     };
 
     test('question을 수정하고, 수정된 question을 리턴한다.', async () => {
-      questionsRepository.save(question);
+      const savedQeustion = await questionsRepository.save(question);
 
       jest.spyOn(questionsService, 'isWriter').mockReturnValue(undefined);
 
       const result = await questionsService.updateQuestion(
-        question.id, user, updateQuestionDto
+        savedQeustion.id, user, updateQuestionDto
       );
 
       expect(result).toBeInstanceOf(Question);
@@ -157,7 +157,7 @@ describe('QuestionsService', () => {
     test.each([['t'], ['0'.repeat(51)]])(
       '제목이 2글자 미만, 50글자를 초과하면 BadRequestException이 발생한다.',
       async (title) => {
-        questionsRepository.save(question);
+        const savedQeustion = await questionsRepository.save(question);
 
         const updateQuestionDto: UpdateQuestionDto = {
           title: title,
@@ -165,7 +165,7 @@ describe('QuestionsService', () => {
         };
         
         await expect(
-          questionsService.updateQuestion(question.id, user, updateQuestionDto),
+          questionsService.updateQuestion(savedQeustion.id, user, updateQuestionDto),
         ).rejects.toThrow(BadRequestException);
       },
     );
@@ -173,7 +173,7 @@ describe('QuestionsService', () => {
     test.each([['t'], ['0'.repeat(501)]])(
       '내용이 2글자 미만, 500글자를 초과하면 BadRequestException이 발생한다.',
       async (content) => {
-        questionsRepository.save(question);
+        const savedQeustion = await questionsRepository.save(question);
 
         const updateQuestionDto: UpdateQuestionDto = {
           title: 'test',
@@ -181,13 +181,13 @@ describe('QuestionsService', () => {
         };
         
         await expect(
-          questionsService.updateQuestion(question.id, user, updateQuestionDto),
+          questionsService.updateQuestion(savedQeustion.id, user, updateQuestionDto),
         ).rejects.toThrow(BadRequestException);
       },
     );
 
     test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
-      questionsRepository.save(question);
+      const savedQeustion = await questionsRepository.save(question);
       const user2 = { id: 2 } as User;
 
       jest.spyOn(questionsService, 'isWriter').mockImplementation(() => {
@@ -195,7 +195,7 @@ describe('QuestionsService', () => {
       });
 
       await expect(
-        questionsService.updateQuestion(question.id, user2, updateQuestionDto),
+        questionsService.updateQuestion(savedQeustion.id, user2, updateQuestionDto),
       ).rejects.toThrow(ForbiddenException);
     });
   });

@@ -47,6 +47,11 @@ export const IsNotCommentor = {
   message: '답변 작성자가 아니면 접근할 수 없습니다.',
 }
 
+export const InvalidCommentContent = {
+  name: 'InvalidCommentContent',
+  message: '답변 내용은 2글자 이상, 255글자 이하여야 합니다.',
+}
+
 // Like
 export const QuestionAlreadyLiked = {
   name: 'QuestionsAlreadyLiked',
