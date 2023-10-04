@@ -1,11 +1,12 @@
-import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsRepository } from './comments.repository';
 import { QuestionsService } from 'src/questions/questions.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { CommentNotFound, IsNotCommentor } from 'src/common/exception/error-types';
-import { Comment } from './entity/comment.entity'
+import { CommentNotFound, InvalidCommentContent, IsNotCommentor } from 'src/common/exception/error-types';
+import { Comment } from './entity/comment.entity';
+
 @Injectable()
 export class CommentsService {
   constructor(
@@ -17,14 +18,23 @@ export class CommentsService {
   async writeComment(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
     const { content, questionId } = createCommentDto;
 
-    const question = await this.questionsService.getQuestion(questionId);
+    if (content.length < 2 || content.length > 255) {
+      throw new BadRequestException(InvalidCommentContent.message, InvalidCommentContent.name);
+    }
 
+    const question = await this.questionsService.getQuestion(questionId);
     const comment = await this.commentsRepository.save(content, user, question);
 
     return comment;
   }
 
   async editComment(updateCommentDto: UpdateCommentDto, commentId: number, user: User): Promise<Comment> {
+    const { content } = updateCommentDto;
+
+    if (content.length < 2 || content.length > 255) {
+      throw new BadRequestException(InvalidCommentContent.message, InvalidCommentContent.name);
+    }
+
     const comment = await this.commentsRepository.findOneById(commentId);
 
     if (!comment) {
@@ -35,8 +45,6 @@ export class CommentsService {
     const userId = user.id;
 
     this.isWriter(writerId, userId);
-
-    const { content } = updateCommentDto;
 
     const updatedComment = await this.commentsRepository.update(comment, content);
 
@@ -67,7 +75,6 @@ export class CommentsService {
   }
 
   async getComment(commentId: number): Promise<Comment> {
-    console.log(commentId);
     const comment = await this.commentsRepository.findOneById(commentId);
     
     if (!comment) {
