@@ -145,7 +145,7 @@ describe('CommentsService', () => {
         'content...', user, question,
       );
       
-      jest.spyOn(commentsService, 'isWriter').mockReturnValue(undefined);
+      // jest.spyOn(commentsService, 'isWriter').mockReturnValue(undefined);
 
       const result = await commentsService.deleteComment(
         comment.id, user,
