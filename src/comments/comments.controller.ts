@@ -5,18 +5,23 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { User } from 'src/users/entity/user.entity';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Comment } from './entity/comment.entity';
 
 @ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @ApiBearerAuth('access_token')
   @ApiOperation({ 
     summary: '답변하기', 
     description: '질문에 대한 답변을 추가합니다.' })
+  @ApiBearerAuth('access_token')
   @ApiBody({ type: CreateCommentDto })
+  @ApiCreatedResponse({
+    description: '답변 생성 성공',
+    type: Comment,
+  })
   @Post()
   @UseGuards(JwtAuthGuard)
   async writeComment(
@@ -28,9 +33,13 @@ export class CommentsController {
     return { newComment };
   }
 
-  @ApiBearerAuth('access_token')
   @ApiOperation({ summary: '답변 수정', description: '답변을 수정합니다.' })
+  @ApiBearerAuth('access_token')
   @ApiBody({ type: UpdateCommentDto })
+  @ApiOkResponse({
+    description: '답변 수정 성공',
+    type: Comment,
+  })
   @Put('/:commentId')
   @UseGuards(JwtAuthGuard)
   async editComment(
@@ -45,8 +54,11 @@ export class CommentsController {
     return { editedComment };
   }
 
-  @ApiBearerAuth('access_token')
   @ApiOperation({ summary: '답변 삭제', description: '답변을 삭제합니다.' })
+  @ApiBearerAuth('access_token')
+  @ApiOkResponse({
+    description: '답변 삭제 성공',
+  })
   @Delete('/:commentId')
   @UseGuards(JwtAuthGuard)
   async deleteComment(

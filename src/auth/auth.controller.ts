@@ -5,7 +5,7 @@ import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Response } from 'express';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -14,6 +14,9 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
+  @ApiOperation({ 
+    description: '구글 로그인 페이지로 이동하는 테스트용 API', 
+  })
   @Get('google')
   @UseGuards(GoogleOauthGuard)
   async redirectGoogleAuthPage(): Promise<void> {}
@@ -21,6 +24,10 @@ export class AuthController {
   @ApiOperation({ 
     description: '구글 로그인 callback', 
     summary: '구글 로그인' 
+  })
+  @ApiResponse({
+    status: 200,
+    description: '성공 시 access_token과 refresh_token을 리턴합니다.',
   })
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
@@ -37,6 +44,9 @@ export class AuthController {
     description: 'refresh token으로 token을 재발급', 
     summary: '인증 토큰 재발급' 
   })
+  @ApiResponse({
+    description: '성공 시 갱신된 access_token과 refresh_token을 보냅니다.',
+  })
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
   async reissueTokens(@GetUser('id') userId: number) {
@@ -50,6 +60,9 @@ export class AuthController {
 
   @ApiOperation({ 
     summary: '로그아웃' 
+  })
+  @ApiResponse({
+    description: '로그아웃 성공',
   })
   @Post('logout')
   @UseGuards(JwtRefreshGuard)

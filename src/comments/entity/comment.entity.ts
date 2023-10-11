@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { CommentLike } from 'src/likes/entity/comment-like.entity';
 import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
@@ -26,18 +27,22 @@ export class Comment {
     }
   }
 
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column({ nullable: false, type: 'text' })
   content: string;
 
+  @ApiProperty()
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   createdAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn({
     type: 'timestamp',
     nullable: true,
@@ -45,6 +50,7 @@ export class Comment {
   })
   updatedAt: Date;
 
+  @ApiProperty()
   @DeleteDateColumn({ 
     type: 'timestamp', 
     nullable: true 
