@@ -49,6 +49,10 @@ describe('BookmarksRepository', () => {
     await dataSource.manager.save(question);
   });
 
+  beforeEach(async () => {
+    await dataSource.manager.delete(Bookmark, {});
+  });
+
   describe('countByUserIdAndQuestionId()', () => {
     test('User Id와 Question Id에 맞는 북마크 수를 리턴한다.', async () => {
       await dataSource.manager.save(Bookmark, new Bookmark({ user, question }));
@@ -63,6 +67,7 @@ describe('BookmarksRepository', () => {
     test('DB에 북마크 정보를 저장하고, 북마크 entity를 리턴한다.', async () => {
       const result = await bookmarksRepository.save(user, question);
 
+      expect(result).toBeInstanceOf(Bookmark);
       expect(result.user).toBeDefined();
       expect(result.question).toBeDefined();
     });
@@ -75,23 +80,19 @@ describe('BookmarksRepository', () => {
       const result = await bookmarksRepository.findByUserIdAndQuestionId(user.id, question.id);
 
       expect(result.length).toBe(1);
-      expect(result[0].user).toBeDefined();
-      expect(result[0].question).toBeDefined();
+      expect(result[0]).toBeInstanceOf(Bookmark);
     });
   });
 
   describe('delete()', () => {
-    test('해당 북마크를 삭제하고, 리턴하지 않는다.', async () => {
+    test('해당 북마크를 삭제한다.', async () => {
       const bookmark = await dataSource.manager.save(new Bookmark({ user, question }));
 
-      const result = await bookmarksRepository.delete(bookmark.id);
-      
-      expect(result).toBeUndefined();
-    });
-  });
+      await bookmarksRepository.delete(bookmark.id);
 
-  afterEach(async () => {
-    dataSource.manager.delete(Bookmark, {});
+      const result = await dataSource.manager.find(Bookmark);
+      expect(result.length).toBe(0);
+    });
   });
 
   afterAll(async () => {

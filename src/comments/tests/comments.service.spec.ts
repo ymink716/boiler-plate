@@ -51,7 +51,7 @@ describe('CommentsService', () => {
   });
 
   describe('writeComment()', () => {
-    test('comment를 생성하고 생성된 comment를 리턴한다.', async () => {
+    test('답변 정보를 생성하고 성공적으로 DB에 저장한다.', async () => {
       const createCommentDto: CreateCommentDto = {
         content: 'test comment content...',
         questionId: question.id,
@@ -59,10 +59,9 @@ describe('CommentsService', () => {
 
       jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);
 
-      const result = await commentsService.writeComment(createCommentDto, user);
+      await commentsService.writeComment(createCommentDto, user);
 
-      expect(result).toBeInstanceOf(Comment);
-      expect(result.content).toBe('test comment content...');
+      expect(commentsRepository.save).toBeCalled();
     });
 
     test.each([['t'], ['0'.repeat(256)]])(
@@ -78,6 +77,25 @@ describe('CommentsService', () => {
         ).rejects.toThrow(BadRequestException);
       },
     );
+
+    test.each([['tt'], ['0'.repeat(255)]])(
+      '내용이 2글자 미만, 255글자를 초과하지 않으면 유효성 검사를 통과한다.',
+      async (content) => {
+        const createCommentDto: CreateCommentDto = {
+          content: content,
+          questionId: question.id,
+        };
+
+        jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);
+
+        const result = await commentsService.writeComment(createCommentDto, user);
+        
+        jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);
+        jest.spyOn(commentsRepository, 'save').mockResolvedValue({id: 1} as Comment);
+
+        expect(result.id).toBe(1);
+      },
+    );
   });
 
   describe('editComment()', () => {
@@ -85,19 +103,18 @@ describe('CommentsService', () => {
       content: 'test comment content...(수정)',
     };
 
-    test('comment를 수정하고, 수정된 comment를 리턴한다.', async () => {
+    test('답변을 수정하고, 수정된 답변을 DB에 저장한다.', async () => {
       const comment = await commentsRepository.save(
         'content...', user, question,
       );
 
       jest.spyOn(commentsService, 'isWriter').mockReturnValue(undefined);
 
-      const result = await commentsService.editComment(
+      await commentsService.editComment(
         updateCommentDto, comment.id, user,
       );
 
-      expect(result).toBeInstanceOf(Comment);
-      expect(result.content).toBe(updateCommentDto.content);
+      expect(commentsRepository.save).toBeCalled();
     });
 
     test('DB에 해당 comment가 없다면, NotFoundException이 발생한다.', async () => {
@@ -140,18 +157,16 @@ describe('CommentsService', () => {
   });
 
   describe('deleteComment()', () => {
-    test('해당 comment를 삭제하고 리턴하지 않는다.', async () => {
+    test('해당 답변을 DB에서 삭제하는 메서드를 호출한다.', async () => {
       const comment = await commentsRepository.save(
         'content...', user, question,
       );
       
-      // jest.spyOn(commentsService, 'isWriter').mockReturnValue(undefined);
+      jest.spyOn(commentsRepository, 'findOneById').mockResolvedValue(comment);
+      
+      await commentsService.deleteComment(comment.id, user);
 
-      const result = await commentsService.deleteComment(
-        comment.id, user,
-      );
-
-      expect(result).toBeUndefined();
+      expect(commentsRepository.softDelete).toBeCalled();
     });
 
     test('DB에 해당 comment 데이터가 없다면, NotFoundException이 발생한다.', async () => {
