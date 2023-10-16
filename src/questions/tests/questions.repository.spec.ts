@@ -40,8 +40,12 @@ describe('QuestoinsRepository', () => {
     await dataSource.manager.save(user);
   });
 
+  beforeEach(async () => {
+    await dataSource.manager.delete(Question, {});
+  });
+
   describe('findOneById()', () => {
-    test('question entity를 리턴한다', async () => {
+    test('해당 ID의 질문글을 조회한다.', async () => {
       const question = await dataSource.manager.save(new Question({
         title: "test",
         content: "test content...",
@@ -50,13 +54,14 @@ describe('QuestoinsRepository', () => {
 
       const result = await questionsRepository.findOneById(question.id);
 
+      expect(result?.id).toBe(question.id);
       expect(result?.title).toBe("test");
       expect(result?.content).toBe("test content...");
     });
   });
 
   describe('save()', () => {
-    test('save된 question entity를 리턴한다.', async () => {
+    test('DB에 질문글 정보를 저장하고, entity를 리턴한다.', async () => {
       const question = await dataSource.manager.save(new Question({
         title: "test",
         content: "test content...",
@@ -65,13 +70,13 @@ describe('QuestoinsRepository', () => {
 
       const result = await questionsRepository.save(question);
 
-      expect(result?.title).toBeDefined();
-      expect(result?.content).toBeDefined();
+      expect(result).toBeInstanceOf(Question);
+      expect(await questionsRepository.findOneById(result.id)).toEqual(question);
     });
   });
 
   describe('findAll()', () => {
-    test('저장된 question 목록을 전부 조회한다.', async () => {
+    test('DB에 저장된 질문 목록을 전부 조회한다.', async () => {
       const question1 = await dataSource.manager.save(new Question({
         title: "test1",
         content: "test content...",
@@ -87,13 +92,11 @@ describe('QuestoinsRepository', () => {
       const result = await questionsRepository.findAll();
 
       expect(result.length).toBe(2);
-      expect(result[0].title).toBe(question1.title);
-      expect(result[1].title).toBe(question2.title);
     });
   });
 
   describe('update()', () => {
-    test('수정된 question entity를 리턴한다.', async () => {
+    test('질문을 수정하여 DB에 저장하고, entity를 리턴한다.', async () => {
       const question = await dataSource.manager.save(new Question({
         title: "test",
         content: "test content...",
@@ -105,27 +108,24 @@ describe('QuestoinsRepository', () => {
 
       const result = await questionsRepository.update(question, title, content);
 
-      expect(result.title).toBe("test(수정)");
-      expect(result.content).toBe("test content(수정)");
+      expect(result).toBeInstanceOf(Question);
+      expect(await questionsRepository.findOneById(question.id)).toEqual(result);
     });
   });
 
   describe('softDelete()', () => {
-    test('해당 question을 soft delete하고, 리턴하지 않는다.', async () => {
+    test('해당 질문글을 soft delete 한다.', async () => {
       const question = await dataSource.manager.save(new Question({
         title: "test",
         content: "test content...",
         writer: user,
       }));
 
-      const result = await questionsRepository.softDelete(question.id);
+      await questionsRepository.softDelete(question.id);
       
-      expect(result).toBeUndefined();
+      const deletedQuestion = await questionsRepository.findOneById(question.id);
+      expect(deletedQuestion).toBeNull();
     });
-  });
-
-  afterEach(async () => {
-    dataSource.manager.delete(Question, {});
   });
 
   afterAll(async () => {

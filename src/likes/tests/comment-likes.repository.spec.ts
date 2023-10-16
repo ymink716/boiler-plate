@@ -58,8 +58,12 @@ describe('CommentLikesRepository', () => {
     await dataSource.manager.save(comment);
   });
 
+  beforeEach(async () => {
+    await dataSource.manager.delete(CommentLike, {});
+  });
+
   describe('count()', () => {
-    test('조건에 맞는 좋아요 수를 리턴한다.', async () => {
+    test('해당 유저-답변에 매칭되는 좋아요 수를 리턴한다.', async () => {
       const result = await commentLikesRepository.count(user.id, comment.id);
 
       expect(result).toBe(0);
@@ -67,11 +71,13 @@ describe('CommentLikesRepository', () => {
   });
 
   describe('save()', () => {
-    test('답변에 대한 좋아요를 DB에 저장하고 entity를 리턴한다.', async () => {
+    test('답변에 대한 좋아요 정보를 DB에 저장하고, entity를 리턴한다.', async () => {
       const result = await commentLikesRepository.save(user, comment);
-
-      expect(result.user).toBeDefined();
-      expect(result.comment).toBeDefined();
+      expect(result).toBeInstanceOf(CommentLike);
+      
+      const commentLikes = await commentLikesRepository.findByUserIdAndCommentId(user.id, comment.id);
+      expect(commentLikes[0].user.id).toBe(user.id);
+      expect(commentLikes[0].comment.id).toBe(comment.id);
     });
   });
 
@@ -82,24 +88,22 @@ describe('CommentLikesRepository', () => {
       const result = await commentLikesRepository.findByUserIdAndCommentId(user.id, comment.id);
 
       expect(result.length).toBe(1);
-      expect(result[0].user).toBeDefined();
-      expect(result[0].comment).toBeDefined();
+      expect(result[0]).toBeInstanceOf(CommentLike);
     });
   });
 
   describe('delete()', () => {
-    test('해당 좋아요를 삭제하고, 리턴하지 않는다.', async () => {
+    test('해당 좋아요 정보를 DB에서 삭제한다.', async () => {
       const commentLike = await dataSource.manager.save(new CommentLike({ user, comment }));
 
-      const result = await commentLikesRepository.delete(commentLike.id);
-      
-      expect(result).toBeUndefined();
+      await commentLikesRepository.delete(commentLike.id);
+      const commentLikes = await commentLikesRepository.findByUserIdAndCommentId(user.id, comment.id);
+
+      expect(commentLikes.length).toBe(0);
     });
   });
 
-  afterEach(async () => {
-    dataSource.manager.delete(CommentLike, {});
-  });
+
 
   afterAll(async () => {
     await dataSource.dropDatabase();

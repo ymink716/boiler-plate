@@ -117,10 +117,10 @@ describe('CommentsService', () => {
     });
 
     test('DB에 해당 comment가 없다면, NotFoundException이 발생한다.', async () => {
-      const notExistedUserId = 0;
+      const notExistedCommentId = 0;
 
       await expect(
-        commentsService.editComment(updateCommentDto, notExistedUserId, user)
+        commentsService.editComment(updateCommentDto, notExistedCommentId, user)
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -171,10 +171,10 @@ describe('CommentsService', () => {
     });
 
     test('DB에 해당 comment 데이터가 없다면, NotFoundException이 발생한다.', async () => {
-      const notExistedUserId = 0;
+      const notExistedCommentId = 0;
 
       await expect(
-        commentsService.deleteComment(notExistedUserId, user),
+        commentsService.deleteComment(notExistedCommentId, user),
       ).rejects.toThrow(NotFoundException);
     });
   });
