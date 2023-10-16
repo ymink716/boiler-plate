@@ -11,8 +11,6 @@ jest.mock('../comments.service');
 describe('CommentsController', () => {
   let app: INestApplication;
 
-  const commentId = 1;
-
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -56,6 +54,8 @@ describe('CommentsController', () => {
   });
 
   describe('PUT /comments/:commentId', () => {
+    const commentId = 1;
+
     test('status code 200으로 응답한다.', async () => {
       const requestBody = {
         content: "test comment content...(updated)",
@@ -69,7 +69,8 @@ describe('CommentsController', () => {
     });
 
     test('request body에 유효하지 않은 값이 들어가면 400으로 응답한다.', async () => {
-      const requestBody = { content: 3000 };
+      const invalidContent = 3000;
+      const requestBody = { content: invalidContent };
 
       const response = await request(app.getHttpServer())
         .put(`/comments/${commentId}`)
@@ -81,6 +82,8 @@ describe('CommentsController', () => {
 
   describe('DELETE /comments/:commentId', () => {
     test('status code 200으로 응답한다.', async () => {
+      const commentId = 1;
+      
       const response = await request(app.getHttpServer())
         .delete(`/comments/${commentId}`);
       
