@@ -1,6 +1,6 @@
 import { QuestionLike } from 'src/likes/entity/question-like.entity';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, ForbiddenException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { AppModule } from 'src/app.module';
@@ -12,6 +12,7 @@ import { CommentsService } from 'src/comments/comments.service';
 import { Comment } from 'src/comments/entity/comment.entity';
 import { LikesService } from '../likes.service';
 import { CommentLike } from '../entity/comment-like.entity';
+import { QUESTION_LIKES_REPOSITORY, COMMENT_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('LikesService', () => {
   let app: INestApplication;
@@ -35,9 +36,9 @@ describe('LikesService', () => {
     app = moduleFixture.createNestApplication();
 
     likesService = app.get<LikesService>(LikesService);
-    questionLikesRepository = app.get<QuestionLikesRepository>('QUESTION_LIKES_REPOSITORY');
+    questionLikesRepository = app.get<QuestionLikesRepository>(QUESTION_LIKES_REPOSITORY);
     questionsService = app.get<QuestionsService>(QuestionsService);
-    commentLikesRepository = app.get<CommentLikesRepository>('COMMENT_LIKES_REPOSITORY');
+    commentLikesRepository = app.get<CommentLikesRepository>(COMMENT_LIKES_REPOSITORY);
     commentsService = app.get<CommentsService>(CommentsService);
 
     setUpTestingAppModule(app);

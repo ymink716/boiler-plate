@@ -5,14 +5,15 @@ import { QuestionsService } from 'src/questions/questions.service';
 import { CommentAlreadyLiked, QuestionAlreadyLiked } from 'src/common/exception/error-types';
 import { CommentLikesRepository } from './comment-likes.repository';
 import { CommentsService } from 'src/comments/comments.service';
+import { COMMENT_LIKES_REPOSITORY, QUESTION_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Injectable()
 export class LikesService {
   constructor(
-    @Inject('QUESTION_LIKES_REPOSITORY')
+    @Inject(QUESTION_LIKES_REPOSITORY)
     private readonly questionLikesRepository: QuestionLikesRepository,
     private readonly questionsService: QuestionsService,
-    @Inject('COMMENT_LIKES_REPOSITORY')
+    @Inject(COMMENT_LIKES_REPOSITORY)
     private readonly commentLikesRepository: CommentLikesRepository,
     private readonly commentsService: CommentsService,
   ) {}

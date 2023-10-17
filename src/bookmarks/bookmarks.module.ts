@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bookmark } from './entity/bookmark.entity';
 import { TypeormBookmarksRepository } from './typeorm-bookmarks.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
+import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { QuestionsModule } from 'src/questions/questions.module';
   providers: [
     BookmarksService,
     {
-      provide: 'BOOKMARKS_REPOSITORY',
+      provide: BOOKMARKS_REPOSITORY,
       useClass: TypeormBookmarksRepository,
     },
   ],

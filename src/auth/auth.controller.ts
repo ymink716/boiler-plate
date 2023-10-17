@@ -3,7 +3,8 @@ import { AuthService } from './auth.service';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -42,6 +43,10 @@ export class AuthController {
     description: 'refresh token으로 token을 재발급', 
     summary: '인증 토큰 재발급' 
   })
+  @ApiBody({
+    description: '발급받은 refresh token을 request body에 넣어 보내주세요',
+    type: RefreshTokenDto,
+  })
   @ApiResponse({
     description: '성공 시 갱신된 access_token과 refresh_token을 보냅니다.',
   })
@@ -58,6 +63,10 @@ export class AuthController {
 
   @ApiOperation({ 
     summary: '로그아웃' 
+  })
+  @ApiBody({
+    description: '발급받은 refresh token을 request body에 넣어 보내주세요',
+    type: RefreshTokenDto,
   })
   @ApiResponse({
     status: 201,

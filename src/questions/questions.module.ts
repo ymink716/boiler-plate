@@ -4,6 +4,7 @@ import { QuestionsService } from './questions.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Question } from './entity/question.entity';
 import { TypeormQuestionsRepository } from './typeorm-questions.repository';
+import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Module({
   imports:[TypeOrmModule.forFeature([Question])],
@@ -11,7 +12,7 @@ import { TypeormQuestionsRepository } from './typeorm-questions.repository';
   providers: [
     QuestionsService,
     {
-      provide: 'QUESTIONS_REPOSITORY',
+      provide: QUESTIONS_REPOSITORY,
       useClass: TypeormQuestionsRepository,
     }
   ],

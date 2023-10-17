@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, ForbiddenException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, INestApplication, NotFoundException } from '@nestjs/common';
 import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { AppModule } from 'src/app.module';
@@ -10,7 +10,7 @@ import { CreateCommentDto } from '../dto/create-comment.dto';
 import { Comment } from '../entity/comment.entity';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { QuestionsService } from 'src/questions/questions.service';
-import { COMMENTS_REPOSITORY } from '../../common/constants/token.constant';
+import { COMMENTS_REPOSITORY } from '../../common/constants/tokens.constant';
 
 describe('CommentsService', () => {
   let app: INestApplication;

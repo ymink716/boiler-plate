@@ -9,6 +9,7 @@ import { CommentLikesRepository } from '../comment-likes.repository';
 import { Comment } from 'src/comments/entity/comment.entity';
 import { Question } from 'src/questions/entity/question.entity';
 import { CommentLike } from '../entity/comment-like.entity';
+import { COMMENT_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('CommentLikesRepository', () => {
   let app: INestApplication;
@@ -26,7 +27,7 @@ describe('CommentLikesRepository', () => {
     .compile();
 
     app = moduleFixture.createNestApplication();
-    commentLikesRepository = app.get<CommentLikesRepository>('COMMENT_LIKES_REPOSITORY');
+    commentLikesRepository = app.get<CommentLikesRepository>(COMMENT_LIKES_REPOSITORY);
     dataSource = app.get<DataSource>(DataSource);
 
     setUpTestingAppModule(app);

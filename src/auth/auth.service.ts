@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'src/common/interface/jwt-payload';
 import { UsersService } from 'src/users/users.service';
+import { JWT_ACCESS_TOKEN_EXPIRATION_TIME, JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_EXPIRATION_TIME, JWT_REFRESH_TOKEN_SECRET } from 'src/common/constants/config.constant';
 
 @Injectable()
 export class AuthService {
@@ -33,8 +34,8 @@ export class AuthService {
 
   generateAccessToken(jwtPayload: JwtPayload) {
     const accessToken = this.jwtService.sign(jwtPayload, {
-      expiresIn: this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
-      secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+      expiresIn: this.configService.get<string>(JWT_ACCESS_TOKEN_EXPIRATION_TIME),
+      secret: this.configService.get<string>(JWT_ACCESS_TOKEN_SECRET),
     });
 
     return accessToken;
@@ -42,8 +43,8 @@ export class AuthService {
 
   generateRefreshToken(jwtPayload: JwtPayload) {
     const refreshToken = this.jwtService.sign(jwtPayload, {
-      expiresIn: this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
-      secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: this.configService.get<string>(JWT_REFRESH_TOKEN_EXPIRATION_TIME),
+      secret: this.configService.get<string>(JWT_REFRESH_TOKEN_SECRET),
     });
 
     return refreshToken;

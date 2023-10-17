@@ -7,6 +7,7 @@ import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { AppModule } from 'src/app.module';
 import { QuestionsRepository } from '../questions.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
+import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('QuestoinsRepository', () => {
   let app: INestApplication;
@@ -22,7 +23,7 @@ describe('QuestoinsRepository', () => {
     .compile();
 
     app = moduleFixture.createNestApplication();
-    questionsRepository = app.get<QuestionsRepository>('QUESTIONS_REPOSITORY');
+    questionsRepository = app.get<QuestionsRepository>(QUESTIONS_REPOSITORY);
     dataSource = app.get<DataSource>(DataSource);
 
     setUpTestingAppModule(app);

@@ -8,6 +8,7 @@ import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { Question } from 'src/questions/entity/question.entity';
 import { BookmarksRepository } from '../bookmarks.repository';
 import { Bookmark } from '../entity/bookmark.entity';
+import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('BookmarksRepository', () => {
   let app: INestApplication;
@@ -24,7 +25,7 @@ describe('BookmarksRepository', () => {
     .compile();
 
     app = moduleFixture.createNestApplication();
-    bookmarksRepository = app.get<BookmarksRepository>('BOOKMARKS_REPOSITORY');
+    bookmarksRepository = app.get<BookmarksRepository>(BOOKMARKS_REPOSITORY);
     dataSource = app.get<DataSource>(DataSource);
 
     setUpTestingAppModule(app);

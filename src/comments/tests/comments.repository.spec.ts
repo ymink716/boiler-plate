@@ -8,6 +8,7 @@ import { AppModule } from 'src/app.module';
 import { CommentsRepository } from '../comments.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { Comment } from '../entity/comment.entity';
+import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('CommentsRepository', () => {
   let app: INestApplication;
@@ -24,7 +25,7 @@ describe('CommentsRepository', () => {
     .compile();
 
     app = moduleFixture.createNestApplication();
-    commentsRepository = app.get<CommentsRepository>('COMMENTS_REPOSITORY');
+    commentsRepository = app.get<CommentsRepository>(COMMENTS_REPOSITORY);
     dataSource = app.get<DataSource>(DataSource);
 
     setUpTestingAppModule(app);

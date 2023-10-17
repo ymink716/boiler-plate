@@ -5,11 +5,12 @@ import { Question } from './entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { InvalidQuestionContent, InvalidQuestionTitle, IsNotQuestionWriter, QuestionNotFound } from 'src/common/exception/error-types';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Injectable()
 export class QuestionsService {
   constructor(
-    @Inject('QUESTIONS_REPOSITORY')
+    @Inject(QUESTIONS_REPOSITORY)
     private readonly questionsRepository: QuestionsRepository
   ) {}
 

@@ -8,6 +8,7 @@ import { TestQuestionsRepository } from './test-questions.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { UpdateQuestionDto } from '../dto/update-question.dto';
+import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('QuestionsService', () => {
   let app: INestApplication;
@@ -21,13 +22,13 @@ describe('QuestionsService', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-    .overrideProvider('QUESTIONS_REPOSITORY')
+    .overrideProvider(QUESTIONS_REPOSITORY)
     .useClass(TestQuestionsRepository)
     .compile();
 
     app = moduleFixture.createNestApplication();
     questionsService = app.get<QuestionsService>(QuestionsService);
-    questionsRepository = app.get<TestQuestionsRepository>('QUESTIONS_REPOSITORY');
+    questionsRepository = app.get<TestQuestionsRepository>(QUESTIONS_REPOSITORY);
 
     setUpTestingAppModule(app);
     

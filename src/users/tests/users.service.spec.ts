@@ -8,6 +8,7 @@ import { TestUsersRepository } from './test-users.repository';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import * as bcrypt from 'bcryptjs';
+import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('UsersService', () => {
   let app: INestApplication;
@@ -26,13 +27,13 @@ describe('UsersService', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-    .overrideProvider('USERS_REPOSITORY')
+    .overrideProvider(USERS_REPOSITORY)
     .useClass(TestUsersRepository)
     .compile();
 
     app = moduleFixture.createNestApplication();
     usersService = app.get<UsersService>(UsersService);
-    usersRepository = app.get<TestUsersRepository>('USERS_REPOSITORY');
+    usersRepository = app.get<TestUsersRepository>(USERS_REPOSITORY);
 
     setUpTestingAppModule(app);
     

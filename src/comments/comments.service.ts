@@ -6,11 +6,12 @@ import { QuestionsService } from 'src/questions/questions.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentNotFound, InvalidCommentContent, IsNotCommentor } from 'src/common/exception/error-types';
 import { Comment } from './entity/comment.entity';
+import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Injectable()
 export class CommentsService {
   constructor(
-    @Inject('COMMENTS_REPOSITORY')
+    @Inject(COMMENTS_REPOSITORY)
     private readonly commentsRepository: CommentsRepository,
     private readonly questionsService: QuestionsService,
   ) {}
