@@ -60,6 +60,7 @@ export class AuthController {
     summary: '로그아웃' 
   })
   @ApiResponse({
+    status: 201,
     description: '로그아웃 성공',
   })
   @Post('logout')
