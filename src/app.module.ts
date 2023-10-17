@@ -9,6 +9,7 @@ import { QuestionsModule } from './questions/questions.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { HealthCheckController } from './health.controller';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
     LikesModule,
     BookmarksModule,
   ],
+  controllers: [ HealthCheckController ],
 })
 
 export class AppModule {}

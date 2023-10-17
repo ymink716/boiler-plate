@@ -4,7 +4,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 
 export const setUp = (app: INestApplication) => {
   
-  app.setGlobalPrefix('/api');
+  app.setGlobalPrefix('/api', { exclude: ['health'] });
 
   app.useGlobalPipes(
     new ValidationPipe({
