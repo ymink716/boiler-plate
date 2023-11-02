@@ -49,7 +49,10 @@ export class QuestionsService {
     const { title, content } = updateQuestionDto;
 
     this.isValidQeustionDto(title, content);
-    this.isWriter(question.writer.id, user.id);
+    
+    if (!this.isWriter(question.writer.id, user.id)) {
+      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
+    }
 
     const updatedQuestion = await this.questionsRepository.update(question, title, content);
 
@@ -63,17 +66,15 @@ export class QuestionsService {
       throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
 
-    this.isWriter(question.writer.id, user.id);
+    if (!this.isWriter(question.writer.id, user.id)) {
+      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
+    }
 
     await this.questionsRepository.softDelete(questionId);
   }
 
-  isWriter(writerId: number, userId: number): void {
-    const isWriter = (writerId === userId);
-    
-    if (!isWriter) {
-      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
-    }
+  isWriter(writerId: number, userId: number): boolean {
+    return writerId === userId;
   }
 
   isValidQeustionDto(title: string, content: string): void {

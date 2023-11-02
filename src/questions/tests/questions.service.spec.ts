@@ -4,7 +4,7 @@ import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { QuestionsService } from '../questions.service';
 import { AppModule } from 'src/app.module';
-import { TestQuestionsRepository } from './test-questions.repository';
+import { TestQuestionsRepository } from '../test-questions.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { UpdateQuestionDto } from '../dto/update-question.dto';
@@ -170,8 +170,6 @@ describe('QuestionsService', () => {
     test('수정된 질문을 DB에 저장하고, 수정된 질문 entity를 리턴한다.', async () => {
       const savedQeustion = await questionsRepository.save(question);
 
-      jest.spyOn(questionsService, 'isWriter').mockReturnValue(undefined);
-
       const result = await questionsService.updateQuestion(
         savedQeustion.id, user, updateQuestionDto
       );
@@ -256,12 +254,26 @@ describe('QuestionsService', () => {
         expect(result.content).toBe(updateQuestionDto.content);
       },
     );
+
+    test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
+      const user2 = { id: 2 } as User;
+      const question = new Question({
+        title: "test",
+        content: "test content...",
+        writer: user,
+      });
+
+      const savedQeustion = await questionsRepository.save(question);
+
+      await expect(
+        questionsService.updateQuestion(savedQeustion.id, user2, updateQuestionDto)
+      ).rejects.toThrow(ForbiddenException);
+    });
   });
 
   describe('deleteQuestion()', () => {
     test('id에 해당하는 질문글을 DB에서 삭제한다.', async () => {
       const savedQuestion = await questionsRepository.save(question);
-      jest.spyOn(questionsService, 'isWriter').mockReturnValue(undefined);
 
       await questionsService.deleteQuestion(
         savedQuestion.id, user
@@ -277,20 +289,40 @@ describe('QuestionsService', () => {
         questionsService.deleteQuestion(notExistedQuestionId, user),
       ).rejects.toThrow(NotFoundException);
     });
+
+    test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
+      const user2 = { id: 2 } as User;
+      const question = new Question({
+        title: "test",
+        content: "test content...",
+        writer: user,
+      });
+
+      const savedQeustion = await questionsRepository.save(question);
+
+      await expect(
+        questionsService.deleteQuestion(savedQeustion.id, user2)
+      ).rejects.toThrow(ForbiddenException);
+    });
   });
 
-  describe('', () => {
-    test('질문 작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
+  describe('isWriter()', () => {
+    test('답변 작성자가 아니라면 false를 리턴한다.', async () => {
       const writerId = 1;
       const userId = 2;
 
-      try {
-        questionsService.isWriter(writerId, userId);
-      } catch (error) {
-        expect(error).toBeInstanceOf(ForbiddenException);
-      }
+      const result = questionsService.isWriter(writerId, userId);
+      expect(result).toBe(false);
     });
-  })
+
+    test('답변 작성자가 맞다면 true를 리턴한다.', async () => {
+      const writerId = 1;
+      const userId = 1;
+
+      const result = questionsService.isWriter(writerId, userId);
+      expect(result).toBe(true);
+    });
+  });
 
   afterAll(async () => {
     await app.close();

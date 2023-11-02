@@ -59,7 +59,7 @@ describe('AuthService', () => {
         refreshToken: 'refreshToken',
       });
 
-      await authService.signIn(userId);
+      await authService.refresh(userId);
 
       expect(authService.issueTokens).toBeCalled();
     });

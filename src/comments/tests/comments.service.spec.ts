@@ -5,7 +5,7 @@ import { User } from 'src/users/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { CommentsService } from '../comments.service';
-import { TestCommentsRepository } from './test-comments.repository';
+import { TestCommentsRepository } from '../test-comments.repository';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { Comment } from '../entity/comment.entity';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
@@ -106,7 +106,7 @@ describe('CommentsService', () => {
         'content...', user, question,
       );
 
-      jest.spyOn(commentsService, 'isWriter').mockReturnValue(undefined);
+      jest.spyOn(commentsService, 'isWriter').mockReturnValueOnce(true);
 
       const result = await commentsService.editComment(
         updateCommentDto, comment.id, user,
@@ -122,6 +122,18 @@ describe('CommentsService', () => {
       await expect(
         commentsService.editComment(updateCommentDto, notExistedCommentId, user)
       ).rejects.toThrow(NotFoundException);
+    });
+
+    test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
+      const comment = await commentsRepository.save(
+        'content...', user, question,
+      );
+
+      jest.spyOn(commentsService, 'isWriter').mockReturnValueOnce(false);
+      
+      await expect(
+        commentsService.editComment(updateCommentDto, comment.id, user)
+      ).rejects.toThrow(ForbiddenException);
     });
 
     test.each([['t'], ['0'.repeat(256)]])(
@@ -177,6 +189,19 @@ describe('CommentsService', () => {
         commentsService.deleteComment(notExistedCommentId, user),
       ).rejects.toThrow(NotFoundException);
     });
+
+    test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
+      const comment = await commentsRepository.save(
+        'content...', user, question,
+      );
+
+      jest.spyOn(commentsService, 'isWriter').mockReturnValueOnce(false);
+      
+      await expect(
+        commentsService.deleteComment(comment.id, user)
+      ).rejects.toThrow(ForbiddenException);
+    });
+
   });
 
   describe('getComment()', () => {
@@ -198,15 +223,20 @@ describe('CommentsService', () => {
   });
 
   describe('isWriter()', () => {
-    test('답변 작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
+    test('답변 작성자가 아니라면 false를 리턴한다.', async () => {
       const writerId = 1;
       const userId = 2;
 
-      try {
-        commentsService.isWriter(writerId, userId);
-      } catch (error) {
-        expect(error).toBeInstanceOf(ForbiddenException);
-      }
+      const result = commentsService.isWriter(writerId, userId);
+      expect(result).toBe(false);
+    });
+
+    test('답변 작성자가 맞다면 true를 리턴한다.', async () => {
+      const writerId = 1;
+      const userId = 1;
+
+      const result = commentsService.isWriter(writerId, userId);
+      expect(result).toBe(true);
     });
   });
 

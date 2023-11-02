@@ -45,7 +45,9 @@ export class CommentsService {
     const writerId = comment.writer.id;
     const userId = user.id;
 
-    this.isWriter(writerId, userId);
+    if (!this.isWriter(writerId, userId)) {
+      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
+    }
 
     const updatedComment = await this.commentsRepository.update(comment, content);
 
@@ -62,17 +64,15 @@ export class CommentsService {
     const writerId = comment.writer.id;
     const userId = user.id;
     
-    this.isWriter(writerId, userId);
+    if (!this.isWriter(writerId, userId)) {
+      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
+    }
 
     await this.commentsRepository.softDelete(commentId);
   }
 
-  isWriter(writerId: number, userId: number): void {
-    const isWriter = (writerId === userId);
-
-    if (!isWriter) {
-      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
-    }
+  isWriter(writerId: number, userId: number): boolean {
+    return (writerId === userId);
   }
 
   async getComment(commentId: number): Promise<Comment> {

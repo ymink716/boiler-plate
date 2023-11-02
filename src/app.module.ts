@@ -9,7 +9,7 @@ import { QuestionsModule } from './questions/questions.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
-import { HealthCheckController } from './health.controller';
+import { HealthCheckController } from './health/health.controller';
 
 @Module({
   imports: [
