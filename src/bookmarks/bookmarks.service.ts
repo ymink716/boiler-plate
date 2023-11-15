@@ -3,11 +3,12 @@ import { QuestionsService } from 'src/questions/questions.service';
 import { User } from 'src/users/entity/user.entity';
 import { QuestionAlreadyBookmarked } from 'src/common/exception/error-types';
 import { BookmarksRepository } from './bookmarks.repository';
+import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Injectable()
 export class BookmarksService {
   constructor(
-    @Inject('BOOKMARKS_REPOSITORY')
+    @Inject(BOOKMARKS_REPOSITORY)
     private readonly bookmarksRepository: BookmarksRepository,
     private readonly questionsService: QuestionsService,
   ) {}
@@ -24,6 +25,7 @@ export class BookmarksService {
 
     await this.bookmarksRepository.save(user, question);
   }
+
 
   async deleteBookmark(userId: number, questionId: number): Promise<void> {
     const bookmarks = await this.bookmarksRepository.findByUserIdAndQuestionId(userId, questionId);

@@ -5,11 +5,12 @@ import { Question } from './entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { InvalidQuestionContent, InvalidQuestionTitle, IsNotQuestionWriter, QuestionNotFound } from 'src/common/exception/error-types';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Injectable()
 export class QuestionsService {
   constructor(
-    @Inject('QUESTIONS_REPOSITORY')
+    @Inject(QUESTIONS_REPOSITORY)
     private readonly questionsRepository: QuestionsRepository
   ) {}
 
@@ -48,7 +49,10 @@ export class QuestionsService {
     const { title, content } = updateQuestionDto;
 
     this.isValidQeustionDto(title, content);
-    this.isWriter(question, user);
+    
+    if (!this.isWriter(question.writer.id, user.id)) {
+      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
+    }
 
     const updatedQuestion = await this.questionsRepository.update(question, title, content);
 
@@ -62,17 +66,15 @@ export class QuestionsService {
       throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
 
-    this.isWriter(question, user);
+    if (!this.isWriter(question.writer.id, user.id)) {
+      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
+    }
 
     await this.questionsRepository.softDelete(questionId);
   }
 
-  isWriter(question: Question, writer: User): void {
-    const isWriter = (question.writer.id === writer.id);
-    
-    if (!isWriter) {
-      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
-    }
+  isWriter(writerId: number, userId: number): boolean {
+    return writerId === userId;
   }
 
   isValidQeustionDto(title: string, content: string): void {

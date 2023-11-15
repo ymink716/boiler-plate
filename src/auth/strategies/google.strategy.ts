@@ -4,20 +4,22 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile } from 'passport-google-oauth20';
+import { OAUTH_GOOGLE_CALLBACK, OAUTH_GOOGLE_ID, OAUTH_GOOGLE_SECRET } from 'src/common/constants/config.constant';
+import { GOOGLE_OAUTH_GUARD } from 'src/common/constants/guards.constant';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+export class GoogleStrategy extends PassportStrategy(Strategy, GOOGLE_OAUTH_GUARD) {
   // TODO: configService never used 에러 해결
   constructor(
     private readonly configService: ConfigService,
     private readonly usersService: UsersService,
   ) {
     super({
-      clientID: configService.get<string>('OAUTH_GOOGLE_ID'),
-      clientSecret: configService.get<string>('OAUTH_GOOGLE_SECRET'),
-      callbackURL: configService.get<string>('OAUTH_GOOGLE_CALLBACK'),
+      clientID: configService.get<string>(OAUTH_GOOGLE_ID),
+      clientSecret: configService.get<string>(OAUTH_GOOGLE_SECRET),
+      callbackURL: configService.get<string>(OAUTH_GOOGLE_CALLBACK),
       scope: ['email', 'profile'],
     });
   }

@@ -4,11 +4,12 @@ import * as bcrypt from 'bcryptjs';
 import { InvalidToken, UserNotExist } from '../common/exception/error-types';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
 import { UsersRepository } from './users.repository';
+import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject('USERS_REPOSITORY')
+    @Inject(USERS_REPOSITORY)
     private readonly usersRepository: UsersRepository
   ) {}
   

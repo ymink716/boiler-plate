@@ -30,12 +30,6 @@ export class TypeormCommentsRepository implements CommentsRepository {
     }));
   }
 
-  async findAll(): Promise<Comment[]> {
-    const comments = await this.commentRepository.find();
-
-    return comments;
-  }
-
   async update(comment: Comment, content: string): Promise<Comment> {
     comment.content = content;
 

@@ -5,6 +5,7 @@ import { Comment } from './entity/comment.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeormCommentsRepository } from './typeorm-comments.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
+import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Module({
   imports:[
@@ -15,7 +16,7 @@ import { QuestionsModule } from 'src/questions/questions.module';
   providers: [
     CommentsService,
     {
-      provide: 'COMMENTS_REPOSITORY',
+      provide: COMMENTS_REPOSITORY,
       useClass: TypeormCommentsRepository,
     }
   ],

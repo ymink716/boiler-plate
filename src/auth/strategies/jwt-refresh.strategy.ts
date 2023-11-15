@@ -5,9 +5,11 @@ import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { JwtPayload } from 'src/common/interface/jwt-payload';
 import { UsersService } from 'src/users/users.service';
+import { JWT_REFRESH_GUARD } from 'src/common/constants/guards.constant';
+import { JWT_REFRESH_TOKEN_SECRET } from 'src/common/constants/config.constant';
 
 @Injectable()
-export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
+export class JwtRefreshStrategy extends PassportStrategy(Strategy, JWT_REFRESH_GUARD) {
   // TODO: configService never used 에러 해결
   constructor(
     private readonly configService: ConfigService,
@@ -16,7 +18,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-
     super({
       jwtFromRequest: ExtractJwt.fromBodyField('refresh_token'),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      secretOrKey: configService.get<string>(JWT_REFRESH_TOKEN_SECRET),
       passReqToCallback: true,
     });
   }

@@ -8,6 +8,7 @@ import { AppModule } from 'src/app.module';
 import { CommentsRepository } from '../comments.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { Comment } from '../entity/comment.entity';
+import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('CommentsRepository', () => {
   let app: INestApplication;
@@ -24,7 +25,7 @@ describe('CommentsRepository', () => {
     .compile();
 
     app = moduleFixture.createNestApplication();
-    commentsRepository = app.get<CommentsRepository>('COMMENTS_REPOSITORY');
+    commentsRepository = app.get<CommentsRepository>(COMMENTS_REPOSITORY);
     dataSource = app.get<DataSource>(DataSource);
 
     setUpTestingAppModule(app);
@@ -49,8 +50,12 @@ describe('CommentsRepository', () => {
     await dataSource.manager.save(question);
   });
 
+  beforeEach(async () => {
+    await dataSource.manager.delete(Comment, {});
+  });
+
   describe('findOneById()', () => {
-    test('comment entity를 리턴한다', async () => {
+    test('해당 id의 답변 entity를 리턴한다.', async () => {
       const comment = await dataSource.manager.save(new Comment({
         content: "test content...",
         writer: user,
@@ -59,44 +64,26 @@ describe('CommentsRepository', () => {
 
       const result = await commentsRepository.findOneById(comment.id);
 
+      expect(result).toBeInstanceOf(Comment);
       expect(result?.content).toBe("test content...");
     });
   });
 
   describe('save()', () => {
-    test('save된 comment entity를 리턴한다.', async () => {
+    test('답변 정보를 DB에 저장하고, entity를 리턴한다.', async () => {
       const content = "test content...";
 
       const result = await commentsRepository.save(content, user, question);
+      expect(result).toBeInstanceOf(Comment);
 
-      expect(result?.content).toBe("test content...");
-    });
-  });
-
-  describe('findAll()', () => {
-    test('저장된 comment 목록을 전부 조회한다.', async () => {
-      const comment1 = await dataSource.manager.save(new Comment({
-        content: "test content...1",
-        writer: user,
-        question: question,
-      }));
-
-      const comment2 = await dataSource.manager.save(new Comment({
-        content: "test content...2",
-        writer: user,
-        question:  question,
-      }));
-
-      const result = await commentsRepository.findAll();
-
-      expect(result.length).toBe(2);
-      expect(result[0].content).toBe(comment1.content);
-      expect(result[1].content).toBe(comment2.content);
+      const savedComment = await commentsRepository.findOneById(result.id);
+      expect(savedComment?.id).toBe(result.id);
+      expect(savedComment?.content).toBe(result.content);
     });
   });
 
   describe('update()', () => {
-    test('수정된 comment entity를 리턴한다.', async () => {
+    test('답변을 수정하여 DB에 저장하고, 답변 entity를 리턴한다.', async () => {
       const comment = await dataSource.manager.save(new Comment({
         content: "test content...",
         writer: user,
@@ -106,26 +93,28 @@ describe('CommentsRepository', () => {
 
       const result = await commentsRepository.update(comment, content);
 
+      expect(result).toBeInstanceOf(Comment);
       expect(result.content).toBe("test content(수정)");
+
+      const updatedComment = await commentsRepository.findOneById(result.id);
+      expect(updatedComment?.id).toBe(result.id);
+      expect(updatedComment?.content).toBe(result.content);
     });
   });
 
   describe('softDelete()', () => {
-    test('해당 comment를 soft delete하고, 리턴하지 않는다.', async () => {
+    test('해당 답변을 soft delete한다.', async () => {
       const comment = await dataSource.manager.save(new Comment({
         content: "test content...",
         writer: user,
         question: question,
       }));
 
-      const result = await commentsRepository.softDelete(comment.id);
+      await commentsRepository.softDelete(comment.id);
       
-      expect(result).toBeUndefined();
+      const deletedComment = await commentsRepository.findOneById(comment.id);
+      expect(deletedComment).toBeNull();
     });
-  });
-
-  afterEach(async () => {
-    dataSource.manager.delete(Comment, {});
   });
 
   afterAll(async () => {

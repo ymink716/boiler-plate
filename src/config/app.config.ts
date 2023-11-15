@@ -1,8 +1,10 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { BaseAPIDocumentation } from './swagger.config';
+import { SwaggerModule } from '@nestjs/swagger';
 
 export const setUp = (app: INestApplication) => {
   
-  app.setGlobalPrefix('/api');
+  app.setGlobalPrefix('/api', { exclude: ['health'] });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -11,4 +13,8 @@ export const setUp = (app: INestApplication) => {
       transform: true
     })
   );
+
+  const documentOptions = new BaseAPIDocumentation().initializeOptions();
+  const document = SwaggerModule.createDocument(app, documentOptions);
+  SwaggerModule.setup('api-docs', app, document);
 };

@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { QuestionLike } from 'src/likes/entity/question-like.entity';
 import { Bookmark } from 'src/bookmarks/entity/bookmark.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 
 @Entity()
@@ -28,21 +29,26 @@ export class Question {
     }
   }
 
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column({ nullable: false, type: 'varchar' })
   title: string;
 
+  @ApiProperty()
   @Column({ nullable: false, type: 'text' })
   content: string;
 
+  @ApiProperty()
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   createdAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn({
     type: 'timestamp',
     nullable: true,

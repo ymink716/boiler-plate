@@ -1,6 +1,6 @@
 import { User } from "src/users/entity/user.entity";
-import { CommentsRepository } from "../comments.repository";
-import { Comment } from "../entity/comment.entity";
+import { CommentsRepository } from "./comments.repository";
+import { Comment } from "./entity/comment.entity";
 import { Question } from "src/questions/entity/question.entity";
 
 

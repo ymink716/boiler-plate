@@ -8,6 +8,8 @@ import { GoogleOauthGuard } from '../guards/google-oauth.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { AuthService } from '../auth.service';
 
+jest.mock('../auth.service');
+
 describe('AuthController', () => {
   let app: INestApplication;
   let authService: AuthService;
@@ -61,7 +63,7 @@ describe('AuthController', () => {
   describe('POST /auth/logout', () => {
     test('status code 201로 응답한다.', async () => {
       const response = await request(app.getHttpServer())
-        .post(`/auth/logout`);
+        .post('/auth/logout');
       
       expect(response.status).toBe(201);    
     });

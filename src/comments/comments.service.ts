@@ -6,11 +6,12 @@ import { QuestionsService } from 'src/questions/questions.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentNotFound, InvalidCommentContent, IsNotCommentor } from 'src/common/exception/error-types';
 import { Comment } from './entity/comment.entity';
+import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Injectable()
 export class CommentsService {
   constructor(
-    @Inject('COMMENTS_REPOSITORY')
+    @Inject(COMMENTS_REPOSITORY)
     private readonly commentsRepository: CommentsRepository,
     private readonly questionsService: QuestionsService,
   ) {}
@@ -44,7 +45,9 @@ export class CommentsService {
     const writerId = comment.writer.id;
     const userId = user.id;
 
-    this.isWriter(writerId, userId);
+    if (!this.isWriter(writerId, userId)) {
+      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
+    }
 
     const updatedComment = await this.commentsRepository.update(comment, content);
 
@@ -61,17 +64,15 @@ export class CommentsService {
     const writerId = comment.writer.id;
     const userId = user.id;
     
-    this.isWriter(writerId, userId);
+    if (!this.isWriter(writerId, userId)) {
+      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
+    }
 
     await this.commentsRepository.softDelete(commentId);
   }
 
-  isWriter(writerId: number, userId: number): void {
-    const isWriter = (writerId === userId);
-
-    if (!isWriter) {
-      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
-    }
+  isWriter(writerId: number, userId: number): boolean {
+    return (writerId === userId);
   }
 
   async getComment(commentId: number): Promise<Comment> {

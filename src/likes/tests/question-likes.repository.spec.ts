@@ -8,6 +8,7 @@ import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QuestionLikesRepository } from '../question-likes.repository';
 import { QuestionLike } from '../entity/question-like.entity';
+import { QUESTION_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('QuestionLikesRepository', () => {
   let app: INestApplication;
@@ -24,7 +25,7 @@ describe('QuestionLikesRepository', () => {
     .compile();
 
     app = moduleFixture.createNestApplication();
-    questionLikesRepository = app.get<QuestionLikesRepository>('QUESTION_LIKES_REPOSITORY');
+    questionLikesRepository = app.get<QuestionLikesRepository>(QUESTION_LIKES_REPOSITORY);
     dataSource = app.get<DataSource>(DataSource);
 
     setUpTestingAppModule(app);
@@ -49,8 +50,12 @@ describe('QuestionLikesRepository', () => {
     await dataSource.manager.save(question);
   });
 
+  beforeEach(async () => {
+    await dataSource.manager.delete(QuestionLike, {});
+  });
+
   describe('count()', () => {
-    test('조건에 맞는 좋아요 수를 리턴한다.', async () => {
+    test('유저ID, 질문ID에 해당하는 좋아요 수를 리턴한다.', async () => {
       const result = await questionLikesRepository.count(user.id, question.id);
 
       expect(result).toBe(0);
@@ -58,38 +63,38 @@ describe('QuestionLikesRepository', () => {
   });
 
   describe('save()', () => {
-    test('질문에 대한 좋아요를 DB에 저장하고 entity를 리턴한다.', async () => {
+    test('질문에 대한 좋아요를 DB에 저장하고, 해당 정보를 리턴한다.', async () => {
       const result = await questionLikesRepository.save(user, question);
+      expect(result).toBeInstanceOf(QuestionLike);
 
-      expect(result.user).toBeDefined();
-      expect(result.question).toBeDefined();
+      const likes = await questionLikesRepository.findByUserIdAndQeustionId(user.id, question.id);
+      expect(likes.length).toBe(1);
+      expect(likes[0].question.id).toBe(question.id);
+      expect(likes[0].user.id).toBe(user.id);
     });
   });
 
   describe('findByUserIdAndQeustionId()', () => {
-    test('User Id와 Question Id에 맞는 좋아요를 조회한다.', async () => {
+    test('유저ID와 질문ID에 맞는 좋아요를 조회한다.', async () => {
       await dataSource.manager.save(new QuestionLike({ user, question }));
 
       const result = await questionLikesRepository.findByUserIdAndQeustionId(user.id, question.id);
 
       expect(result.length).toBe(1);
-      expect(result[0].user).toBeDefined();
-      expect(result[0].question).toBeDefined();
+      expect(result[0].user.id).toBe(user.id);
+      expect(result[0].question.id).toBe(question.id);
     });
   });
 
   describe('delete()', () => {
-    test('해당 좋아요를 삭제하고, 리턴하지 않는다.', async () => {
+    test('좋아요 정보를 DB에서 삭제한다.', async () => {
       const questionLike = await dataSource.manager.save(new QuestionLike({ user, question }));
 
-      const result = await questionLikesRepository.delete(questionLike.id);
-      
-      expect(result).toBeUndefined();
-    });
-  });
+      await questionLikesRepository.delete(questionLike.id);
+      const questionLikes = await questionLikesRepository.findByUserIdAndQeustionId(user.id, question.id);
 
-  afterEach(async () => {
-    dataSource.manager.delete(QuestionLike, {});
+      expect(questionLikes.length).toBe(0);
+    });
   });
 
   afterAll(async () => {

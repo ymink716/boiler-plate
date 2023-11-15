@@ -8,6 +8,7 @@ import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QuestionsService } from 'src/questions/questions.service';
 import { BookmarksRepository } from '../bookmarks.repository';
 import { Bookmark } from '../entity/bookmark.entity';
+import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('BookmarksService', () => {
   let app: INestApplication;
@@ -28,7 +29,7 @@ describe('BookmarksService', () => {
     app = moduleFixture.createNestApplication();
 
     bookmarksService = app.get<BookmarksService>(BookmarksService);
-    bookmarksRepository = app.get<BookmarksRepository>('BOOKMARKS_REPOSITORY');
+    bookmarksRepository = app.get<BookmarksRepository>(BOOKMARKS_REPOSITORY);
     questionsService = app.get<QuestionsService>(QuestionsService);
 
     setUpTestingAppModule(app);
@@ -45,7 +46,7 @@ describe('BookmarksService', () => {
   });
 
   describe('addBookmark()', () => {
-    test('해당 question에 북마크를 추가한다.', async () => {
+    test('북마크 정보를 성공적으로 저장한다.', async () => {
       const bookmark = new Bookmark({ user, question });
 
       jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);
@@ -58,7 +59,7 @@ describe('BookmarksService', () => {
       expect(bookmarksRepository.save).toBeCalled();
     });
 
-    test('이미 북마크한 question이라면 BadRequestException이 발생한다.', async () => {
+    test('이미 북마크했다면, BadRequestException이 발생한다.', async () => {
       jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);
       jest.spyOn(bookmarksRepository, 'countByUserIdAndQuestionId').mockResolvedValue(1);
 
@@ -69,11 +70,10 @@ describe('BookmarksService', () => {
   });
 
   describe('deleteBookmark()', () => {
-    test('해당 question의 북마크를 삭제한다.', async () => {
+    test('북마크 정보를 삭제하는 DB 접근 로직을 실행한다.', async () => {
       const bookmarks = [new Bookmark({ user, question })];
 
-      jest.spyOn(bookmarksRepository, 'findByUserIdAndQuestionId')
-        .mockResolvedValue(bookmarks);
+      jest.spyOn(bookmarksRepository, 'findByUserIdAndQuestionId').mockResolvedValue(bookmarks);
       jest.spyOn(bookmarksRepository, 'delete').mockResolvedValue(undefined);
 
       const result = await bookmarksService.deleteBookmark(user.id, question.id);

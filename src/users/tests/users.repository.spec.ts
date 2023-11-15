@@ -6,6 +6,7 @@ import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { UsersRepository } from '../users.repository';
+import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('UsersRepository', () => {
   let app: INestApplication;
@@ -19,7 +20,7 @@ describe('UsersRepository', () => {
     .compile();
 
     app = moduleFixture.createNestApplication();
-    usersRepository = app.get<UsersRepository>('USERS_REPOSITORY');
+    usersRepository = app.get<UsersRepository>(USERS_REPOSITORY);
     dataSource = app.get<DataSource>(DataSource);
 
     setUpTestingAppModule(app);
@@ -28,7 +29,7 @@ describe('UsersRepository', () => {
   });
 
   describe('findOneById()', () => {
-    test('user entity를 리턴한다', async () => {
+    test('해당 id의 사용자 entity를 반환한다.', async () => {
       const user = await dataSource.manager.save(new User({ 
         email: "test@email.com",
         provider: UserProvider.GOOGLE,
@@ -39,13 +40,14 @@ describe('UsersRepository', () => {
 
       const result = await usersRepository.findOneById(user.id);
 
+      expect(result?.id).toBe(user.id);
       expect(result?.email).toBe("test@email.com");
       expect(result?.name).toBe("tester");
     });
   });
 
   describe('findByProviderId()', () => {
-    test('user entity를 리턴한다', async () => {
+    test('해당 소셜 계정(providerId)에 해당하는 사용자 entity를 반환한다.', async () => {
       const user = await dataSource.manager.save(new User({ 
         email: "test@email.com",
         provider: UserProvider.GOOGLE,
@@ -56,13 +58,13 @@ describe('UsersRepository', () => {
 
       const result = await usersRepository.findByProviderId(user.providerId);
 
-      expect(result?.email).toBe("test@email.com");
-      expect(result?.name).toBe("tester");
+      expect(result?.id).toBe(user.id);
+      expect(result?.providerId).toBe("providerId");
     });
   });
 
   describe('save()', () => {
-    test('save된 user entity를 리턴한다.', async () => {
+    test('DB에 사용자 정보를 저장하고, entity를 반환한다.', async () => {
       const user = await dataSource.manager.save(new User({ 
         email: "test@email.com",
         provider: UserProvider.GOOGLE,
@@ -73,8 +75,8 @@ describe('UsersRepository', () => {
 
       const result = await usersRepository.save(user);
 
-      expect(result?.email).toBe("test@email.com");
-      expect(result?.name).toBe("tester");
+      expect(result).toBeInstanceOf(User);
+      expect(await usersRepository.findOneById(result.id)).toEqual(user);
     });
   });
 
