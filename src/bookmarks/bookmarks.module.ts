@@ -3,7 +3,7 @@ import { BookmarksController } from './bookmarks.controller';
 import { BookmarksService } from './bookmarks.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bookmark } from './entity/bookmark.entity';
-import { TypeormBookmarksRepository } from './typeorm-bookmarks.repository';
+import { TypeormBookmarksRepository } from './repository/typeorm-bookmarks.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 

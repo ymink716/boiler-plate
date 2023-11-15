@@ -2,9 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { BookmarksRepository } from "./bookmarks.repository";
-import { Bookmark } from "./entity/bookmark.entity";
-import { User } from "src/users/entity/user.entity";
-import { Question } from "src/questions/entity/question.entity";
+import { Bookmark } from "../entity/bookmark.entity";
 
 @Injectable()
 export class TypeormBookmarksRepository implements BookmarksRepository {
@@ -32,9 +30,7 @@ export class TypeormBookmarksRepository implements BookmarksRepository {
     return bookmarksCount;
   }
 
-  async save(user: User, question: Question): Promise<Bookmark> {
-    const bookmark = new Bookmark({ user, question });
-
+  async save(bookmark: Bookmark): Promise<Bookmark> {
     return await this.bookmarksRepository.save(bookmark);
   }
 

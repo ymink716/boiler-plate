@@ -6,7 +6,7 @@ import { User } from 'src/users/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QuestionsService } from 'src/questions/questions.service';
-import { BookmarksRepository } from '../bookmarks.repository';
+import { BookmarksRepository } from '../repository/bookmarks.repository';
 import { Bookmark } from '../entity/bookmark.entity';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
