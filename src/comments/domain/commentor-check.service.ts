@@ -6,7 +6,7 @@ import { IsNotCommentor } from 'src/common/exception/error-types';
 @Injectable()
 export class CommentorCheckService {
 
-  public checkWriter(comment: Comment, user: User) {
+  public checkCommentor(comment: Comment, user: User) {
     const writerId = comment.writer.id;
     const userId = user.id;
 

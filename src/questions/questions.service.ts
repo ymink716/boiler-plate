@@ -1,23 +1,26 @@
 import { Inject, Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
-import { QuestionsRepository } from './questions.repository';
+import { QuestionsRepository } from './repository/questions.repository';
 import { Question } from './entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { InvalidQuestionContent, InvalidQuestionTitle, IsNotQuestionWriter, QuestionNotFound } from 'src/common/exception/error-types';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { Title } from './vo/title';
+import { Content } from './vo/content';
+import { WriterCheckService } from './domain/writer-check.service';
 
 @Injectable()
 export class QuestionsService {
   constructor(
     @Inject(QUESTIONS_REPOSITORY)
-    private readonly questionsRepository: QuestionsRepository
+    private readonly questionsRepository: QuestionsRepository,
+    private readonly writerCheckService: WriterCheckService,
   ) {}
 
-  async postQuestion(createQuestionDto: CreateQuestionDto, writer: User) {
-    const { title, content } = createQuestionDto;
-
-    this.isValidQeustionDto(title, content);
+  public async postQuestion(createQuestionDto: CreateQuestionDto, writer: User) {
+    const title = new Title(createQuestionDto.title);
+    const content = new Content(createQuestionDto.content);
 
     const question = new Question({ title, content, writer });
     const newQuestion = this.questionsRepository.save(question);
@@ -25,11 +28,11 @@ export class QuestionsService {
     return newQuestion;
   }
 
-  async getQuestions() {
+  public async getQuestions() {
     return await this.questionsRepository.findAll();
   }
 
-  async getQuestion(questionId: number) {
+  public async getQuestion(questionId: number) {
     const question = await this.questionsRepository.findOneById(questionId);
 
     if (!question) {
@@ -39,51 +42,33 @@ export class QuestionsService {
     return question;
   }
 
-  async updateQuestion(questionId: number, user: User, updateQuestionDto: UpdateQuestionDto) {
+  public async updateQuestion(questionId: number, user: User, updateQuestionDto: UpdateQuestionDto) {
     const question = await this.questionsRepository.findOneById(questionId);
 
     if (!question) {
       throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
 
-    const { title, content } = updateQuestionDto;
+    const title = new Title(updateQuestionDto.title);
+    const content = new Content(updateQuestionDto.content);
 
-    this.isValidQeustionDto(title, content);
-    
-    if (!this.isWriter(question.writer.id, user.id)) {
-      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
-    }
+    this.writerCheckService.checkWriter(question, user);
 
-    const updatedQuestion = await this.questionsRepository.update(question, title, content);
+    question.title = title;
+    question.content = content;
 
-    return updatedQuestion;
+    return await this.questionsRepository.save(question);
   }
 
-  async deleteQuestion(questionId: number, user: User) {
+  public async deleteQuestion(questionId: number, user: User) {
     const question = await this.questionsRepository.findOneById(questionId);
 
     if (!question) {
       throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
 
-    if (!this.isWriter(question.writer.id, user.id)) {
-      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
-    }
+    this.writerCheckService.checkWriter(question, user);
 
     await this.questionsRepository.softDelete(questionId);
-  }
-
-  isWriter(writerId: number, userId: number): boolean {
-    return writerId === userId;
-  }
-
-  isValidQeustionDto(title: string, content: string): void {
-    if (title.length < 2 || title.length > 50) {
-      throw new BadRequestException(InvalidQuestionTitle.message, InvalidQuestionTitle.name);
-    }
-
-    if (content.length < 2 || content.length > 500) {
-      throw new BadRequestException(InvalidQuestionContent.message, InvalidQuestionContent.name);
-    }
   }
 }

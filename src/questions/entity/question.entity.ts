@@ -13,13 +13,15 @@ import {
 import { QuestionLike } from 'src/likes/entity/question-like.entity';
 import { Bookmark } from 'src/bookmarks/entity/bookmark.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Content } from '../vo/content';
+import { Title } from '../vo/title';
 
 
 @Entity()
 export class Question {
   constructor(options: {
-    title: string;
-    content: string;
+    title: Title;
+    content: Content;
     writer: User,
   }) {
     if (options) {
@@ -34,12 +36,12 @@ export class Question {
   id: number;
 
   @ApiProperty()
-  @Column({ nullable: false, type: 'varchar' })
-  title: string;
+  @Column(() => Title)
+  title: Title;
 
   @ApiProperty()
-  @Column({ nullable: false, type: 'text' })
-  content: string;
+  @Column(() => Content)
+  content: Content;
 
   @ApiProperty()
   @CreateDateColumn({

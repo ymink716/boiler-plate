@@ -8,7 +8,7 @@ import { CommentNotFound } from 'src/common/exception/error-types';
 import { Comment } from './entity/comment.entity';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import Content from './vo/content';
-import { CommentorCheckService } from './domain/writer-check.service';
+import { CommentorCheckService } from './domain/commentor-check.service';
 
 @Injectable()
 export class CommentsService {
@@ -37,7 +37,7 @@ export class CommentsService {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
 
-    this.commentorCheckService.checkWriter(comment, user);
+    this.commentorCheckService.checkCommentor(comment, user);
 
     comment.content = content;
     const updatedComment = await this.commentsRepository.save(comment);
@@ -52,7 +52,7 @@ export class CommentsService {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
     
-    this.commentorCheckService.checkWriter(comment, user);
+    this.commentorCheckService.checkCommentor(comment, user);
 
     await this.commentsRepository.softDelete(commentId);
   }

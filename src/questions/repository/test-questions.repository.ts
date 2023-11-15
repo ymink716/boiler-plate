@@ -1,4 +1,4 @@
-import { Question } from "./entity/question.entity";
+import { Question } from "../entity/question.entity";
 import { QuestionsRepository } from "./questions.repository";
 
 export class TestQuestionsRepository implements QuestionsRepository {
