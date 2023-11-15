@@ -3,9 +3,10 @@ import { CommentsController } from './comments.controller';
 import { CommentsService } from './comments.service';
 import { Comment } from './entity/comment.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeormCommentsRepository } from './typeorm-comments.repository';
+import { TypeormCommentsRepository } from './repository/typeorm-comments.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { CommentorCheckService } from './domain/writer-check.service';
 
 @Module({
   imports:[
@@ -15,6 +16,7 @@ import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
   controllers: [CommentsController],
   providers: [
     CommentsService,
+    CommentorCheckService,
     {
       provide: COMMENTS_REPOSITORY,
       useClass: TypeormCommentsRepository,

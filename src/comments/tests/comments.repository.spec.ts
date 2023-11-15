@@ -5,7 +5,7 @@ import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { AppModule } from 'src/app.module';
-import { CommentsRepository } from '../comments.repository';
+import { CommentsRepository } from '../repository/comments.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { Comment } from '../entity/comment.entity';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';

@@ -12,11 +12,12 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
+import Content from '../vo/content';
 
 @Entity()
 export class Comment {
   constructor(options: {
-    content: string;
+    content: Content;
     writer: User;
     question: Question;
   }) {
@@ -32,8 +33,8 @@ export class Comment {
   id: number;
 
   @ApiProperty()
-  @Column({ nullable: false, type: 'text' })
-  content: string;
+  @Column(() => Content)
+  content: Content;
 
   @ApiProperty()
   @CreateDateColumn({

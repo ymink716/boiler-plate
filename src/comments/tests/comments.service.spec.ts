@@ -5,7 +5,7 @@ import { User } from 'src/users/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { CommentsService } from '../comments.service';
-import { TestCommentsRepository } from '../test-comments.repository';
+import { TestCommentsRepository } from '../repository/test-comments.repository';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { Comment } from '../entity/comment.entity';
 import { UpdateCommentDto } from '../dto/update-comment.dto';

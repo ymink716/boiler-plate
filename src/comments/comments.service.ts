@@ -1,12 +1,14 @@
-import { Inject, Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { CommentsRepository } from './comments.repository';
+import { CommentsRepository } from './repository/comments.repository';
 import { QuestionsService } from 'src/questions/questions.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { CommentNotFound, InvalidCommentContent, IsNotCommentor } from 'src/common/exception/error-types';
+import { CommentNotFound } from 'src/common/exception/error-types';
 import { Comment } from './entity/comment.entity';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import Content from './vo/content';
+import { CommentorCheckService } from './domain/writer-check.service';
 
 @Injectable()
 export class CommentsService {
@@ -14,65 +16,45 @@ export class CommentsService {
     @Inject(COMMENTS_REPOSITORY)
     private readonly commentsRepository: CommentsRepository,
     private readonly questionsService: QuestionsService,
+    private readonly commentorCheckService: CommentorCheckService,
   ) {}
 
-  async writeComment(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
-    const { content, questionId } = createCommentDto;
+  public async writeComment(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
+    const question = await this.questionsService.getQuestion(createCommentDto.questionId);
+    const content = new Content(createCommentDto.content);
+    let comment = new Comment({ content, writer: user, question });
 
-    if (content.length < 2 || content.length > 255) {
-      throw new BadRequestException(InvalidCommentContent.message, InvalidCommentContent.name);
-    }
-
-    const question = await this.questionsService.getQuestion(questionId);
-    const comment = await this.commentsRepository.save(content, user, question);
+    comment = await this.commentsRepository.save(comment);
 
     return comment;
   }
 
-  async editComment(updateCommentDto: UpdateCommentDto, commentId: number, user: User): Promise<Comment> {
-    const { content } = updateCommentDto;
-
-    if (content.length < 2 || content.length > 255) {
-      throw new BadRequestException(InvalidCommentContent.message, InvalidCommentContent.name);
-    }
-
+  public async editComment(updateCommentDto: UpdateCommentDto, commentId: number, user: User): Promise<Comment> {
+    const content = new Content(updateCommentDto.content);
     const comment = await this.commentsRepository.findOneById(commentId);
 
     if (!comment) {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
 
-    const writerId = comment.writer.id;
-    const userId = user.id;
+    this.commentorCheckService.checkWriter(comment, user);
 
-    if (!this.isWriter(writerId, userId)) {
-      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
-    }
-
-    const updatedComment = await this.commentsRepository.update(comment, content);
+    comment.content = content;
+    const updatedComment = await this.commentsRepository.save(comment);
 
     return updatedComment;
   }
 
-  async deleteComment(commentId: number, user: User): Promise<void> {
+  public async deleteComment(commentId: number, user: User): Promise<void> {
     const comment = await this.commentsRepository.findOneById(commentId);
 
     if (!comment) {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
     
-    const writerId = comment.writer.id;
-    const userId = user.id;
-    
-    if (!this.isWriter(writerId, userId)) {
-      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
-    }
+    this.commentorCheckService.checkWriter(comment, user);
 
     await this.commentsRepository.softDelete(commentId);
-  }
-
-  isWriter(writerId: number, userId: number): boolean {
-    return (writerId === userId);
   }
 
   async getComment(commentId: number): Promise<Comment> {
