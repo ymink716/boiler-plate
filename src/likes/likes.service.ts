@@ -1,11 +1,13 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
-import { QuestionLikesRepository } from './question-likes.repository';
+import { QuestionLikesRepository } from './repository/question-likes.repository';
 import { QuestionsService } from 'src/questions/questions.service';
 import { CommentAlreadyLiked, QuestionAlreadyLiked } from 'src/common/exception/error-types';
-import { CommentLikesRepository } from './comment-likes.repository';
+import { CommentLikesRepository } from './repository/comment-likes.repository';
 import { CommentsService } from 'src/comments/comments.service';
 import { COMMENT_LIKES_REPOSITORY, QUESTION_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { QuestionLike } from './entity/question-like.entity';
+import { CommentLike } from './entity/comment-like.entity';
 
 @Injectable()
 export class LikesService {
@@ -28,7 +30,8 @@ export class LikesService {
       throw new BadRequestException(QuestionAlreadyLiked.message, QuestionAlreadyLiked.name);
     }
 
-    await this.questionLikesRepository.save(user, question);
+    const qustionLike = new QuestionLike({ user, question });
+    await this.questionLikesRepository.save(qustionLike);
   }
 
   async unlikeQuestion(questionId: number, userId: number): Promise<void> {
@@ -49,7 +52,8 @@ export class LikesService {
       throw new BadRequestException(CommentAlreadyLiked.message, CommentAlreadyLiked.name);
     }
 
-    await this.commentLikesRepository.save(user, comment);
+    const commentLike = new CommentLike({ comment, user });
+    await this.commentLikesRepository.save(commentLike);
   }
 
   async unlikeComment(commentId: number, userId: number): Promise<void> {

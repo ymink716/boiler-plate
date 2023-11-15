@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CommentLikesRepository } from "./comment-likes.repository";
-import { CommentLike } from "./entity/comment-like.entity";
+import { CommentLike } from "../entity/comment-like.entity";
 import { User } from "src/users/entity/user.entity";
 import { Comment } from "src/comments/entity/comment.entity";
 
@@ -32,9 +32,7 @@ export class TypeormCommentLikesRepository implements CommentLikesRepository {
     return commentLikesCount;
   }
 
-  async save(user: User, comment: Comment): Promise<CommentLike> {
-    const commentLike = new CommentLike({ user, comment });
-
+  async save(commentLike: CommentLike): Promise<CommentLike> {
     return await this.commentLikesRepository.save(commentLike);
   }
 
