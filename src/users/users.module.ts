@@ -3,7 +3,7 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
-import { TypeormUsersRepository } from './typeorm-users.repository';
+import { TypeormUsersRepository } from './repository/typeorm-users.repository';
 import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Module({

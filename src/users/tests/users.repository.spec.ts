@@ -5,7 +5,7 @@ import { User } from 'src/users/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
-import { UsersRepository } from '../users.repository';
+import { UsersRepository } from '../repository/users.repository';
 import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('UsersRepository', () => {

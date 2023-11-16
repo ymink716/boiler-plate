@@ -13,11 +13,11 @@ export class AuthService {
     private readonly usersService: UsersService
   ) {}
 
-  async signIn(userId: number) {
+  public async signIn(userId: number) {
     return await this.issueTokens(userId);
   }
 
-  async refresh(userId: number) {
+  public async refresh(userId: number) {
     return await this.issueTokens(userId);
   }
 
@@ -32,7 +32,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  generateAccessToken(jwtPayload: JwtPayload) {
+  private generateAccessToken(jwtPayload: JwtPayload) {
     const accessToken = this.jwtService.sign(jwtPayload, {
       expiresIn: this.configService.get<string>(JWT_ACCESS_TOKEN_EXPIRATION_TIME),
       secret: this.configService.get<string>(JWT_ACCESS_TOKEN_SECRET),
@@ -41,7 +41,7 @@ export class AuthService {
     return accessToken;
   }
 
-  generateRefreshToken(jwtPayload: JwtPayload) {
+  private generateRefreshToken(jwtPayload: JwtPayload) {
     const refreshToken = this.jwtService.sign(jwtPayload, {
       expiresIn: this.configService.get<string>(JWT_REFRESH_TOKEN_EXPIRATION_TIME),
       secret: this.configService.get<string>(JWT_REFRESH_TOKEN_SECRET),
@@ -50,7 +50,7 @@ export class AuthService {
     return refreshToken;
   }
 
-  async logout(userId: number) {
+  public async logout(userId: number) {
     await this.usersService.removeRefreshToken(userId);
   }
 }

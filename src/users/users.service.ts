@@ -3,7 +3,7 @@ import { User } from './entity/user.entity';
 import * as bcrypt from 'bcryptjs';
 import { InvalidToken, UserNotExist } from '../common/exception/error-types';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
-import { UsersRepository } from './users.repository';
+import { UsersRepository } from './repository/users.repository';
 import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class UsersService {
     private readonly usersRepository: UsersRepository
   ) {}
   
-  async findByProviderIdOrSave(payload: OauthPayload) {
+  public async findByProviderIdOrSave(payload: OauthPayload) {
     const { providerId, email, name, provider, picture } = payload;
 
     const existedUser = await this.usersRepository.findByProviderId(providerId);
@@ -29,7 +29,7 @@ export class UsersService {
     return newUser;
   }
 
-  async updateHashedRefreshToken(id: number, refreshToken: string) {
+  public async updateHashedRefreshToken(id: number, refreshToken: string) {
     const salt = await bcrypt.genSalt();
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
     
@@ -44,7 +44,7 @@ export class UsersService {
     await this.usersRepository.save(user);
   }
 
-  async getUserIfRefreshTokenisMatched(refreshToken: string, userId: number) {
+  public async getUserIfRefreshTokenisMatched(refreshToken: string, userId: number) {
     const user = await this.usersRepository.findOneById(userId);
     
     if (!user) {
@@ -56,7 +56,7 @@ export class UsersService {
     return user;
   }
 
-  async checkRefreshToken(clientToken: string, savedToken: string | null) {
+  private async checkRefreshToken(clientToken: string, savedToken: string | null) {
     const isRefreshTokenMatched = await bcrypt.compare(clientToken, savedToken);
 
     if (!isRefreshTokenMatched) { 
@@ -64,7 +64,7 @@ export class UsersService {
     }
   }
 
-  async removeRefreshToken(id: number) {
+  public async removeRefreshToken(id: number) {
     const user = await this.usersRepository.findOneById(id);
 
     if (!user) {
@@ -76,7 +76,7 @@ export class UsersService {
     await this.usersRepository.save(user);
   }
 
-  async findUserById(userId: number) {
+  public async findUserById(userId: number) {
     const user = await this.usersRepository.findOneById(userId);
 
     return user;

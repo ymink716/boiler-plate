@@ -36,11 +36,11 @@ export class Question {
   id: number;
 
   @ApiProperty()
-  @Column(() => Title)
+  @Column(() => Title, { prefix: false })
   title: Title;
 
   @ApiProperty()
-  @Column(() => Content)
+  @Column(() => Content, { prefix: false })
   content: Content;
 
   @ApiProperty()

@@ -33,7 +33,7 @@ export class Comment {
   id: number;
 
   @ApiProperty()
-  @Column(() => Content)
+  @Column(() => Content, { prefix: false })
   content: Content;
 
   @ApiProperty()
