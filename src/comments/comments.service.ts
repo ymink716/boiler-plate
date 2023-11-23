@@ -7,8 +7,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentNotFound } from 'src/common/exception/error-types';
 import { Comment } from './entity/comment.entity';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import Content from './vo/content';
-import { CommentorCheckService } from './domain/commentor-check.service';
+import Content from './domain/vo/content';
 
 @Injectable()
 export class CommentsService {
@@ -16,7 +15,6 @@ export class CommentsService {
     @Inject(COMMENTS_REPOSITORY)
     private readonly commentsRepository: CommentsRepository,
     private readonly questionsService: QuestionsService,
-    private readonly commentorCheckService: CommentorCheckService,
   ) {}
 
   public async writeComment(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
@@ -30,15 +28,15 @@ export class CommentsService {
   }
 
   public async editComment(updateCommentDto: UpdateCommentDto, commentId: number, user: User): Promise<Comment> {
-    const content = new Content(updateCommentDto.content);
     const comment = await this.commentsRepository.findOneById(commentId);
 
     if (!comment) {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
 
-    this.commentorCheckService.checkCommentor(comment, user);
+    comment.checkCommentor(user);
 
+    const content = new Content(updateCommentDto.content);
     comment.content = content;
     const updatedComment = await this.commentsRepository.save(comment);
 
@@ -52,12 +50,12 @@ export class CommentsService {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
     
-    this.commentorCheckService.checkCommentor(comment, user);
+    comment.checkCommentor(user);
 
     await this.commentsRepository.softDelete(commentId);
   }
 
-  async getComment(commentId: number): Promise<Comment> {
+  public async getComment(commentId: number): Promise<Comment> {
     const comment = await this.commentsRepository.findOneById(commentId);
     
     if (!comment) {

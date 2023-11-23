@@ -1,17 +1,21 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from './entity/user.entity';
-import * as bcrypt from 'bcryptjs';
 import { InvalidToken, UserNotExist } from '../common/exception/error-types';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
 import { UsersRepository } from './repository/users.repository';
 import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { Hash } from 'src/common/interface/hash';
+import { BcryptHash } from 'src/common/utils/bcrypt-hash';
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(USERS_REPOSITORY)
-    private readonly usersRepository: UsersRepository
-  ) {}
+    private readonly usersRepository: UsersRepository,
+    private readonly hash: Hash,
+  ) {
+    this.hash = new BcryptHash();
+  }
   
   public async findByProviderIdOrSave(payload: OauthPayload) {
     const { providerId, email, name, provider, picture } = payload;
@@ -29,16 +33,14 @@ export class UsersService {
     return newUser;
   }
 
-  public async updateHashedRefreshToken(id: number, refreshToken: string) {
-    const salt = await bcrypt.genSalt();
-    const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
-    
+  public async updateHashedRefreshToken(id: number, refreshToken: string) {    
     const user = await this.usersRepository.findOneById(id);
 
     if (!user) {
       throw new NotFoundException(UserNotExist.message, UserNotExist.name);
     }
 
+    const hashedRefreshToken = await this.hash.generate(refreshToken);
     user.hashedRefreshToken = hashedRefreshToken;
     
     await this.usersRepository.save(user);
@@ -50,14 +52,13 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(UserNotExist.message, UserNotExist.name);
     }
-
     await this.checkRefreshToken(refreshToken, user.hashedRefreshToken);
     
     return user;
   }
 
   private async checkRefreshToken(clientToken: string, savedToken: string | null) {
-    const isRefreshTokenMatched = await bcrypt.compare(clientToken, savedToken);
+    const isRefreshTokenMatched = await this.hash.compare(clientToken, savedToken);
 
     if (!isRefreshTokenMatched) { 
       throw new UnauthorizedException(InvalidToken.message, InvalidToken.name);
@@ -72,7 +73,6 @@ export class UsersService {
     }
     
     user.hashedRefreshToken = null;
-    
     await this.usersRepository.save(user);
   }
 

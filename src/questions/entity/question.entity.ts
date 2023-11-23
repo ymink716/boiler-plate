@@ -13,8 +13,10 @@ import {
 import { QuestionLike } from 'src/likes/entity/question-like.entity';
 import { Bookmark } from 'src/bookmarks/entity/bookmark.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { Content } from '../vo/content';
-import { Title } from '../vo/title';
+import { Content } from '../domain/vo/content';
+import { Title } from '../domain/vo/title';
+import { ForbiddenException } from '@nestjs/common';
+import { IsNotQuestionWriter } from 'src/common/exception/error-types';
 
 
 @Entity()
@@ -75,4 +77,13 @@ export class Question {
 
   @OneToMany(() => Bookmark, bookmark => bookmark.question)
   bookmarks: Bookmark[];
+
+  public checkWriter(user: User): void {
+    const writerId = this.writer.id;
+    const userId = user.id;
+
+    if (writerId !== userId) {
+      throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
+    }
+  }
 }

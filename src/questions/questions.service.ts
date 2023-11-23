@@ -1,21 +1,19 @@
-import { Inject, Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { QuestionsRepository } from './repository/questions.repository';
 import { Question } from './entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
-import { InvalidQuestionContent, InvalidQuestionTitle, IsNotQuestionWriter, QuestionNotFound } from 'src/common/exception/error-types';
+import { QuestionNotFound } from 'src/common/exception/error-types';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Title } from './vo/title';
-import { Content } from './vo/content';
-import { WriterCheckService } from './domain/writer-check.service';
+import { Title } from './domain/vo/title';
+import { Content } from './domain/vo/content';
 
 @Injectable()
 export class QuestionsService {
   constructor(
     @Inject(QUESTIONS_REPOSITORY)
     private readonly questionsRepository: QuestionsRepository,
-    private readonly writerCheckService: WriterCheckService,
   ) {}
 
   public async postQuestion(createQuestionDto: CreateQuestionDto, writer: User) {
@@ -49,13 +47,10 @@ export class QuestionsService {
       throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
 
-    const title = new Title(updateQuestionDto.title);
-    const content = new Content(updateQuestionDto.content);
+    question.checkWriter(user);
 
-    this.writerCheckService.checkWriter(question, user);
-
-    question.title = title;
-    question.content = content;
+    question.title = new Title(updateQuestionDto.title);
+    question.content = new Content(updateQuestionDto.content);
 
     return await this.questionsRepository.save(question);
   }
@@ -66,8 +61,7 @@ export class QuestionsService {
     if (!question) {
       throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
-
-    this.writerCheckService.checkWriter(question, user);
+    question.checkWriter(user);
 
     await this.questionsRepository.softDelete(questionId);
   }

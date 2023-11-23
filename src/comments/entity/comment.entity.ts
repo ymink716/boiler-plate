@@ -12,7 +12,9 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import Content from '../vo/content';
+import Content from '../domain/vo/content';
+import { ForbiddenException } from '@nestjs/common';
+import { IsNotCommentor } from 'src/common/exception/error-types';
 
 @Entity()
 export class Comment {
@@ -69,4 +71,13 @@ export class Comment {
 
   @OneToMany(() => CommentLike, commentLike => commentLike.comment)
   likes: CommentLike[];
+
+  public checkCommentor(user: User): void {
+    const commentorId = this.writer.id;
+    const userId = user.id;
+
+    if (commentorId !== userId) {
+      throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
+    }
+  }
 }
