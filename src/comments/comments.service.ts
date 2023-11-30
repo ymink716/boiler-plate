@@ -36,8 +36,7 @@ export class CommentsService {
 
     comment.checkCommentor(user);
 
-    const content = new Content(updateCommentDto.content);
-    comment.content = content;
+    comment.editContent(updateCommentDto.content);
     const updatedComment = await this.commentsRepository.save(comment);
 
     return updatedComment;

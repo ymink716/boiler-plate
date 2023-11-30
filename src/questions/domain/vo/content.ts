@@ -2,6 +2,9 @@ import { BadRequestException } from "@nestjs/common";
 import { InvalidQuestionContent } from "src/common/exception/error-types";
 import { Column, Entity } from "typeorm";
 
+const MIN_LENGTH = 2;
+const MAX_LENGTH = 500;
+
 @Entity()
 export class Content {
   @Column({ nullable: false, type: 'text' })
@@ -16,7 +19,7 @@ export class Content {
   }
 
   private isInvalid(content: string): boolean {
-    return content.length < 2 || content.length > 500;
+    return content.length < MIN_LENGTH || content.length > MAX_LENGTH;
   }
 
   public getContent(): string {

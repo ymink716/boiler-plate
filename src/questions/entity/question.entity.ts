@@ -78,12 +78,17 @@ export class Question {
   @OneToMany(() => Bookmark, bookmark => bookmark.question)
   bookmarks: Bookmark[];
 
-  public checkWriter(user: User): void {
+  public checkIsAuthor(user: User): void {
     const writerId = this.writer.id;
     const userId = user.id;
 
     if (writerId !== userId) {
       throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
     }
+  }
+
+  public update(title: string, content: string): void {
+    this.title = new Title(title);
+    this.content = new Content(content);
   }
 }

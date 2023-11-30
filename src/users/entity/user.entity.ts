@@ -53,14 +53,14 @@ export class User {
     unique: true,
     nullable: true, 
   })
-  hashedRefreshToken: string | null;
+  refreshToken: string | null;
 
   @ApiProperty()
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
-  createdAt: Date;
+  readonly createdAt: Date;
 
   @ApiProperty()
   @UpdateDateColumn({
@@ -77,4 +77,24 @@ export class User {
 
   @OneToMany(() => Bookmark, bookmark => bookmark.user)
   bookmarks: Bookmark[];
+
+  public updateRefreshToken(token: string | null): void {
+    this.refreshToken = token;
+  }
+
+  // public getRefreshToken(): string | null {
+  //   return this.refreshToken;
+  // }
+
+  public isMatchedRefreshToken(token: string) {
+    return this.refreshToken === token;
+  }
+
+  // public getId(): number {
+  //   return this.id;
+  // }
+
+  // public getProviderId(): string {
+  //   return this.providerId;
+  // }
 }

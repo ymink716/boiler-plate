@@ -12,6 +12,7 @@ export class BookmarksService {
     @Inject(BOOKMARKS_REPOSITORY)
     private readonly bookmarksRepository: BookmarksRepository,
     private readonly questionsService: QuestionsService,
+    private readonly dataSource: DataSource,
   ) {}
 
   public async addBookmark(user: User, questionId: number): Promise<void> {

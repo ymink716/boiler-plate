@@ -17,10 +17,13 @@ export class QuestionsService {
   ) {}
 
   public async postQuestion(createQuestionDto: CreateQuestionDto, writer: User) {
-    const title = new Title(createQuestionDto.title);
-    const content = new Content(createQuestionDto.content);
+    const { title, content } = createQuestionDto;
 
-    const question = new Question({ title, content, writer });
+    const question = new Question({ 
+      title: new Title(title), 
+      content: new Content(content), 
+      writer,
+    });
     const newQuestion = this.questionsRepository.save(question);
 
     return newQuestion;
@@ -47,10 +50,10 @@ export class QuestionsService {
       throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
 
-    question.checkWriter(user);
+    question.checkIsAuthor(user);
 
-    question.title = new Title(updateQuestionDto.title);
-    question.content = new Content(updateQuestionDto.content);
+    const { title, content } = updateQuestionDto;
+    question.update(title, content);
 
     return await this.questionsRepository.save(question);
   }
@@ -61,7 +64,8 @@ export class QuestionsService {
     if (!question) {
       throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
     }
-    question.checkWriter(user);
+    
+    question.checkIsAuthor(user);
 
     await this.questionsRepository.softDelete(questionId);
   }

@@ -27,7 +27,7 @@ export class AuthService {
     const accessToken = this.generateAccessToken(jwtPayload);
     const refreshToken = this.generateRefreshToken(jwtPayload);
 
-    await this.usersService.updateHashedRefreshToken(userId, refreshToken);
+    await this.usersService.updateRefreshToken(userId, refreshToken);
 
     return { accessToken, refreshToken };
   }
@@ -37,7 +37,7 @@ export class AuthService {
       expiresIn: this.configService.get<string>(JWT_ACCESS_TOKEN_EXPIRATION_TIME),
       secret: this.configService.get<string>(JWT_ACCESS_TOKEN_SECRET),
     });
-
+    
     return accessToken;
   }
 
