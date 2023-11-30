@@ -12,7 +12,6 @@ export class BookmarksService {
     @Inject(BOOKMARKS_REPOSITORY)
     private readonly bookmarksRepository: BookmarksRepository,
     private readonly questionsService: QuestionsService,
-    private readonly dataSource: DataSource,
   ) {}
 
   public async addBookmark(user: User, questionId: number): Promise<void> {
@@ -33,8 +32,6 @@ export class BookmarksService {
   public async deleteBookmark(userId: number, questionId: number): Promise<void> {
     const bookmarks = await this.bookmarksRepository.findByUserIdAndQuestionId(userId, questionId);
 
-    bookmarks.forEach(
-      async (bookmark) => await this.bookmarksRepository.delete(bookmark.id)
-    );
+    await this.bookmarksRepository.revmove(bookmarks);
   }
 }

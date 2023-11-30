@@ -53,7 +53,7 @@ export class TypeormBookmarksRepository implements BookmarksRepository {
     return commentLikes;
   }
 
-  async delete(bookmarkId: number): Promise<void> {
-    await this.bookmarksRepository.delete(bookmarkId);
+  async revmove(bookmarks: Bookmark[]): Promise<void> {
+    await this.bookmarksRepository.remove(bookmarks);
   }
 }
