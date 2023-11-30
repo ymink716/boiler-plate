@@ -9,6 +9,8 @@ import { Question } from 'src/questions/entity/question.entity';
 import { BookmarksRepository } from '../repository/bookmarks.repository';
 import { Bookmark } from '../entity/bookmark.entity';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { Title } from 'src/questions/domain/vo/title';
+import { Content } from 'src/questions/domain/vo/content';
 
 describe('BookmarksRepository', () => {
   let app: INestApplication;
@@ -41,13 +43,13 @@ describe('BookmarksRepository', () => {
     });
 
     question = new Question({
-      title: "test",
-      content: "test content...",
+      title: new Title("test"),
+      content: new Content("test content..."),
       writer: user,
     });
 
-    await dataSource.manager.save(user);
-    await dataSource.manager.save(question);
+    await dataSource.manager.save(User, user);
+    await dataSource.manager.save(Question, question);
   });
 
   beforeEach(async () => {
@@ -66,7 +68,9 @@ describe('BookmarksRepository', () => {
 
   describe('save()', () => {
     test('DB에 북마크 정보를 저장하고, 북마크 entity를 리턴한다.', async () => {
-      const result = await bookmarksRepository.save(user, question);
+      const bookmark = new Bookmark({ user, question });
+      
+      const result = await bookmarksRepository.save(bookmark);
 
       expect(result).toBeInstanceOf(Bookmark);
       expect(result.user).toBeDefined();
@@ -74,9 +78,11 @@ describe('BookmarksRepository', () => {
     });
   });
 
+  // TODO: error 해결
   describe('findByUserIdAndQuestionId()', () => {
     test('User Id와 Question Id에 맞는 북마크를 조회한다.', async () => {
-      await dataSource.manager.save(new Bookmark({ user, question }));
+      const bookmark = new Bookmark({ user, question });
+      await bookmarksRepository.save(bookmark);
 
       const result = await bookmarksRepository.findByUserIdAndQuestionId(user.id, question.id);
 
@@ -85,11 +91,11 @@ describe('BookmarksRepository', () => {
     });
   });
 
-  describe('delete()', () => {
+  describe('remove()', () => {
     test('해당 북마크를 삭제한다.', async () => {
       const bookmark = await dataSource.manager.save(new Bookmark({ user, question }));
 
-      await bookmarksRepository.delete(bookmark.id);
+      await bookmarksRepository.remove([bookmark]);
 
       const result = await dataSource.manager.find(Bookmark);
       expect(result.length).toBe(0);

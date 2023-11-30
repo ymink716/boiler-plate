@@ -8,7 +8,7 @@ const MAX_LENGTH = 50;
 @Entity()
 export class Title {
   @Column({ nullable: false, type: 'text' })
-  private readonly title: string;
+  readonly title: string;
   
   constructor(title: string) {
     if (this.isInvalid(title)) {

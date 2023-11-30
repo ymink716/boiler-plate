@@ -9,6 +9,8 @@ import { QuestionsService } from 'src/questions/questions.service';
 import { BookmarksRepository } from '../repository/bookmarks.repository';
 import { Bookmark } from '../entity/bookmark.entity';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { Title } from 'src/questions/domain/vo/title';
+import { Content } from 'src/questions/domain/vo/content';
 
 describe('BookmarksService', () => {
   let app: INestApplication;
@@ -39,14 +41,14 @@ describe('BookmarksService', () => {
     user = { id: 1 } as User;
     question = {
       id: 1,
-      title: "test",
-      content: "test question content...",
+      title: new Title("test"),
+      content: new Content("test question content..."),
       writer: user,
     } as Question;
   });
 
   describe('addBookmark()', () => {
-    test('북마크 정보를 성공적으로 저장한다.', async () => {
+    test('북마크 정보를 DB에 저장하기 위한 메서드를 호출한다.', async () => {
       const bookmark = new Bookmark({ user, question });
 
       jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);
@@ -74,12 +76,12 @@ describe('BookmarksService', () => {
       const bookmarks = [new Bookmark({ user, question })];
 
       jest.spyOn(bookmarksRepository, 'findByUserIdAndQuestionId').mockResolvedValue(bookmarks);
-      jest.spyOn(bookmarksRepository, 'delete').mockResolvedValue(undefined);
+      jest.spyOn(bookmarksRepository, 'remove').mockResolvedValue(undefined);
 
       const result = await bookmarksService.deleteBookmark(user.id, question.id);
 
       expect(result).toBeUndefined();
-      expect(bookmarksRepository.delete).toBeCalledTimes(1);
+      expect(bookmarksRepository.remove).toBeCalledTimes(1);
     });
   });
 

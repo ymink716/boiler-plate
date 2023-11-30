@@ -11,7 +11,7 @@ export class TypeormBookmarksRepository implements BookmarksRepository {
     private readonly bookmarksRepository: Repository<Bookmark>,
   ) {}
 
-  async countByUserIdAndQuestionId(userId: number, questionId: number): Promise<number> {
+  public async countByUserIdAndQuestionId(userId: number, questionId: number): Promise<number> {
     const bookmarksCount = await this.bookmarksRepository.count({
       relations: {
         user: true,
@@ -30,11 +30,11 @@ export class TypeormBookmarksRepository implements BookmarksRepository {
     return bookmarksCount;
   }
 
-  async save(bookmark: Bookmark): Promise<Bookmark> {
+  public async save(bookmark: Bookmark): Promise<Bookmark> {
     return await this.bookmarksRepository.save(bookmark);
   }
 
-  async findByUserIdAndQuestionId(userId: number, questionId: number): Promise<Bookmark[]> {
+  public async findByUserIdAndQuestionId(userId: number, questionId: number): Promise<Bookmark[]> {
     const commentLikes = await this.bookmarksRepository.find({
       relations: {
         user: true,
@@ -53,7 +53,7 @@ export class TypeormBookmarksRepository implements BookmarksRepository {
     return commentLikes;
   }
 
-  async revmove(bookmarks: Bookmark[]): Promise<void> {
+  public async remove(bookmarks: Bookmark[]): Promise<void> {
     await this.bookmarksRepository.remove(bookmarks);
   }
 }

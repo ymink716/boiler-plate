@@ -32,6 +32,6 @@ export class BookmarksService {
   public async deleteBookmark(userId: number, questionId: number): Promise<void> {
     const bookmarks = await this.bookmarksRepository.findByUserIdAndQuestionId(userId, questionId);
 
-    await this.bookmarksRepository.revmove(bookmarks);
+    await this.bookmarksRepository.remove(bookmarks);
   }
 }
