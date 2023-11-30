@@ -55,7 +55,7 @@ export class TypeormCommentLikesRepository implements CommentLikesRepository {
     return commentLikes;
   }
 
-  async delete(commentLikeId: number): Promise<void> {
-    await this.commentLikesRepository.delete(commentLikeId);
+  async remove(commentLikes: CommentLike[]): Promise<void> {
+    await this.commentLikesRepository.remove(commentLikes);
   }
 }

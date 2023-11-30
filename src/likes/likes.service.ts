@@ -37,9 +37,7 @@ export class LikesService {
   async unlikeQuestion(questionId: number, userId: number): Promise<void> {
     const questionLikes = await this.questionLikesRepository.findByUserIdAndQeustionId(userId, questionId);
 
-    questionLikes.forEach(
-      async (questionLike) => await this.questionLikesRepository.delete(questionLike.id)
-    );
+    await this.questionLikesRepository.remove(questionLikes);
   }
 
   async uplikeComment(commentId: number, user: User): Promise<void> {
@@ -59,8 +57,6 @@ export class LikesService {
   async unlikeComment(commentId: number, userId: number): Promise<void> {
     const commentLikes = await this.commentLikesRepository.findByUserIdAndCommentId(userId, commentId);
 
-    commentLikes.forEach(
-      async (commentLike) => await this.commentLikesRepository.delete(commentLike.id)
-    );
+    await this.commentLikesRepository.remove(commentLikes);
   }
 }
