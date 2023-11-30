@@ -18,12 +18,17 @@ export class CommentsService {
   ) {}
 
   public async writeComment(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
-    const question = await this.questionsService.getQuestion(createCommentDto.questionId);
-    const content = new Content(createCommentDto.content);
-    let comment = new Comment({ content, writer: user, question });
+    const { questionId, content } = createCommentDto;
+
+    const question = await this.questionsService.getQuestion(questionId);
+
+    let comment = new Comment({ 
+      content: new Content(content), 
+      writer: user, 
+      question, 
+    });
 
     comment = await this.commentsRepository.save(comment);
-
     return comment;
   }
 
@@ -34,11 +39,12 @@ export class CommentsService {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
 
-    comment.checkCommentor(user);
+    comment.checkIsAuthor(user);
 
-    comment.editContent(updateCommentDto.content);
+    const { content } = updateCommentDto;
+    comment.editContent(content);
+
     const updatedComment = await this.commentsRepository.save(comment);
-
     return updatedComment;
   }
 
@@ -49,7 +55,7 @@ export class CommentsService {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }
     
-    comment.checkCommentor(user);
+    comment.checkIsAuthor(user);
 
     await this.commentsRepository.softDelete(commentId);
   }

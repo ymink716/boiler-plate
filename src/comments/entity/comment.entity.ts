@@ -18,7 +18,6 @@ import { IsNotCommentor } from 'src/common/exception/error-types';
 
 @Entity()
 export class Comment {
-
   constructor(options: {
     content: Content;
     writer: User;
@@ -37,7 +36,7 @@ export class Comment {
 
   @ApiProperty()
   @Column(() => Content, { prefix: false })
-  private content: Content;
+  content: Content;
 
   @ApiProperty()
   @CreateDateColumn({
@@ -73,9 +72,9 @@ export class Comment {
   @OneToMany(() => CommentLike, commentLike => commentLike.comment)
   likes: CommentLike[];
 
-  public checkCommentor(user: User): void {
-    const commentorId = this.writer.getId();
-    const userId = user.getId();
+  public checkIsAuthor(user: User): void {
+    const commentorId = this.writer.id;
+    const userId = user.id;
 
     if (commentorId !== userId) {
       throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);

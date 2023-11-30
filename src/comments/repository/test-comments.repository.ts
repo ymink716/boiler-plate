@@ -1,60 +1,47 @@
-// import { User } from "src/users/entity/user.entity";
-// import { CommentsRepository } from "./comments.repository";
-// import { Comment } from "../entity/comment.entity";
-// import { Question } from "src/questions/entity/question.entity";
+import { CommentsRepository } from "./comments.repository";
+import { Comment } from "../entity/comment.entity";
+import Content from "../domain/vo/content";
 
+export class TestCommentsRepository implements CommentsRepository {
+  private nextId = 1;
+  private comments: Comment[] = [];
+  private deletedComments: Comment[] = [];
 
-// export class TestCommentsRepository implements CommentsRepository {
-//   private nextId = 1;
-//   private comments: Comment[] = [];
-//   private deletedComments: Comment[] = [];
+  async findOneById(id: number) {
+    const comment = this.comments.find(comment => comment.id === id);
 
-//   async findOneById(id: number) {
-//     const comment = this.comments.find(comment => comment.id === id);
+    if(!comment) {
+      return null;
+    }
 
-//     if(!comment) {
-//       return null;
-//     }
+    return comment;
+  }
 
-//     return comment;
-//   }
+  async save(comment: Comment) {
+    comment.id = this.nextId++;
+    this.comments.push(comment);
 
-//   async save(content: string, writer: User, question: Question) {
-//     const comment = new Comment({
-//       content, writer, question
-//     });
+    return comment;
+  }
 
-//     comment.id = this.nextId++;
-    
-//     this.comments.push(comment);
+  async findAll() {
+    return this.comments;
+  }
 
-//     return comment;
-//   }
+  async softDelete(id: number) {
+    const deletedComment = this.comments.find(comment => comment.id === id);
 
-//   async findAll() {
-//     return this.comments;
-//   }
+    if (!deletedComment) {
+      return
+    }
 
-//   async update(comment: Comment, content: string) {
-//     comment.content = content;
+    this.deletedComments.push(deletedComment);
+    this.comments = this.comments.filter(comment => comment.id !== deletedComment.id);
+  }
 
-//     return comment;
-//   }
-
-//   async softDelete(id: number) {
-//     const deletedComment = this.comments.find(comment => comment.id === id);
-
-//     if (!deletedComment) {
-//       return
-//     }
-
-//     this.deletedComments.push(deletedComment);
-//     this.comments = this.comments.filter(comment => comment.id !== deletedComment.id);
-//   }
-
-//   reset() {
-//     this.nextId = 1;
-//     this.comments = [];
-//     this.deletedComments = [];
-//   }
-// }
+  reset() {
+    this.nextId = 1;
+    this.comments = [];
+    this.deletedComments = [];
+  }
+}
