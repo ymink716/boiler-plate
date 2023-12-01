@@ -7,7 +7,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentNotFound } from 'src/common/exception/error-types';
 import { Comment } from './entity/comment.entity';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import Content from './domain/vo/content';
+import { Content } from './domain/vo/content';
 
 @Injectable()
 export class CommentsService {

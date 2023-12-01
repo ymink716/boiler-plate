@@ -5,7 +5,7 @@ import { Column, Entity } from "typeorm";
 const MIN_LENGTH = 2;
 const MAX_LENGTH = 255;
 @Entity()
-class Content {
+export class Content {
   @Column({ nullable: false, type: 'text' })
   content: string;
   
@@ -25,5 +25,3 @@ class Content {
     return this.content;
   }
 }
-
-export default Content;

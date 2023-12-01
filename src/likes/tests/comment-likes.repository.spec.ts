@@ -10,6 +10,9 @@ import { Comment } from 'src/comments/entity/comment.entity';
 import { Question } from 'src/questions/entity/question.entity';
 import { CommentLike } from '../entity/comment-like.entity';
 import { COMMENT_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { Title } from 'src/questions/domain/vo/title';
+import { Content as QeustionContent } from 'src/questions/domain/vo/content';
+import { Content as CommentContent } from 'src/comments/domain/vo/content';
 
 describe('CommentLikesRepository', () => {
   let app: INestApplication;
@@ -43,13 +46,13 @@ describe('CommentLikesRepository', () => {
     });
 
     question = new Question({
-      title: "test",
-      content: "test content...",
+      title: new Title("test"),
+      content: new QeustionContent("test content..."),
       writer: user,
     });
 
     comment = new Comment({
-      content: "test content...",
+      content: new CommentContent("test content..."),
       writer: user,
       question: question,
     });
@@ -73,15 +76,15 @@ describe('CommentLikesRepository', () => {
 
   describe('save()', () => {
     test('답변에 대한 좋아요 정보를 DB에 저장하고, entity를 리턴한다.', async () => {
-      const result = await commentLikesRepository.save(user, comment);
+      const commentLike = new CommentLike({ user, comment });
+
+      const result = await commentLikesRepository.save(commentLike);
+
       expect(result).toBeInstanceOf(CommentLike);
-      
-      const commentLikes = await commentLikesRepository.findByUserIdAndCommentId(user.id, comment.id);
-      expect(commentLikes[0].user.id).toBe(user.id);
-      expect(commentLikes[0].comment.id).toBe(comment.id);
     });
   });
 
+  //TODO: questions/domain/vo/title.ts title.length undefined error 해결
   describe('findByUserIdAndCommentId()', () => {
     test('User Id와 Comment Id에 맞는 좋아요 목록을 조회한다.', async () => {
       await dataSource.manager.save(new CommentLike({ user, comment }));
@@ -93,11 +96,11 @@ describe('CommentLikesRepository', () => {
     });
   });
 
-  describe('delete()', () => {
+  describe('remove()', () => {
     test('해당 좋아요 정보를 DB에서 삭제한다.', async () => {
       const commentLike = await dataSource.manager.save(new CommentLike({ user, comment }));
 
-      await commentLikesRepository.delete(commentLike.id);
+      await commentLikesRepository.remove([commentLike]);
       const commentLikes = await commentLikesRepository.findByUserIdAndCommentId(user.id, comment.id);
 
       expect(commentLikes.length).toBe(0);

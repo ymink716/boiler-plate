@@ -46,23 +46,13 @@ describe('LikesService', () => {
     await app.init();
 
     user = { id: 1 } as User;
-    question = {
-      id: 1,
-      title: "test",
-      content: "test question content...",
-      writer: user,
-    } as Question;
-    comment = {
-      id: 1,
-      content: 'test comment content...'
-    } as Comment;
+    question = { id: 1 } as Question;
+    comment = { id: 1 } as Comment;
   });
 
   describe('uplikeQuestion()', () => {
     test('질문에 대한 좋아요 정보를 DB에 저장하는 로직을 실행한다.', async () => {
-      const questionLike = new QuestionLike({
-        user, question,
-      });
+      const questionLike = new QuestionLike({ user, question });
 
       jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);
       jest.spyOn(questionLikesRepository, 'count').mockResolvedValue(0);
@@ -88,19 +78,17 @@ describe('LikesService', () => {
       const questionLikes = [new QuestionLike({ user, question })];
 
       jest.spyOn(questionLikesRepository, 'findByUserIdAndQeustionId').mockResolvedValue(questionLikes);
-      jest.spyOn(questionLikesRepository, 'delete').mockResolvedValue(undefined);
+      jest.spyOn(questionLikesRepository, 'remove').mockResolvedValue(undefined);
 
       await likesService.unlikeQuestion(question.id, user.id);
 
-      expect(questionLikesRepository.delete).toBeCalledTimes(1);
+      expect(questionLikesRepository.remove).toBeCalledTimes(1);
     });
   });
 
   describe('uplikeComment()', () => {
     test('답변의 좋아요 정보를 DB에 저장하는 로직을 실행한다.', async () => {
-      const commentLike = new CommentLike({
-        user, comment,
-      });
+      const commentLike = new CommentLike({ user, comment });
 
       jest.spyOn(commentsService, 'getComment').mockResolvedValue(comment);
       jest.spyOn(commentLikesRepository, 'count').mockResolvedValue(0);
@@ -126,11 +114,11 @@ describe('LikesService', () => {
       const commentLikes = [new CommentLike({ user, comment })];
 
       jest.spyOn(commentLikesRepository, 'findByUserIdAndCommentId').mockResolvedValue(commentLikes);
-      jest.spyOn(commentLikesRepository, 'delete').mockResolvedValue(undefined);
+      jest.spyOn(commentLikesRepository, 'remove').mockResolvedValue(undefined);
 
       await likesService.unlikeComment(comment.id, user.id);
 
-      expect(commentLikesRepository.delete).toBeCalledTimes(1);
+      expect(commentLikesRepository.remove).toBeCalledTimes(1);
     });
   });
 

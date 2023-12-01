@@ -12,7 +12,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import Content from '../domain/vo/content';
+import { Content } from '../domain/vo/content';
 import { ForbiddenException } from '@nestjs/common';
 import { IsNotCommentor } from 'src/common/exception/error-types';
 
