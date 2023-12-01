@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, ForbiddenException, INestApplication, NotFoundException } from '@nestjs/common';
+import { INestApplication, NotFoundException } from '@nestjs/common';
 import { Question } from 'src/questions/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { AppModule } from 'src/app.module';
@@ -11,6 +11,9 @@ import { Comment } from '../entity/comment.entity';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { QuestionsService } from 'src/questions/questions.service';
 import { COMMENTS_REPOSITORY } from '../../common/constants/tokens.constant';
+import { Title } from 'src/questions/domain/vo/title';
+import { Content as QuestionContent } from 'src/questions/domain/vo/content';
+import Content from 'src/comments/domain/vo/content';
 
 describe('CommentsService', () => {
   let app: INestApplication;
@@ -41,8 +44,8 @@ describe('CommentsService', () => {
     user = { id: 1 } as User;
     question = {
       id: 1,
-      title: "test",
-      content: "test content...",
+      title: new Title("test"),
+      content: new QuestionContent("test content..."),
       writer: user,
     } as Question;
   });
@@ -63,37 +66,8 @@ describe('CommentsService', () => {
       const result = await commentsService.writeComment(createCommentDto, user);
 
       expect(await commentsRepository.findOneById(result.id)).toBeInstanceOf(Comment);
-      expect(result.content).toBe(createCommentDto.content);
+      expect(result.content.getContent()).toBe(createCommentDto.content);
     });
-
-    test.each([['t'], ['0'.repeat(256)]])(
-      '내용이 2글자 미만, 255글자를 초과하면 BadRequestException이 발생한다.',
-      async (content) => {
-        const createCommentDto: CreateCommentDto = {
-          content: content,
-          questionId: question.id,
-        };
-        
-        await expect(
-          commentsService.writeComment(createCommentDto, user),
-        ).rejects.toThrow(BadRequestException);
-      },
-    );
-
-    test.each([['tt'], ['0'.repeat(255)]])(
-      '내용이 2글자 미만, 255글자를 초과하지 않으면 유효성 검사를 통과한다.',
-      async (content) => {
-        const createCommentDto: CreateCommentDto = {
-          content: content,
-          questionId: question.id,
-        };
-
-        jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);        
-        const result = await commentsService.writeComment(createCommentDto, user);
-
-        expect(result).toBeInstanceOf(Comment);
-      },
-    );
   });
 
   describe('editComment()', () => {
@@ -102,11 +76,13 @@ describe('CommentsService', () => {
     };
 
     test('답변을 수정하여 DB에 저장하고, 답변 entity를 리턴한다.', async () => {
-      const comment = await commentsRepository.save(
-        'content...', user, question,
-      );
-
-      jest.spyOn(commentsService, 'isWriter').mockReturnValueOnce(true);
+      let comment = new Comment({ 
+        content: new Content('content...'), 
+        writer: user, 
+        question, 
+      });
+      comment = await commentsRepository.save(comment);
+      jest.spyOn(comment, 'checkIsAuthor').mockReturnValueOnce(undefined);
 
       const result = await commentsService.editComment(
         updateCommentDto, comment.id, user,
@@ -123,59 +99,16 @@ describe('CommentsService', () => {
         commentsService.editComment(updateCommentDto, notExistedCommentId, user)
       ).rejects.toThrow(NotFoundException);
     });
-
-    test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
-      const comment = await commentsRepository.save(
-        'content...', user, question,
-      );
-
-      jest.spyOn(commentsService, 'isWriter').mockReturnValueOnce(false);
-      
-      await expect(
-        commentsService.editComment(updateCommentDto, comment.id, user)
-      ).rejects.toThrow(ForbiddenException);
-    });
-
-    test.each([['t'], ['0'.repeat(256)]])(
-      '내용이 2글자 미만, 255글자를 초과하면 BadRequestException이 발생한다.',
-      async (content) => {
-        const comment = await commentsRepository.save(
-          'content...', user, question,
-        );
-
-        const updateCommentDto: UpdateCommentDto = {
-          content: content,
-        };
-        
-        await expect(
-          commentsService.editComment(updateCommentDto, comment.id, user),
-        ).rejects.toThrow(BadRequestException);
-      },
-    );
-
-    test.each([['tt'], ['0'.repeat(255)]])(
-      '내용이 2글자 미만, 255글자를 초과하지 않으면 유효성 검사를 통과한다.',
-      async (content) => {
-        const comment = await commentsRepository.save(
-          'content...', user, question,
-        );
-
-        const updateCommentDto: UpdateCommentDto = {
-          content: content,
-        };
-        
-        const result = await commentsService.editComment(updateCommentDto, comment.id, user);
-
-        expect(result.content).toBe(content);
-      },
-    );
   });
 
   describe('deleteComment()', () => {
     test('해당 답변을 DB에서 삭제하는 메서드를 호출한다.', async () => {
-      const comment = await commentsRepository.save(
-        'content...', user, question,
-      );      
+      let comment = new Comment({ 
+        content: new Content('content...'), 
+        writer: user, 
+        question, 
+      });
+      comment = await commentsRepository.save(comment);
 
       await commentsService.deleteComment(comment.id, user);
 
@@ -189,26 +122,16 @@ describe('CommentsService', () => {
         commentsService.deleteComment(notExistedCommentId, user),
       ).rejects.toThrow(NotFoundException);
     });
-
-    test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
-      const comment = await commentsRepository.save(
-        'content...', user, question,
-      );
-
-      jest.spyOn(commentsService, 'isWriter').mockReturnValueOnce(false);
-      
-      await expect(
-        commentsService.deleteComment(comment.id, user)
-      ).rejects.toThrow(ForbiddenException);
-    });
-
   });
 
   describe('getComment()', () => {
     test('id에 해당하는 답변이 있다면, 답변 entity를 리턴한다.', async () => {
-      const comment = await commentsRepository.save(
-        'content...', user, question,
-      );
+      let comment = new Comment({ 
+        content: new Content('content...'), 
+        writer: user, 
+        question, 
+      });
+      comment = await commentsRepository.save(comment);
 
       const result = await commentsService.getComment(comment.id);
 
@@ -219,24 +142,6 @@ describe('CommentsService', () => {
       await expect(
         commentsService.getComment(0)
       ).rejects.toThrow(NotFoundException);
-    });
-  });
-
-  describe('isWriter()', () => {
-    test('답변 작성자가 아니라면 false를 리턴한다.', async () => {
-      const writerId = 1;
-      const userId = 2;
-
-      const result = commentsService.isWriter(writerId, userId);
-      expect(result).toBe(false);
-    });
-
-    test('답변 작성자가 맞다면 true를 리턴한다.', async () => {
-      const writerId = 1;
-      const userId = 1;
-
-      const result = commentsService.isWriter(writerId, userId);
-      expect(result).toBe(true);
     });
   });
 

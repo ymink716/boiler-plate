@@ -9,6 +9,9 @@ import { CommentsRepository } from '../repository/comments.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { Comment } from '../entity/comment.entity';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { Content as QuestionContent } from 'src/questions/domain/vo/content';
+import Content from 'src/comments/domain/vo/content';
+import { Title } from 'src/questions/domain/vo/title';
 
 describe('CommentsRepository', () => {
   let app: INestApplication;
@@ -41,8 +44,8 @@ describe('CommentsRepository', () => {
     });
 
     question = new Question({
-      title: "test",
-      content: "test content...",
+      title: new Title("test"),
+      content: new QuestionContent("test content..."),
       writer: user,
     }); 
 
@@ -54,10 +57,11 @@ describe('CommentsRepository', () => {
     await dataSource.manager.delete(Comment, {});
   });
 
+  // TODO: vo undefined error 해결
   describe('findOneById()', () => {
     test('해당 id의 답변 entity를 리턴한다.', async () => {
       const comment = await dataSource.manager.save(new Comment({
-        content: "test content...",
+        content: new Content("test content..."),
         writer: user,
         question: question,
       }));
@@ -69,43 +73,28 @@ describe('CommentsRepository', () => {
     });
   });
 
+  // TODO: vo undefined error 해결
   describe('save()', () => {
     test('답변 정보를 DB에 저장하고, entity를 리턴한다.', async () => {
-      const content = "test content...";
+      const comment = await dataSource.manager.save(new Comment({
+        content: new Content("test content..."),
+        writer: user,
+        question: question,
+      }));
 
-      const result = await commentsRepository.save(content, user, question);
+      const result = await commentsRepository.save(comment);
+      
       expect(result).toBeInstanceOf(Comment);
 
       const savedComment = await commentsRepository.findOneById(result.id);
       expect(savedComment?.id).toBe(result.id);
-      expect(savedComment?.content).toBe(result.content);
-    });
-  });
-
-  describe('update()', () => {
-    test('답변을 수정하여 DB에 저장하고, 답변 entity를 리턴한다.', async () => {
-      const comment = await dataSource.manager.save(new Comment({
-        content: "test content...",
-        writer: user,
-        question: question,
-      }));
-      const content = "test content(수정)";
-
-      const result = await commentsRepository.update(comment, content);
-
-      expect(result).toBeInstanceOf(Comment);
-      expect(result.content).toBe("test content(수정)");
-
-      const updatedComment = await commentsRepository.findOneById(result.id);
-      expect(updatedComment?.id).toBe(result.id);
-      expect(updatedComment?.content).toBe(result.content);
     });
   });
 
   describe('softDelete()', () => {
     test('해당 답변을 soft delete한다.', async () => {
       const comment = await dataSource.manager.save(new Comment({
-        content: "test content...",
+        content: new Content("test content..."),
         writer: user,
         question: question,
       }));

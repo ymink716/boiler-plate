@@ -7,18 +7,18 @@ const MAX_LENGTH = 255;
 @Entity()
 class Content {
   @Column({ nullable: false, type: 'text' })
-  private readonly content: string;
+  content: string;
   
-  constructor(content: string) {
-    if (this.isInvalid(content)) {
+  constructor(text: string) {
+    if (this.isInvalid(text)) {
       throw new BadRequestException(InvalidCommentContent.message, InvalidCommentContent.name);
     } 
 
-    this.content = content;
+    this.content = text;
   }
 
-  private isInvalid(content: string): boolean {
-    return content.length < MIN_LENGTH || content.length > MAX_LENGTH;
+  private isInvalid(text: string): boolean {
+    return text.length < MIN_LENGTH || text.length > MAX_LENGTH;
   }
 
   public getContent(): string {
