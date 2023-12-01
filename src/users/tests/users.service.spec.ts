@@ -60,22 +60,22 @@ describe('UsersService', () => {
 
       expect(usersRepository.save).toBeCalled();
       expect(result).toBeInstanceOf(User);
-      expect(result.getProviderId()).toBe(payload.providerId);
+      expect(result.providerId).toBe(payload.providerId);
     });
   });
 
   describe('updateRefreshToken()', () => {
-    test('DB에 저장된 refresh_token을 갱신한다.', async () => {
+    test('DB에 저장된 refresh token을 갱신한다.', async () => {
       const user = new User({ ...payload });
       const refreshToken = 'updatedRefreshToken';
 
       user.updateRefreshToken(refreshToken);
       await usersRepository.save(user);
       
-      await usersService.updateRefreshToken(user.getId(), refreshToken);
+      await usersService.updateRefreshToken(user.id, refreshToken);
 
-      const updatedUser = await usersRepository.findOneById(user.getId());
-      expect(updatedUser?.getRefreshToken()).toBe(refreshToken);
+      const updatedUser = await usersRepository.findOneById(user.id);
+      expect(updatedUser?.refreshToken).toBe(refreshToken);
     });
 
     test('사용자를 찾을 수 없다면 NotFoundException이 발생한다.', async () => {
@@ -95,10 +95,10 @@ describe('UsersService', () => {
       user.updateRefreshToken(refreshToken);
       await usersRepository.save(user);
 
-      const result = await usersService.getUserIfRefreshTokenisMatched(refreshToken, user.getId());
+      const result = await usersService.getUserIfRefreshTokenisMatched(refreshToken, user.id);
 
       expect(result).toEqual(user);
-      expect(result.getRefreshToken()).toBe(refreshToken);
+      expect(result.refreshToken).toBe(refreshToken);
     });
 
     test('사용자를 찾을 수 없다면 NotFoundException이 발생한다.', async () => {
@@ -118,10 +118,10 @@ describe('UsersService', () => {
       user.updateRefreshToken(refreshToken);
       await usersRepository.save(user);
 
-      await usersService.removeRefreshToken(user.getId());
+      await usersService.removeRefreshToken(user.id);
 
-      const updatedUser = await usersRepository.findOneById(user.getId());
-      expect(updatedUser?.getRefreshToken()).toBeNull();
+      const updatedUser = await usersRepository.findOneById(user.id);
+      expect(updatedUser?.refreshToken).toBeNull();
     });
 
     test('사용자를 찾을 수 없다면 NotFoundException이 발생한다.', async () => {
@@ -138,7 +138,7 @@ describe('UsersService', () => {
       const user = new User({ ...payload });
       await usersRepository.save(user);
 
-      const result = await usersService.findUserById(user.getId());
+      const result = await usersService.findUserById(user.id);
       
       expect(result).toEqual(user);
     });
