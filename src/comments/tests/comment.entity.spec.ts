@@ -1,6 +1,6 @@
 import { ForbiddenException } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
-import Content from 'src/comments/domain/vo/content';
+import { Content } from 'src/comments/domain/vo/content';
 import { Comment } from '../entity/comment.entity';
 import { Question } from 'src/questions/entity/question.entity';
 
