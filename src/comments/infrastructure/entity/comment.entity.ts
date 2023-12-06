@@ -1,5 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/entity/user.entity';
-import { CommentEntity } from 'src/comments/infrastructure/entity/comment.entity';
 import {
   Column,
   Entity,
@@ -9,31 +9,27 @@ import {
   DeleteDateColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn,
 } from 'typeorm';
-import { QuestionLikeEntity } from 'src/likes/infrastructure/entity/question-like.entity';
-import { Bookmark } from 'src/bookmarks/entity/bookmark.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { QuestionEntity } from 'src/questions/infrastructure/entity/question.entity';
+import { CommentLikeEntity } from 'src/likes/infrastructure/entity/comment-like.entity';
 
-@Entity('question')
-export class QuestionEntity {
+@Entity('comment')
+export class CommentEntity {
   // constructor(options: {
-  //   title: string;
   //   content: string;
+  //   writer: User;
+  //   question: QuestionEntity;
   // }) {
   //   if (options) {
-  //     this.title = options.title;
   //     this.content = options.content;
+  //     this.writer = options.writer;
+  //     this.question = options.question;
   //   }
   // }
 
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ApiProperty()
-  @Column()
-  title: string;
 
   @ApiProperty()
   @Column({ type: 'text' })
@@ -54,22 +50,22 @@ export class QuestionEntity {
   })
   updatedAt: Date;
 
+  @ApiProperty()
   @DeleteDateColumn({ 
     type: 'timestamp', 
     nullable: true 
   })
   deletedAt: Date;
 
-  @ManyToOne(type => User, user => user.questions)
-  @JoinColumn()
+  @ManyToOne(() => User, user => user.comments)
   user: User;
 
-  @OneToMany(() => CommentEntity, comment => comment.question)
-  comments: CommentEntity[];
+  @ManyToOne(() => QuestionEntity, question => question.comments, {
+    onDelete: 'CASCADE',
+    nullable: false
+  })
+  question: QuestionEntity;
 
-  @OneToMany(() => QuestionLikeEntity, questionLike => questionLike.question)
-  likes: QuestionLikeEntity[];
-
-  @OneToMany(() => Bookmark, bookmark => bookmark.question)
-  bookmarks: Bookmark[];
+  @OneToMany(() => CommentLikeEntity, commentLike => commentLike.comment)
+  likes: CommentLikeEntity[];
 }

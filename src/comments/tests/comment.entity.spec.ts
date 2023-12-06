@@ -1,7 +1,7 @@
 import { ForbiddenException } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
 import { Content } from 'src/comments/domain/vo/content';
-import { Comment } from '../entity/comment.entity';
+import { Comment } from '../infrastructure/entity/comment.entity';
 import { Question } from 'src/questions/infrastructure/entity/question.entity';
 
 describe('Comment Entity', () => {

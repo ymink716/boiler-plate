@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { CommentsController } from './comments.controller';
-import { CommentsService } from './comments.service';
-import { Comment } from './entity/comment.entity';
+import { CommentsController } from './presentation/comments.controller';
+import { CommentsService } from './application/comments.service';
+import { CommentEntity } from './infrastructure/entity/comment.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeormCommentsRepository } from './repository/typeorm-comments.repository';
+import { TypeormCommentsRepository } from './infrastructure/typeorm-comments.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Module({
   imports:[
-    TypeOrmModule.forFeature([Comment]),
+    TypeOrmModule.forFeature([CommentEntity]),
     QuestionsModule,
   ],
   controllers: [CommentsController],

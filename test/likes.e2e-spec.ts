@@ -7,9 +7,9 @@ import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { Comment } from 'src/comments/entity/comment.entity';
-import { CommentLike } from 'src/likes/entity/comment-like.entity';
-import { QuestionLike } from 'src/likes/entity/question-like.entity';
+import { Comment } from 'src/comments/infrastructure/entity/comment.entity';
+import { CommentLike } from 'src/likes/infrastructure/entity/comment-like.entity';
+import { QuestionLike } from 'src/likes/infrastructure/entity/question-like.entity';
 import { mockAuthGuard } from './mock-auth.guard';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 

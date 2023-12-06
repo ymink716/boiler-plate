@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Post, Put, UseGuards, Param, ParseIntPipe } from '@nestjs/common';
 import { QuestionsService } from '../application/questions.service';
-import { CreateQuestionDto } from '../dto/create-question.dto';
+import { CreateQuestionDto } from './dto/create-question.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { User } from 'src/users/entity/user.entity';
-import { UpdateQuestionDto } from '../dto/update-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Question } from '../domain/question';
 

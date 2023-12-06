@@ -7,7 +7,7 @@ import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QuestionLikesRepository } from '../repository/question-likes.repository';
-import { QuestionLike } from '../entity/question-like.entity';
+import { QuestionLike } from '../infrastructure/entity/question-like.entity';
 import { QUESTION_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { Title } from 'src/questions/domain/vo/title';
 import { Content } from 'src/questions/domain/vo/content';

@@ -1,13 +1,13 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
-import { QuestionLikesRepository } from './repository/question-likes.repository';
+import { QuestionLikesRepository } from '../repository/question-likes.repository';
 import { QuestionsService } from 'src/questions/application/questions.service';
 import { CommentAlreadyLiked, QuestionAlreadyLiked } from 'src/common/exception/error-types';
-import { CommentLikesRepository } from './repository/comment-likes.repository';
-import { CommentsService } from 'src/comments/comments.service';
+import { CommentLikesRepository } from '../repository/comment-likes.repository';
+import { CommentsService } from 'src/comments/application/comments.service';
 import { COMMENT_LIKES_REPOSITORY, QUESTION_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { QuestionLike } from './entity/question-like.entity';
-import { CommentLike } from './entity/comment-like.entity';
+import { QuestionLike } from '../infrastructure/entity/question-like.entity';
+import { CommentLike } from '../infrastructure/entity/comment-like.entity';
 
 @Injectable()
 export class LikesService {

@@ -1,12 +1,12 @@
 import { Controller, Post, UseGuards, Body, Put, Param, ParseIntPipe, Delete } from '@nestjs/common';
-import { CommentsService } from './comments.service';
+import { CommentsService } from '../application/comments.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { User } from 'src/users/entity/user.entity';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Comment } from './entity/comment.entity';
+import { Comment } from '../domain/comment';
 
 @ApiTags('comments')
 @Controller('comments')
@@ -28,9 +28,7 @@ export class CommentsController {
     @Body() createCommentDto: CreateCommentDto,
     @GetUser() user: User,
   ) {
-    const newComment = await this.commentsService.writeComment(createCommentDto, user);
-
-    return { newComment };
+    return await this.commentsService.writeComment(createCommentDto, user);
   }
 
   @ApiOperation({ summary: '답변 수정', description: '답변을 수정합니다.' })
@@ -47,11 +45,7 @@ export class CommentsController {
     @GetUser() user: User,
     @Param('commentId', ParseIntPipe) commentId: number,
   ) {
-    const editedComment = await this.commentsService.editComment(
-      updateCommentDto, commentId, user
-    );
-
-    return { editedComment };
+    return await this.commentsService.editComment(updateCommentDto, commentId, user);
   }
 
   @ApiOperation({ summary: '답변 삭제', description: '답변을 삭제합니다.' })

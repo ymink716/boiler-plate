@@ -1,4 +1,4 @@
-import { CommentLike } from "../entity/comment-like.entity";
+import { CommentLike } from "../infrastructure/entity/comment-like.entity";
 
 export interface CommentLikesRepository {
   count(userId: number, commentId: number): Promise<number>;

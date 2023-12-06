@@ -1,4 +1,4 @@
-import { QuestionLike } from 'src/likes/entity/question-like.entity';
+import { QuestionLike } from 'src/likes/infrastructure/entity/question-like.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Question } from 'src/questions/infrastructure/entity/question.entity';
@@ -8,10 +8,10 @@ import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QuestionLikesRepository } from '../repository/question-likes.repository';
 import { QuestionsService } from 'src/questions/application/questions.service';
 import { CommentLikesRepository } from '../repository/comment-likes.repository';
-import { CommentsService } from 'src/comments/comments.service';
-import { Comment } from 'src/comments/entity/comment.entity';
-import { LikesService } from '../likes.service';
-import { CommentLike } from '../entity/comment-like.entity';
+import { CommentsService } from 'src/comments/application/comments.service';
+import { Comment } from 'src/comments/infrastructure/entity/comment.entity';
+import { LikesService } from '../application/likes.service';
+import { CommentLike } from '../infrastructure/entity/comment-like.entity';
 import { QUESTION_LIKES_REPOSITORY, COMMENT_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('LikesService', () => {

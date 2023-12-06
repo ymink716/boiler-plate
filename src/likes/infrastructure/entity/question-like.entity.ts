@@ -1,4 +1,4 @@
-import { Comment } from 'src/comments/entity/comment.entity';
+import { QuestionEntity } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import {
   Entity,
@@ -7,15 +7,15 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-@Entity()
-export class CommentLike {
+@Entity('question_like')
+export class QuestionLikeEntity {
   constructor(options: {
     user: User,
-    comment: Comment
+    question: QuestionEntity
   }) {
     if (options) {
       this.user = options.user;
-      this.comment = options.comment;
+      this.question = options.question;
     }
   }
 
@@ -34,9 +34,9 @@ export class CommentLike {
   })
   user: User;
 
-  @ManyToOne(() => Comment, comment => comment.likes, {
+  @ManyToOne(() => QuestionEntity, question => question.likes, {
     onDelete: 'CASCADE',
     nullable: false
   })
-  comment: Comment;
+  question: QuestionEntity;
 }

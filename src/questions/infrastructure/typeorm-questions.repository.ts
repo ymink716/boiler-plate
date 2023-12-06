@@ -16,7 +16,7 @@ export class TypeormQuestionsRepository implements QuestionsRepository {
   async findOneById(id: number): Promise<Question | null> {
     const questionEntity = await this.questionRepository.findOne({ 
       where: { id },
-      relations: ['writer'],
+      relations: ['user'],
     });
 
     if (!questionEntity) {

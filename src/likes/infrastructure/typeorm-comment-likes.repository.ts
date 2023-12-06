@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CommentLikesRepository } from "./comment-likes.repository";
-import { CommentLike } from "../entity/comment-like.entity";
+import { CommentLikesRepository } from "../repository/comment-likes.repository";
+import { CommentLike } from "./entity/comment-like.entity";
 import { User } from "src/users/entity/user.entity";
-import { Comment } from "src/comments/entity/comment.entity";
+import { Comment } from "src/comments/infrastructure/entity/comment.entity";
 
 @Injectable()
 export class TypeormCommentLikesRepository implements CommentLikesRepository {

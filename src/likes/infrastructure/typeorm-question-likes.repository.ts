@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { QuestionLikesRepository } from "./question-likes.repository";
+import { QuestionLikesRepository } from "../repository/question-likes.repository";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { QuestionLike } from "../entity/question-like.entity";
+import { QuestionLike } from "./entity/question-like.entity";
 import { Question } from "src/questions/infrastructure/entity/question.entity";
 import { User } from "src/users/entity/user.entity";
 

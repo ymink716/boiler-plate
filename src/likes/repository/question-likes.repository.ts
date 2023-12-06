@@ -1,4 +1,4 @@
-import { QuestionLike } from "../entity/question-like.entity";
+import { QuestionLike } from "../infrastructure/entity/question-like.entity";
 
 export interface QuestionLikesRepository {
   count(userId: number, questionId: number): Promise<number>;

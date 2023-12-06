@@ -1,28 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Bookmark } from "src/bookmarks/entity/bookmark.entity";
+import { CommentEntity } from "src/comments/infrastructure/entity/comment.entity";
 import { UserProvider } from "src/common/enums/user-provider.enum";
-import { QuestionLike } from "src/likes/entity/question-like.entity";
-import { Question } from "src/questions/infrastructure/entity/question.entity";
+import { QuestionLikeEntity } from "src/likes/infrastructure/entity/question-like.entity";
+import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('users')
 export class User {
 
-  constructor(options: {
-    email: string;
-    provider: UserProvider;
-    providerId: string;
-    name: string;
-    picture: string;
-  }) {
-    if (options) {
-      this.email = options.email;
-      this.provider = options.provider;
-      this.providerId = options.providerId;
-      this.name = options.name;
-      this.picture = options.picture;
-    }
-  }
+  // constructor(options: {
+  //   email: string;
+  //   provider: UserProvider;
+  //   providerId: string;
+  //   name: string;
+  //   picture: string;
+  // }) {
+  //   if (options) {
+  //     this.email = options.email;
+  //     this.provider = options.provider;
+  //     this.providerId = options.providerId;
+  //     this.name = options.name;
+  //     this.picture = options.picture;
+  //   }
+  // }
 
   @ApiProperty()
   @PrimaryGeneratedColumn()
@@ -69,11 +70,15 @@ export class User {
   })
   updatedAt: Date;
 
-  @OneToMany(() => Question, question => question.writer)
-  questions: Question[];
+  @OneToMany(() => QuestionEntity, question => question.user)
+  questions: QuestionEntity[];
 
-  @OneToMany(() => QuestionLike, questionLike => questionLike.user)
-  questionLikes: QuestionLike[];
+  @OneToMany(() => CommentEntity, comments => comments.user)
+  comments: CommentEntity[];
+
+
+  @OneToMany(() => QuestionLikeEntity, questionLike => questionLike.user)
+  questionLikes: QuestionLikeEntity[];
 
   @OneToMany(() => Bookmark, bookmark => bookmark.user)
   bookmarks: Bookmark[];

@@ -1,9 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateQuestionDto } from '../dto/create-question.dto';
+import { CreateQuestionDto } from '../presentation/dto/create-question.dto';
 import { QuestionsRepository } from '../domain/repository/questions.repository';
 import { User } from 'src/users/entity/user.entity';
 import { QuestionNotFound } from 'src/common/exception/error-types';
-import { UpdateQuestionDto } from '../dto/update-question.dto';
+import { UpdateQuestionDto } from '../presentation/dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { Title } from '../domain/vo/title';
 import { Content } from '../domain/vo/content';
@@ -18,17 +18,17 @@ export class QuestionsService {
 
   public async postQuestion(
     createQuestionDto: CreateQuestionDto, 
-    writer: User,
+    user: User,
   ): Promise<Question> {
     const { title, content } = createQuestionDto;
 
     const question = new Question({ 
       title: new Title(title), 
       content: new Content(content), 
-      writer,
-      comments: [],
-      likes: [],
-      bookmarks: [],
+      userId: user.id,
+      commentIds: [],
+      likeIds: [],
+      bookmarkIds: [],
     });
     
     const newQuestion = this.questionsRepository.save(question);
