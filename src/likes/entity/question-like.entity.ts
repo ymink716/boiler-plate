@@ -1,4 +1,4 @@
-import { Question } from 'src/questions/entity/question.entity';
+import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import {
   Entity,

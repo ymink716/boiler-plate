@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Post, Put, UseGuards, Param, ParseIntPipe } from '@nestjs/common';
-import { QuestionsService } from './questions.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
+import { QuestionsService } from '../application/questions.service';
+import { CreateQuestionDto } from '../dto/create-question.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { User } from 'src/users/entity/user.entity';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Question } from './entity/question.entity';
+import { Question } from '../domain/question';
 
 @ApiTags('questions')
 @Controller('questions')
@@ -30,9 +30,7 @@ export class QuestionsController {
     @Body() createQuestionDto: CreateQuestionDto,
     @GetUser() user: User,
   ) {
-    const newQuestion = await this.questionsService.postQuestion(createQuestionDto, user);
-
-    return { newQuestion };
+    return await this.questionsService.postQuestion(createQuestionDto, user);
   }
 
   @ApiOperation({ 
@@ -47,9 +45,7 @@ export class QuestionsController {
   })
   @Get()
   async getQuestions() {
-    const questions = await this.questionsService.getQuestions();
-
-    return { questions };
+    return await this.questionsService.getQuestions();
   }
 
   @ApiOperation({ 
@@ -64,9 +60,7 @@ export class QuestionsController {
   })
   @Get('/:questionId')
   async getQuestionDetail(@Param('questionId', ParseIntPipe) questionId: number) {
-    const question = await this.questionsService.getQuestion(questionId);
-
-    return { question };
+    return await this.questionsService.getQuestion(questionId);
   }
 
   @ApiOperation({ 
@@ -87,9 +81,7 @@ export class QuestionsController {
     @GetUser() user: User,
     @Body() updateQuestionDto: UpdateQuestionDto,
   ) {
-    const updatedQuestion = await this.questionsService.updateQuestion(questionId, user, updateQuestionDto);
-
-    return { updatedQuestion };
+    return await this.questionsService.updateQuestion(questionId, user, updateQuestionDto);
   }
 
   @ApiOperation({ 

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, NotFoundException } from '@nestjs/common';
-import { Question } from 'src/questions/entity/question.entity';
+import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
@@ -9,7 +9,7 @@ import { TestCommentsRepository } from '../repository/test-comments.repository';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { Comment } from '../entity/comment.entity';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
-import { QuestionsService } from 'src/questions/questions.service';
+import { QuestionsService } from 'src/questions/application/questions.service';
 import { COMMENTS_REPOSITORY } from '../../common/constants/tokens.constant';
 import { Title } from 'src/questions/domain/vo/title';
 import { Content as QuestionContent } from 'src/questions/domain/vo/content';

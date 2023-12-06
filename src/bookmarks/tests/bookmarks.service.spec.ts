@@ -1,11 +1,11 @@
 import { BookmarksService } from './../bookmarks.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, INestApplication } from '@nestjs/common';
-import { Question } from 'src/questions/entity/question.entity';
+import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
-import { QuestionsService } from 'src/questions/questions.service';
+import { QuestionsService } from 'src/questions/application/questions.service';
 import { BookmarksRepository } from '../repository/bookmarks.repository';
 import { Bookmark } from '../entity/bookmark.entity';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';

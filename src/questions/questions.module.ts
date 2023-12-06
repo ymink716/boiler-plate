@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { QuestionsController } from './questions.controller';
-import { QuestionsService } from './questions.service';
+import { QuestionsController } from './presentation/questions.controller';
+import { QuestionsService } from './application/questions.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Question } from './entity/question.entity';
-import { TypeormQuestionsRepository } from './repository/typeorm-questions.repository';
+import { QuestionEntity } from './infrastructure/entity/question.entity';
+import { TypeormQuestionsRepository } from './infrastructure/typeorm-questions.repository';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Question])],
+  imports:[TypeOrmModule.forFeature([QuestionEntity])],
   controllers: [QuestionsController],
   providers: [
     QuestionsService,

@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsRepository } from './repository/comments.repository';
-import { QuestionsService } from 'src/questions/questions.service';
+import { QuestionsService } from 'src/questions/application/questions.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentNotFound } from 'src/common/exception/error-types';
 import { Comment } from './entity/comment.entity';

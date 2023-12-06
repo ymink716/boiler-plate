@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, ForbiddenException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
-import { Question } from 'src/questions/entity/question.entity';
+import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
-import { QuestionsService } from '../questions.service';
+import { QuestionsService } from '../application/questions.service';
 import { AppModule } from 'src/app.module';
-import { TestQuestionsRepository } from '../repository/test-questions.repository';
+import { TestQuestionsRepository } from '../infrastructure/test-questions.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { UpdateQuestionDto } from '../dto/update-question.dto';

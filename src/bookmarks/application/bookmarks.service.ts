@@ -2,9 +2,9 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { QuestionsService } from 'src/questions/application/questions.service';
 import { User } from 'src/users/entity/user.entity';
 import { QuestionAlreadyBookmarked } from 'src/common/exception/error-types';
-import { BookmarksRepository } from './repository/bookmarks.repository';
+import { BookmarksRepository } from '../repository/bookmarks.repository';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Bookmark } from './entity/bookmark.entity';
+import { Bookmark } from '../entity/bookmark.entity';
 
 @Injectable()
 export class BookmarksService {

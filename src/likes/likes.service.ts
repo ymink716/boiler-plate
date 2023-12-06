@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
 import { QuestionLikesRepository } from './repository/question-likes.repository';
-import { QuestionsService } from 'src/questions/questions.service';
+import { QuestionsService } from 'src/questions/application/questions.service';
 import { CommentAlreadyLiked, QuestionAlreadyLiked } from 'src/common/exception/error-types';
 import { CommentLikesRepository } from './repository/comment-likes.repository';
 import { CommentsService } from 'src/comments/comments.service';

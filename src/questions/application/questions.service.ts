@@ -1,13 +1,13 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateQuestionDto } from './dto/create-question.dto';
-import { QuestionsRepository } from './repository/questions.repository';
-import { Question } from './entity/question.entity';
+import { CreateQuestionDto } from '../dto/create-question.dto';
+import { QuestionsRepository } from '../domain/repository/questions.repository';
 import { User } from 'src/users/entity/user.entity';
 import { QuestionNotFound } from 'src/common/exception/error-types';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Title } from './domain/vo/title';
-import { Content } from './domain/vo/content';
+import { Title } from '../domain/vo/title';
+import { Content } from '../domain/vo/content';
+import { Question } from '../domain/question';
 
 @Injectable()
 export class QuestionsService {
@@ -16,24 +16,31 @@ export class QuestionsService {
     private readonly questionsRepository: QuestionsRepository,
   ) {}
 
-  public async postQuestion(createQuestionDto: CreateQuestionDto, writer: User) {
+  public async postQuestion(
+    createQuestionDto: CreateQuestionDto, 
+    writer: User,
+  ): Promise<Question> {
     const { title, content } = createQuestionDto;
 
     const question = new Question({ 
       title: new Title(title), 
       content: new Content(content), 
       writer,
+      comments: [],
+      likes: [],
+      bookmarks: [],
     });
+    
     const newQuestion = this.questionsRepository.save(question);
 
     return newQuestion;
   }
 
-  public async getQuestions() {
+  public async getQuestions(): Promise<Question[]> {
     return await this.questionsRepository.findAll();
   }
 
-  public async getQuestion(questionId: number) {
+  public async getQuestion(questionId: number): Promise<Question> {
     const question = await this.questionsRepository.findOneById(questionId);
 
     if (!question) {
@@ -43,7 +50,11 @@ export class QuestionsService {
     return question;
   }
 
-  public async updateQuestion(questionId: number, user: User, updateQuestionDto: UpdateQuestionDto) {
+  public async updateQuestion(
+    questionId: number, 
+    user: User, 
+    updateQuestionDto: UpdateQuestionDto
+    ): Promise<Question> {
     const question = await this.questionsRepository.findOneById(questionId);
 
     if (!question) {
@@ -58,7 +69,7 @@ export class QuestionsService {
     return await this.questionsRepository.save(question);
   }
 
-  public async deleteQuestion(questionId: number, user: User) {
+  public async deleteQuestion(questionId: number, user: User): Promise<void> {
     const question = await this.questionsRepository.findOneById(questionId);
 
     if (!question) {

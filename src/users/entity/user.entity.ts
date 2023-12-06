@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Bookmark } from "src/bookmarks/entity/bookmark.entity";
 import { UserProvider } from "src/common/enums/user-provider.enum";
 import { QuestionLike } from "src/likes/entity/question-like.entity";
-import { Question } from "src/questions/entity/question.entity";
+import { Question } from "src/questions/infrastructure/entity/question.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('users')

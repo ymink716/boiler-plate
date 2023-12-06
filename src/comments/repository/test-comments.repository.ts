@@ -1,6 +1,6 @@
 import { CommentsRepository } from "./comments.repository";
 import { Comment } from "../entity/comment.entity";
-import Content from "../domain/vo/content";
+import { Content } from "../domain/vo/content";
 
 export class TestCommentsRepository implements CommentsRepository {
   private nextId = 1;

@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from "typeorm"
-import { Question } from 'src/questions/entity/question.entity';
+import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { AppModule } from 'src/app.module';
-import { QuestionsRepository } from '../repository/questions.repository';
+import { QuestionsRepository } from '../domain/repository/questions.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { Title } from '../domain/vo/title';

@@ -1,7 +1,7 @@
 import { Content } from "../domain/vo/content";
 import { Title } from "../domain/vo/title";
-import { Question } from "../entity/question.entity";
-import { QuestionsRepository } from "./questions.repository";
+import { Question } from "./entity/question.entity";
+import { QuestionsRepository } from "../domain/repository/questions.repository";
 
 export class TestQuestionsRepository implements QuestionsRepository {
   private nextId = 1;
