@@ -1,5 +1,5 @@
 import { UnauthorizedUser } from './../../common/exception/error-types';
-import { UsersService } from './../../users/users.service';
+import { UsersService } from '../../users/application/users.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { UsersController } from './presentation/users.controller';
+import { UsersService } from './application/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entity/user.entity';
-import { TypeormUsersRepository } from './repository/typeorm-users.repository';
+import { TypeormUsersRepository } from './infrastructure/typeorm-users.repository';
 import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { UserEntity } from './infrastructure/entity/user.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([User])],
+  imports:[TypeOrmModule.forFeature([UserEntity])],
   controllers: [UsersController],
   providers: [
     UsersService,

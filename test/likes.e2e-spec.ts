@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { DataSource } from "typeorm"
 import { Question } from 'src/questions/infrastructure/entity/question.entity';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Comment } from 'src/comments/infrastructure/entity/comment.entity';

@@ -1,4 +1,4 @@
-import { User } from "src/users/entity/user.entity";
+import { User } from "src/users/infrastructure/entity/user.entity";
 import { Question } from "../infrastructure/entity/question.entity";
 import { Title } from "../domain/vo/title";
 import { Content } from "../domain/vo/content";

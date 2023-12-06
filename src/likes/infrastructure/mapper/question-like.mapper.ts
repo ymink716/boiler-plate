@@ -1,6 +1,6 @@
 import { QuestionLike } from "src/likes/domain/question.like";
 import { QuestionLikeEntity } from "../entity/question-like.entity";
-import { User } from "src/users/entity/user.entity";
+import { User } from "src/users/infrastructure/entity/user.entity";
 import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
 
 

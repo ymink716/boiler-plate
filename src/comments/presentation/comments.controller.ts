@@ -3,7 +3,7 @@ import { CommentsService } from '../application/comments.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Comment } from '../domain/comment';

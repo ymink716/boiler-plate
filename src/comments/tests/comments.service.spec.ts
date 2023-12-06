@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, NotFoundException } from '@nestjs/common';
 import { Question } from 'src/questions/infrastructure/entity/question.entity';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { CommentsService } from '../application/comments.service';

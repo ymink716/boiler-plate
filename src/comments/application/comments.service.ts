@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { CreateCommentDto } from '../presentation/dto/create-comment.dto';
 import { CommentsRepository } from '../domain/repository/comments.repository';
 import { QuestionsService } from 'src/questions/application/questions.service';

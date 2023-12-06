@@ -1,5 +1,5 @@
 import { CommentEntity } from 'src/comments/infrastructure/entity/comment.entity';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

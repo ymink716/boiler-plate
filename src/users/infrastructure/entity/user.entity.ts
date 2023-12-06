@@ -1,13 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Bookmark } from "src/bookmarks/infrastructure/entity/bookmark.entity";
+import { BookmarkEntity } from "src/bookmarks/infrastructure/entity/bookmark.entity";
 import { CommentEntity } from "src/comments/infrastructure/entity/comment.entity";
 import { UserProvider } from "src/common/enums/user-provider.enum";
 import { QuestionLikeEntity } from "src/likes/infrastructure/entity/question-like.entity";
 import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('users')
-export class User {
+@Entity('user')
+export class UserEntity {
 
   // constructor(options: {
   //   email: string;
@@ -80,26 +80,6 @@ export class User {
   @OneToMany(() => QuestionLikeEntity, questionLike => questionLike.user)
   questionLikes: QuestionLikeEntity[];
 
-  @OneToMany(() => Bookmark, bookmark => bookmark.user)
-  bookmarks: Bookmark[];
-
-  public updateRefreshToken(token: string | null): void {
-    this.refreshToken = token;
-  }
-
-  // public getRefreshToken(): string | null {
-  //   return this.refreshToken;
-  // }
-
-  public isMatchedRefreshToken(token: string) {
-    return this.refreshToken === token;
-  }
-
-  // public getId(): number {
-  //   return this.id;
-  // }
-
-  // public getProviderId(): string {
-  //   return this.providerId;
-  // }
+  @OneToMany(() => BookmarkEntity, bookmark => bookmark.user)
+  bookmarks: BookmarkEntity[];
 }

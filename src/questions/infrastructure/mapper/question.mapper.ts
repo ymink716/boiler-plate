@@ -2,7 +2,7 @@ import { Question } from "src/questions/domain/question";
 import { QuestionEntity } from "../entity/question.entity";
 import { Title } from "src/questions/domain/vo/title";
 import { Content } from "src/questions/domain/vo/content";
-import { User } from "src/users/entity/user.entity";
+import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 export class QuestionMapper {
   public static toDomain(questionEntity: QuestionEntity): Question {
@@ -35,7 +35,7 @@ export class QuestionMapper {
     }
     questionEntity.title = title.getTitle();
     questionEntity.content = content.getContent();
-    questionEntity.user = Object.assign(new User(), { id: userId });
+    questionEntity.user = Object.assign(new UserEntity(), { id: userId });
 
     return questionEntity;
   }

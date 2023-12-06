@@ -1,5 +1,5 @@
 import { QuestionEntity } from 'src/questions/infrastructure/entity/question.entity';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

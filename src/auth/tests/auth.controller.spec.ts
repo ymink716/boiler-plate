@@ -6,7 +6,7 @@ import { mockAuthGuard } from '../../../test/mock-auth.guard';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { GoogleOauthGuard } from '../guards/google-oauth.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../application/auth.service';
 
 jest.mock('../auth.service');
 

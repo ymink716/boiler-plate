@@ -1,4 +1,4 @@
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { Content } from './vo/content';
 import { Title } from './vo/title';
 import { ForbiddenException } from '@nestjs/common';

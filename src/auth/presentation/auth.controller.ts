@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards, Post, Res } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { GoogleOauthGuard } from './guards/google-oauth.guard';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { AuthService } from '../application/auth.service';
+import { GoogleOauthGuard } from '../guards/google-oauth.guard';
+import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { RefreshTokenDto } from './dto/refresh-token.dto';

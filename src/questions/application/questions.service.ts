@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuestionDto } from '../presentation/dto/create-question.dto';
 import { QuestionsRepository } from '../domain/repository/questions.repository';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { QuestionNotFound } from 'src/common/exception/error-types';
 import { UpdateQuestionDto } from '../presentation/dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';

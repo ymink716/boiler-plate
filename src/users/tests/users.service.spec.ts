@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
-import { UsersService } from '../users.service';
+import { UsersService } from '../application/users.service';
 import { TestUsersRepository } from './test-users.repository';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
 import { UserProvider } from 'src/common/enums/user-provider.enum';

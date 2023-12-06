@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, ForbiddenException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Question } from 'src/questions/infrastructure/entity/question.entity';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { QuestionsService } from '../application/questions.service';
 import { AppModule } from 'src/app.module';
 import { TestQuestionsRepository } from '../infrastructure/test-questions.repository';

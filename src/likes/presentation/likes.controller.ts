@@ -1,7 +1,7 @@
 import { Controller, Delete, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { LikesService } from '../application/likes.service';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 

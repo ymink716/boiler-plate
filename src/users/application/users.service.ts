@@ -1,9 +1,9 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { User } from './entity/user.entity';
-import { InvalidToken, UserNotExist } from '../common/exception/error-types';
+import { InvalidToken, UserNotExist } from '../../common/exception/error-types';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
-import { UsersRepository } from './repository/users.repository';
+import { UsersRepository } from '../domain/repository/users.repository';
 import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { User } from '../domain/user';
 
 @Injectable()
 export class UsersService {

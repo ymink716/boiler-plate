@@ -1,5 +1,5 @@
-import { User } from "../entity/user.entity";
-import { UsersRepository } from "../repository/users.repository";
+import { User } from "../infrastructure/entity/user.entity";
+import { UsersRepository } from "../domain/repository/users.repository";
 
 export class TestUsersRepository implements UsersRepository {
   private nextId = 1;

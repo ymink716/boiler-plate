@@ -2,7 +2,7 @@ import { QuestionLike } from 'src/likes/infrastructure/entity/question-like.enti
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Question } from 'src/questions/infrastructure/entity/question.entity';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QuestionLikesRepository } from '../domain/repository/question-likes.repository';

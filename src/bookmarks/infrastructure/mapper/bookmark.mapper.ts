@@ -1,6 +1,6 @@
 import { Bookmark } from "src/bookmarks/domain/bookmark";
 import { BookmarkEntity } from "../entity/bookmark.entity";
-import { User } from "src/users/entity/user.entity";
+import { User } from "src/users/infrastructure/entity/user.entity";
 import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
 
 export class BookmarkMapper {

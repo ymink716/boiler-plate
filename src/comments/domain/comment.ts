@@ -1,7 +1,7 @@
-import { User } from 'src/users/entity/user.entity';
 import { ForbiddenException } from '@nestjs/common';
 import { IsNotCommentor } from 'src/common/exception/error-types';
 import { Content } from './vo/content';
+import { User } from 'src/users/domain/user';
 
 export class Comment {
   constructor(options: {
@@ -41,7 +41,7 @@ export class Comment {
   private likeIds: number[];
 
   public checkIsAuthor(user: User): void {
-    const userId = user.id;
+    const userId = user.getId();
 
     if (this.userId !== userId) {
       throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
