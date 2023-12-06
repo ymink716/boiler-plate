@@ -1,5 +1,4 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { User } from 'src/users/infrastructure/entity/user.entity';
 import { QuestionLikesRepository } from '../domain/repository/question-likes.repository';
 import { QuestionsService } from 'src/questions/application/questions.service';
 import { CommentAlreadyLiked, QuestionAlreadyLiked } from 'src/common/exception/error-types';
@@ -8,6 +7,7 @@ import { CommentsService } from 'src/comments/application/comments.service';
 import { COMMENT_LIKES_REPOSITORY, QUESTION_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { QuestionLike } from '../domain/question.like';
 import { CommentLike } from '../domain/comment.like';
+import { User } from 'src/users/domain/user';
 
 @Injectable()
 export class LikesService {
@@ -23,7 +23,7 @@ export class LikesService {
   async uplikeQuestion(questionId: number, user: User): Promise<void> {
     const question = await this.questionsService.getQuestion(questionId);
     
-    const userId = user.id;
+    const userId = user.getId();
     const questionLikesCount = await this.questionLikesRepository.count(userId, questionId);
 
     if (questionLikesCount > 0) {
@@ -31,7 +31,7 @@ export class LikesService {
     }
 
     const qustionLike = new QuestionLike({ 
-      userId: user.id, 
+      userId: user.getId(), 
       questionId: question.getId(), 
     });
 
@@ -47,7 +47,7 @@ export class LikesService {
   async uplikeComment(commentId: number, user: User): Promise<void> {
     const comment = await this.commentsService.getComment(commentId);
 
-    const userId = user.id;
+    const userId = user.getId();
     const commentLikesCount = await this.commentLikesRepository.count(userId, commentId);
 
     if (commentLikesCount > 0) {
@@ -56,7 +56,7 @@ export class LikesService {
 
     const commentLike = new CommentLike({ 
       commentId: comment.getId(), 
-      userId: user.id 
+      userId: user.getId() 
     });
     
     await this.commentLikesRepository.save(commentLike);

@@ -1,10 +1,10 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { QuestionsService } from 'src/questions/application/questions.service';
-import { User } from 'src/users/infrastructure/entity/user.entity';
 import { QuestionAlreadyBookmarked } from 'src/common/exception/error-types';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { BookmarksRepository } from '../domain/repository/bookmarks.repository';
 import { Bookmark } from '../domain/bookmark';
+import { User } from 'src/users/domain/user';
 
 @Injectable()
 export class BookmarksService {
@@ -17,14 +17,14 @@ export class BookmarksService {
   public async addBookmark(user: User, questionId: number): Promise<void> {
     const question = await this.questionsService.getQuestion(questionId);
 
-    const userId = user.id;
+    const userId = user.getId();
     const bookmarksCount = await this.bookmarksRepository.countByUserIdAndQuestionId(userId, questionId);
 
     if (bookmarksCount > 0) {
       throw new BadRequestException(QuestionAlreadyBookmarked.message, QuestionAlreadyBookmarked.name);
     }
 
-    const bookmark = new Bookmark({ userId: user.id, questionId: question.getId() });
+    const bookmark = new Bookmark({ userId: user.getId(), questionId: question.getId() });
     await this.bookmarksRepository.save(bookmark);
   }
 

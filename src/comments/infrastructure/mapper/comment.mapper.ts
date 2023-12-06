@@ -5,7 +5,7 @@ import { Content } from "src/comments/domain/vo/content";
 
 export class CommentMapper {
   public static toDomain(commentEntity: CommentEntity): Comment {
-    const { id, content, createdAt, question, user, likes } = commentEntity;
+    const { id, content, createdAt, question, user } = commentEntity;
     
     const comment = new Comment({
       id, 
@@ -13,7 +13,6 @@ export class CommentMapper {
       createdAt, 
       userId: user.id, 
       questionId: question.id, 
-      likeIds: likes.map((like) => like.id), 
     });
 
     return comment;

@@ -1,7 +1,7 @@
 import { Bookmark } from "src/bookmarks/domain/bookmark";
 import { BookmarkEntity } from "../entity/bookmark.entity";
-import { User } from "src/users/infrastructure/entity/user.entity";
 import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
+import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 export class BookmarkMapper {
   public static toDomain(bookmarkEntity: BookmarkEntity): Bookmark {
@@ -27,7 +27,7 @@ export class BookmarkMapper {
     if (id) {
       bookmarkEntity.id = id;
     }
-    bookmarkEntity.user = Object.assign(new User(), { id: userId });
+    bookmarkEntity.user = Object.assign(new UserEntity(), { id: userId });
     bookmarkEntity.question = Object.assign(new QuestionEntity(), { id: questionId });
 
     return bookmarkEntity;

@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/users/infrastructure/entity/user.entity';
 import {
   Column,
   Entity,
@@ -12,6 +11,7 @@ import {
 } from 'typeorm';
 import { QuestionEntity } from 'src/questions/infrastructure/entity/question.entity';
 import { CommentLikeEntity } from 'src/likes/infrastructure/entity/comment-like.entity';
+import { UserEntity } from 'src/users/infrastructure/entity/user.entity';
 
 @Entity('comment')
 export class CommentEntity {
@@ -57,8 +57,8 @@ export class CommentEntity {
   })
   deletedAt: Date;
 
-  @ManyToOne(() => User, user => user.comments)
-  user: User;
+  @ManyToOne(() => UserEntity, user => user.comments)
+  user: UserEntity;
 
   @ManyToOne(() => QuestionEntity, question => question.comments, {
     onDelete: 'CASCADE',

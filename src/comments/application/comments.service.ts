@@ -1,5 +1,4 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { User } from 'src/users/infrastructure/entity/user.entity';
 import { CreateCommentDto } from '../presentation/dto/create-comment.dto';
 import { CommentsRepository } from '../domain/repository/comments.repository';
 import { QuestionsService } from 'src/questions/application/questions.service';
@@ -8,6 +7,7 @@ import { CommentNotFound } from 'src/common/exception/error-types';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { Content } from '../domain/vo/content';
 import { Comment } from '../domain/comment';
+import { User } from 'src/users/domain/user';
 
 @Injectable()
 export class CommentsService {
@@ -24,7 +24,7 @@ export class CommentsService {
 
     let comment = new Comment({ 
       content: new Content(content), 
-      userId: user.id, 
+      userId: user.getId(), 
       questionId: question.getId(),
     });
 

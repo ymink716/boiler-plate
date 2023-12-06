@@ -1,5 +1,5 @@
 import { CommentEntity } from 'src/comments/infrastructure/entity/comment.entity';
-import { User } from 'src/users/infrastructure/entity/user.entity';
+import { UserEntity } from 'src/users/infrastructure/entity/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -28,11 +28,11 @@ export class CommentLikeEntity {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, user => user.questionLikes, {
+  @ManyToOne(() => UserEntity, user => user.questionLikes, {
     onDelete: 'CASCADE',
     nullable: false
   })
-  user: User;
+  user: UserEntity;
 
   @ManyToOne(() => CommentEntity, comment => comment.likes, {
     onDelete: 'CASCADE',

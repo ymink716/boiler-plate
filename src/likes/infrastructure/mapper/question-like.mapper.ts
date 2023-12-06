@@ -1,7 +1,7 @@
 import { QuestionLike } from "src/likes/domain/question.like";
 import { QuestionLikeEntity } from "../entity/question-like.entity";
-import { User } from "src/users/infrastructure/entity/user.entity";
 import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
+import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 
 
@@ -29,7 +29,7 @@ export class QeustionLikeMapper {
     if (id) {
       questionLikeEntity.id = id;
     }
-    questionLikeEntity.user = Object.assign(new User(), { id: userId });
+    questionLikeEntity.user = Object.assign(new UserEntity(), { id: userId });
     questionLikeEntity.question = Object.assign(new QuestionEntity(), { id: questionId });
 
     return questionLikeEntity;

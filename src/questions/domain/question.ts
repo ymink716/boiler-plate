@@ -1,4 +1,4 @@
-import { User } from 'src/users/infrastructure/entity/user.entity';
+import { User } from 'src/users/domain/user';
 import { Content } from './vo/content';
 import { Title } from './vo/title';
 import { ForbiddenException } from '@nestjs/common';
@@ -48,7 +48,7 @@ export class Question {
   private bookmarkIds: number[];
 
   public checkIsAuthor(user: User): void {
-    const userId = user.id;
+    const userId = user.getId();
 
     if (this.userId !== userId) {
       throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);

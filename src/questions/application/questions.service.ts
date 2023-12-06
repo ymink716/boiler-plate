@@ -1,13 +1,13 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuestionDto } from '../presentation/dto/create-question.dto';
 import { QuestionsRepository } from '../domain/repository/questions.repository';
-import { User } from 'src/users/infrastructure/entity/user.entity';
 import { QuestionNotFound } from 'src/common/exception/error-types';
 import { UpdateQuestionDto } from '../presentation/dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { Title } from '../domain/vo/title';
 import { Content } from '../domain/vo/content';
 import { Question } from '../domain/question';
+import { User } from 'src/users/domain/user';
 
 @Injectable()
 export class QuestionsService {
@@ -25,7 +25,7 @@ export class QuestionsService {
     const question = new Question({ 
       title: new Title(title), 
       content: new Content(content), 
-      userId: user.id,
+      userId: user.getId(),
       commentIds: [],
       likeIds: [],
       bookmarkIds: [],

@@ -1,7 +1,7 @@
 import { CommentLike } from "src/likes/domain/comment.like";
 import { CommentLikeEntity } from "../entity/comment-like.entity";
-import { User } from "src/users/infrastructure/entity/user.entity";
 import { CommentEntity } from "src/comments/infrastructure/entity/comment.entity";
+import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 
 export class CommentLikeMapper {
@@ -28,7 +28,7 @@ export class CommentLikeMapper {
     if (id) {
       commentLikeEntity.id = id;
     }
-    commentLikeEntity.user = Object.assign(new User(), { id: userId });
+    commentLikeEntity.user = Object.assign(new UserEntity(), { id: userId });
     commentLikeEntity.comment = Object.assign(new CommentEntity(), { id: commentId });
 
     return commentLikeEntity;

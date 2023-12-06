@@ -10,9 +10,6 @@ export class Content {
   content: string;
   
   constructor(text: string) {
-    if () {}
-    console.log('dddddd');
-    console.log(text);
     if (this.isInvalid(text)) {
       throw new BadRequestException(InvalidCommentContent.message, InvalidCommentContent.name);
     } 

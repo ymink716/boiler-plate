@@ -1,4 +1,4 @@
-import { User } from 'src/users/infrastructure/entity/user.entity';
+import { UserEntity } from 'src/users/infrastructure/entity/user.entity';
 import { CommentEntity } from 'src/comments/infrastructure/entity/comment.entity';
 import {
   Column,
@@ -12,7 +12,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { QuestionLikeEntity } from 'src/likes/infrastructure/entity/question-like.entity';
-import { Bookmark } from 'src/bookmarks/infrastructure/entity/bookmark.entity';
+import { BookmarkEntity } from 'src/bookmarks/infrastructure/entity/bookmark.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('question')
@@ -60,9 +60,9 @@ export class QuestionEntity {
   })
   deletedAt: Date;
 
-  @ManyToOne(type => User, user => user.questions)
+  @ManyToOne(type => UserEntity, user => user.questions)
   @JoinColumn()
-  user: User;
+  user: UserEntity;
 
   @OneToMany(() => CommentEntity, comment => comment.question)
   comments: CommentEntity[];
@@ -70,6 +70,6 @@ export class QuestionEntity {
   @OneToMany(() => QuestionLikeEntity, questionLike => questionLike.question)
   likes: QuestionLikeEntity[];
 
-  @OneToMany(() => Bookmark, bookmark => bookmark.question)
-  bookmarks: Bookmark[];
+  @OneToMany(() => BookmarkEntity, bookmark => bookmark.question)
+  bookmarks: BookmarkEntity[];
 }

@@ -1,5 +1,5 @@
 import { QuestionEntity } from 'src/questions/infrastructure/entity/question.entity';
-import { User } from 'src/users/infrastructure/entity/user.entity';
+import { UserEntity } from 'src/users/infrastructure/entity/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -28,11 +28,11 @@ export class BookmarkEntity {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, user => user.bookmarks, {
+  @ManyToOne(() => UserEntity, user => user.bookmarks, {
     onDelete: 'CASCADE',
     nullable: false
   })
-  user: User;
+  user: UserEntity;
 
   @ManyToOne(() => QuestionEntity, question => question.bookmarks, {
     onDelete: 'CASCADE',
