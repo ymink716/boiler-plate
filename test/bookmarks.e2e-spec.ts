@@ -7,7 +7,7 @@ import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { Bookmark } from 'src/bookmarks/entity/bookmark.entity';
+import { Bookmark } from 'src/bookmarks/infrastructure/entity/bookmark.entity';
 import { mockAuthGuard } from './mock-auth.guard';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 

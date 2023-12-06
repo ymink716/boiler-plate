@@ -1,4 +1,4 @@
-import { Bookmark } from "../entity/bookmark.entity";
+import { Bookmark } from "../bookmark";
 
 export interface BookmarksRepository {
   countByUserIdAndQuestionId(userId: number, questionId: number): Promise<number>;

@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { BookmarksController } from './bookmarks.controller';
-import { BookmarksService } from './bookmarks.service';
+import { BookmarksController } from './presentation/bookmarks.controller';
+import { BookmarksService } from './application/bookmarks.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Bookmark } from './entity/bookmark.entity';
-import { TypeormBookmarksRepository } from './repository/typeorm-bookmarks.repository';
+import { TypeormBookmarksRepository } from './infrastructure/typeorm-bookmarks.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { BookmarkEntity } from './infrastructure/entity/bookmark.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Bookmark]),
+    TypeOrmModule.forFeature([BookmarkEntity]),
     QuestionsModule,
   ],
   controllers: [BookmarksController],

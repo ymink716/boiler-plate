@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Bookmark } from "src/bookmarks/entity/bookmark.entity";
+import { Bookmark } from "src/bookmarks/infrastructure/entity/bookmark.entity";
 import { CommentEntity } from "src/comments/infrastructure/entity/comment.entity";
 import { UserProvider } from "src/common/enums/user-provider.enum";
 import { QuestionLikeEntity } from "src/likes/infrastructure/entity/question-like.entity";

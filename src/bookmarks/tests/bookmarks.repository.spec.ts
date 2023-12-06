@@ -7,7 +7,7 @@ import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { BookmarksRepository } from '../repository/bookmarks.repository';
-import { Bookmark } from '../entity/bookmark.entity';
+import { Bookmark } from '../infrastructure/entity/bookmark.entity';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { Title } from 'src/questions/domain/vo/title';
 import { Content } from 'src/questions/domain/vo/content';

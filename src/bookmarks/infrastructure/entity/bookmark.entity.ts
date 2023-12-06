@@ -1,4 +1,4 @@
-import { Question } from 'src/questions/infrastructure/entity/question.entity';
+import { QuestionEntity } from 'src/questions/infrastructure/entity/question.entity';
 import { User } from 'src/users/entity/user.entity';
 import {
   Entity,
@@ -7,17 +7,17 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-@Entity()
-export class Bookmark {
-  constructor(options: {
-    user: User,
-    question: Question
-  }) {
-    if (options) {
-      this.user = options.user;
-      this.question = options.question;
-    }
-  }
+@Entity('bookmark')
+export class BookmarkEntity {
+  // constructor(options: {
+  //   user: User,
+  //   question: QuestionEntity
+  // }) {
+  //   if (options) {
+  //     this.user = options.user;
+  //     this.question = options.question;
+  //   }
+  // }
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -34,9 +34,9 @@ export class Bookmark {
   })
   user: User;
 
-  @ManyToOne(() => Question, question => question.bookmarks, {
+  @ManyToOne(() => QuestionEntity, question => question.bookmarks, {
     onDelete: 'CASCADE',
     nullable: false
   })
-  question: Question;
+  question: QuestionEntity;
 }

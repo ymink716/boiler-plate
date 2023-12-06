@@ -12,7 +12,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { QuestionLikeEntity } from 'src/likes/infrastructure/entity/question-like.entity';
-import { Bookmark } from 'src/bookmarks/entity/bookmark.entity';
+import { Bookmark } from 'src/bookmarks/infrastructure/entity/bookmark.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('question')
