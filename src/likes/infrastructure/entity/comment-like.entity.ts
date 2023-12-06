@@ -1,4 +1,4 @@
-import { Comment } from 'src/comments/infrastructure/entity/comment.entity';
+import { CommentEntity } from 'src/comments/infrastructure/entity/comment.entity';
 import { User } from 'src/users/entity/user.entity';
 import {
   Entity,
@@ -9,15 +9,15 @@ import {
 
 @Entity('comment_like')
 export class CommentLikeEntity {
-  constructor(options: {
-    user: User,
-    comment: Comment
-  }) {
-    if (options) {
-      this.user = options.user;
-      this.comment = options.comment;
-    }
-  }
+  // constructor(options: {
+  //   user: User,
+  //   comment: CommentEntity
+  // }) {
+  //   if (options) {
+  //     this.user = options.user;
+  //     this.comment = options.comment;
+  //   }
+  // }
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -34,9 +34,9 @@ export class CommentLikeEntity {
   })
   user: User;
 
-  @ManyToOne(() => Comment, comment => comment.likes, {
+  @ManyToOne(() => CommentEntity, comment => comment.likes, {
     onDelete: 'CASCADE',
     nullable: false
   })
-  comment: Comment;
+  comment: CommentEntity;
 }

@@ -48,7 +48,11 @@ export class Comment {
     }
   }
 
-  public editContent(content: string) {
+  public editContent(content: string): void {
     this.content = new Content(content);
+  }
+
+  public getId(): number {
+    return this.id;
   }
 }

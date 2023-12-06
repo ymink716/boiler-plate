@@ -1,14 +1,19 @@
-import { Question } from 'src/questions/domain/question';
-import { User } from 'src/users/entity/user.entity';
-
 export class QuestionLike {
   constructor(options: {
-    user: User,
-    question: Question
+    id?: number; 
+    userId: number,
+    questionId: number;
+    createdAt?: Date;
   }) {
     if (options) {
-      this.user = options.user;
-      this.question = options.question;
+      if (options.id) {
+        this.id = options.id;
+      }
+      if (options.createdAt) {
+        this.createdAt = options.createdAt;
+      }
+      this.userId = options.userId;
+      this.questionId = options.questionId;
     }
   }
 
@@ -16,7 +21,7 @@ export class QuestionLike {
 
   private createdAt: Date;
 
-  private user: User;
+  private userId: number;
 
-  private question: Question;
+  private questionId: number;
 }

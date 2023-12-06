@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CommentLikesRepository } from "../repository/comment-likes.repository";
-import { CommentLike } from "./entity/comment-like.entity";
-import { User } from "src/users/entity/user.entity";
-import { Comment } from "src/comments/infrastructure/entity/comment.entity";
+import { CommentLikesRepository } from "../domain/repository/comment-likes.repository";
+import { CommentLikeEntity } from "./entity/comment-like.entity";
+import { CommentLike } from "../domain/comment.like";
+import { CommentLikeMapper } from "./mapper/comment-like.mapper";
 
 @Injectable()
 export class TypeormCommentLikesRepository implements CommentLikesRepository {
   constructor(
-    @InjectRepository(CommentLike)
-    private readonly commentLikesRepository: Repository<CommentLike>,
+    @InjectRepository(CommentLikeEntity)
+    private readonly commentLikesRepository: Repository<CommentLikeEntity>,
   ) {}
 
   async count(userId: number, commentId: number): Promise<number> {
@@ -33,11 +33,15 @@ export class TypeormCommentLikesRepository implements CommentLikesRepository {
   }
 
   async save(commentLike: CommentLike): Promise<CommentLike> {
-    return await this.commentLikesRepository.save(commentLike);
+    const savedCommentLikeEntity = await this.commentLikesRepository.save(
+      CommentLikeMapper.toPersistence(commentLike),
+    );
+
+    return CommentLikeMapper.toDomain(savedCommentLikeEntity);
   }
 
   async findByUserIdAndCommentId(userId: number, commentId: number): Promise<CommentLike[]> {
-    const commentLikes = await this.commentLikesRepository.find({
+    const commentLikeEntities = await this.commentLikesRepository.find({
       relations: {
         user: true,
         comment: true,
@@ -52,10 +56,12 @@ export class TypeormCommentLikesRepository implements CommentLikesRepository {
       },
     });
 
-    return commentLikes;
+    return commentLikeEntities.map((commentLikeEntity) => CommentLikeMapper.toDomain(commentLikeEntity));
   }
 
   async remove(commentLikes: CommentLike[]): Promise<void> {
-    await this.commentLikesRepository.remove(commentLikes);
+    const commentLikeEntities = commentLikes.map((commentLike) => CommentLikeMapper.toPersistence(commentLike));
+
+    await this.commentLikesRepository.remove(commentLikeEntities);
   }
 }

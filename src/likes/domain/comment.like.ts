@@ -1,14 +1,19 @@
-import { Comment } from 'src/comments/infrastructure/entity/comment.entity';
-import { User } from 'src/users/entity/user.entity';
-
 export class CommentLike {
   constructor(options: {
-    user: User,
-    comment: Comment
+    id?: number; 
+    userId: number;
+    commentId: number;
+    createdAt?: Date;
   }) {
     if (options) {
-      this.user = options.user;
-      this.comment = options.comment;
+      if (options.id) {
+        this.id = options.id;
+      }
+      if (options.createdAt) {
+        this.createdAt = options.createdAt;
+      }
+      this.userId = options.userId;
+      this.commentId = options.commentId;
     }
   }
 
@@ -16,7 +21,7 @@ export class CommentLike {
 
   private createdAt: Date;
 
-  private user: User;
+  private userId: number;
 
-  private comment: Comment;
+  private commentId: number;
 }

@@ -1,13 +1,13 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { User } from 'src/users/entity/user.entity';
-import { QuestionLikesRepository } from '../repository/question-likes.repository';
+import { QuestionLikesRepository } from '../domain/repository/question-likes.repository';
 import { QuestionsService } from 'src/questions/application/questions.service';
 import { CommentAlreadyLiked, QuestionAlreadyLiked } from 'src/common/exception/error-types';
-import { CommentLikesRepository } from '../repository/comment-likes.repository';
+import { CommentLikesRepository } from '../domain/repository/comment-likes.repository';
 import { CommentsService } from 'src/comments/application/comments.service';
 import { COMMENT_LIKES_REPOSITORY, QUESTION_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { QuestionLike } from '../infrastructure/entity/question-like.entity';
-import { CommentLike } from '../infrastructure/entity/comment-like.entity';
+import { QuestionLike } from '../domain/question.like';
+import { CommentLike } from '../domain/comment.like';
 
 @Injectable()
 export class LikesService {
@@ -30,7 +30,11 @@ export class LikesService {
       throw new BadRequestException(QuestionAlreadyLiked.message, QuestionAlreadyLiked.name);
     }
 
-    const qustionLike = new QuestionLike({ user, question });
+    const qustionLike = new QuestionLike({ 
+      userId: user.id, 
+      questionId: question.getId(), 
+    });
+
     await this.questionLikesRepository.save(qustionLike);
   }
 
@@ -50,7 +54,11 @@ export class LikesService {
       throw new BadRequestException(CommentAlreadyLiked.message, CommentAlreadyLiked.name);
     }
 
-    const commentLike = new CommentLike({ comment, user });
+    const commentLike = new CommentLike({ 
+      commentId: comment.getId(), 
+      userId: user.id 
+    });
+    
     await this.commentLikesRepository.save(commentLike);
   }
 

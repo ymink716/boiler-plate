@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import { QuestionLikesRepository } from "../repository/question-likes.repository";
+import { QuestionLikesRepository } from "../domain/repository/question-likes.repository";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { QuestionLike } from "./entity/question-like.entity";
-import { Question } from "src/questions/infrastructure/entity/question.entity";
-import { User } from "src/users/entity/user.entity";
+import { QuestionLikeEntity } from "./entity/question-like.entity";
+import { QuestionLike } from "../domain/question.like";
+import { QeustionLikeMapper } from "./mapper/question-like.mapper";
 
 @Injectable()
 export class TypeormQuestionLikesRepository implements QuestionLikesRepository {
   constructor(
-    @InjectRepository(QuestionLike)
-    private readonly questionLikesRepository: Repository<QuestionLike>,
+    @InjectRepository(QuestionLikeEntity)
+    private readonly questionLikesRepository: Repository<QuestionLikeEntity>,
   ) {}
 
   async count(userId: number, questionId: number): Promise<number> {
@@ -33,11 +33,15 @@ export class TypeormQuestionLikesRepository implements QuestionLikesRepository {
   }
 
   async save(questionLike: QuestionLike): Promise<QuestionLike> {
-    return await this.questionLikesRepository.save(questionLike);
+    const savedQuestionLikeEntity = await this.questionLikesRepository.save(
+      QeustionLikeMapper.toPersistence(questionLike),
+    );
+
+    return QeustionLikeMapper.toDomain(savedQuestionLikeEntity);
   }
 
   async findByUserIdAndQeustionId(userId: number, questionId: number): Promise<QuestionLike[]> {
-    const questionLikes = await this.questionLikesRepository.find({
+    const questionLikeEntities = await this.questionLikesRepository.find({
       relations: {
         user: true,
         question: true,
@@ -52,10 +56,16 @@ export class TypeormQuestionLikesRepository implements QuestionLikesRepository {
       },
     });
 
-    return questionLikes;
+    return questionLikeEntities.map(
+      (questionLikeEntity) => QeustionLikeMapper.toDomain(questionLikeEntity)
+    );
   }
 
   async remove(questionLikes: QuestionLike[]): Promise<void> {
-    await this.questionLikesRepository.remove(questionLikes);
+    const questionLikeEntities = questionLikes.map(
+      (questiontLike) => QeustionLikeMapper.toPersistence(questiontLike)
+    );
+
+    await this.questionLikesRepository.remove(questionLikeEntities);
   }
 }

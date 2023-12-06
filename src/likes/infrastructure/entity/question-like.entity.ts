@@ -9,15 +9,15 @@ import {
 
 @Entity('question_like')
 export class QuestionLikeEntity {
-  constructor(options: {
-    user: User,
-    question: QuestionEntity
-  }) {
-    if (options) {
-      this.user = options.user;
-      this.question = options.question;
-    }
-  }
+  // constructor(options: {
+  //   user: User,
+  //   question: QuestionEntity
+  // }) {
+  //   if (options) {
+  //     this.user = options.user;
+  //     this.question = options.question;
+  //   }
+  // }
 
   @PrimaryGeneratedColumn()
   id: number;
