@@ -15,7 +15,7 @@ export class WriteCommentHandler implements ICommandHandler<WriteCommentCommand>
     private readonly questionsService: QuestionsService,
   ) {}
   
-  async execute(command: WriteCommentCommand): Promise<any> {
+  async execute(command: WriteCommentCommand): Promise<Comment> {
     const { questionId, content, userId } = command;
     
     const question = await this.questionsService.getQuestion(questionId);

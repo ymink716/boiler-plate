@@ -9,6 +9,7 @@ import { Comment } from '../domain/comment';
 import { User } from 'src/users/domain/user';
 import { CommandBus } from '@nestjs/cqrs';
 import { WriteCommentCommand } from '../application/command/write-comment.command';
+import { EditCommentCommand } from '../application/command/edit-comment.command';
 
 @ApiTags('comments')
 @Controller('comments')
@@ -52,7 +53,10 @@ export class CommentsController {
     @Param('commentId', ParseIntPipe) commentId: number,
   ) {
     const { content } = updateCommentDto;
-    return await this.commentsService.editComment(updateCommentDto, commentId, user);
+
+    const command = new EditCommentCommand(commentId, content, userId);
+    
+    return this.commandBus.execute(command);
   }
 
   @ApiOperation({ summary: '답변 삭제', description: '답변을 삭제합니다.' })

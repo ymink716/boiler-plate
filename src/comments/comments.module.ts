@@ -8,6 +8,7 @@ import { QuestionsModule } from 'src/questions/questions.module';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { CqrsModule } from '@nestjs/cqrs';
 import { WriteCommentHandler } from './application/command/write-comment.handler';
+import { EditCommentHandler } from './application/command/edit-comment.handler';
 @Module({
   imports:[
     TypeOrmModule.forFeature([CommentEntity]),
@@ -17,6 +18,7 @@ import { WriteCommentHandler } from './application/command/write-comment.handler
   controllers: [CommentsController],
   providers: [
     WriteCommentHandler,
+    EditCommentHandler,
     {
       provide: COMMENTS_REPOSITORY,
       useClass: TypeormCommentsRepository,

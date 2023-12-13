@@ -40,12 +40,12 @@ export class Comment {
 
   private questionId: number;
 
-  public checkIsAuthor(user: User): void {
-    const userId = user.getId();
-
+  public checkIsAuthor(userId: number): void {
     if (this.userId !== userId) {
       throw new ForbiddenException(IsNotCommentor.message, IsNotCommentor.name);
     }
+
+    return;
   }
 
   public editContent(content: string): void {
