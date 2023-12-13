@@ -30,16 +30,4 @@ export class QuestionsService {
 
     return question;
   }
-
-  public async deleteQuestion(questionId: number, user: User): Promise<void> {
-    const question = await this.questionsRepository.findOneById(questionId);
-
-    if (!question) {
-      throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
-    }
-    
-    question.checkIsAuthor(user);
-
-    await this.questionsRepository.softDelete(questionId);
-  }
 }

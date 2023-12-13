@@ -10,6 +10,7 @@ import { User } from 'src/users/domain/user';
 import { CommandBus } from '@nestjs/cqrs';
 import { PostQuestionCommand } from '../application/command/post-question.command';
 import { UpdateQuestionCommand } from '../application/command/update-question.command';
+import { DeleteQuestionCommand } from '../application/command/delete-question.command';
 
 @ApiTags('questions')
 @Controller('questions')
@@ -108,10 +109,10 @@ export class QuestionsController {
   @UseGuards(JwtAuthGuard)
   async deleteQuestion(
     @Param('questionId', ParseIntPipe) questionId: number,
-    @GetUser() user: User,
+    @GetUser('id') userId: number,
   ) {
-    await this.questionsService.deleteQuestion(questionId, user);
+    const command = new DeleteQuestionCommand(questionId, userId);
 
-    return { success: true };
+    return this.commandBus.execute(command);  
   }
 }
