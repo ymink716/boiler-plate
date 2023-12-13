@@ -7,11 +7,13 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Question } from '../domain/question';
 import { User } from 'src/users/domain/user';
+import { CommandBus } from '@nestjs/cqrs';
+import { PostQuestionCommand } from '../application/command/post-question.command';
 
 @ApiTags('questions')
 @Controller('questions')
 export class QuestionsController {
-  constructor(private readonly questionsService: QuestionsService) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @ApiOperation({ 
     summary: '질문 남기기',
@@ -28,9 +30,13 @@ export class QuestionsController {
   @UseGuards(JwtAuthGuard)
   async postQuestion(
     @Body() createQuestionDto: CreateQuestionDto,
-    @GetUser() user: User,
+    @GetUser('id') userId: number,
   ) {
-    return await this.questionsService.postQuestion(createQuestionDto, user);
+    const { title, content } = createQuestionDto;
+
+    const command = new PostQuestionCommand(title, content, userId);
+
+    return this.commandBus.execute(command);
   }
 
   @ApiOperation({ 

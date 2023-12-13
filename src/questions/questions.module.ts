@@ -5,17 +5,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuestionEntity } from './infrastructure/entity/question.entity';
 import { TypeormQuestionsRepository } from './infrastructure/typeorm-questions.repository';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { CqrsModule } from '@nestjs/cqrs';
+import { PostQuestionHandler } from './application/command/post-question.handler';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([QuestionEntity])],
+  imports:[
+    TypeOrmModule.forFeature([QuestionEntity]),
+    CqrsModule,
+  ],
   controllers: [QuestionsController],
   providers: [
-    QuestionsService,
+    PostQuestionHandler,
     {
       provide: QUESTIONS_REPOSITORY,
       useClass: TypeormQuestionsRepository,
     }
   ],
-  exports: [QuestionsService],
 })
+
 export class QuestionsModule {}

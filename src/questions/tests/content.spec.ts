@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { Content } from '../domain/vo/content';
+import { Content } from '../domain/content';
 
 describe('Question.content', () => {
   test.each([['t'], ['0'.repeat(501)]])(

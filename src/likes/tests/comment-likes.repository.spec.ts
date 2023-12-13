@@ -10,9 +10,9 @@ import { Comment } from 'src/comments/infrastructure/entity/comment.entity';
 import { Question } from 'src/questions/infrastructure/entity/question.entity';
 import { CommentLike } from '../infrastructure/entity/comment-like.entity';
 import { COMMENT_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Title } from 'src/questions/domain/vo/title';
-import { Content as QeustionContent } from 'src/questions/domain/vo/content';
-import { Content as CommentContent } from 'src/comments/domain/vo/content';
+import { Title } from 'src/questions/domain/title';
+import { Content as QeustionContent } from 'src/questions/domain/content';
+import { Content as CommentContent } from 'src/comments/domain/content';
 
 describe('CommentLikesRepository', () => {
   let app: INestApplication;

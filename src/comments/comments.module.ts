@@ -9,6 +9,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { WriteCommentHandler } from './application/command/write-comment.handler';
 import { EditCommentHandler } from './application/command/edit-comment.handler';
 import { DeleteCommentHandler } from './application/command/delete-comment.handler';
+
 @Module({
   imports:[
     TypeOrmModule.forFeature([CommentEntity]),

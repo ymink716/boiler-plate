@@ -1,7 +1,7 @@
 import { Question } from "src/questions/domain/question";
 import { QuestionEntity } from "../entity/question.entity";
-import { Title } from "src/questions/domain/vo/title";
-import { Content } from "src/questions/domain/vo/content";
+import { Title } from "src/questions/domain/title";
+import { Content } from "src/questions/domain/content";
 import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 export class QuestionMapper {

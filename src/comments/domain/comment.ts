@@ -1,6 +1,6 @@
 import { ForbiddenException } from '@nestjs/common';
 import { IsNotCommentor } from 'src/common/exception/error-types';
-import { Content } from './vo/content';
+import { Content } from './content';
 import { User } from 'src/users/domain/user';
 
 export class Comment {

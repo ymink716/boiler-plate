@@ -1,7 +1,7 @@
 import { User } from "src/users/infrastructure/entity/user.entity";
 import { Question } from "../infrastructure/entity/question.entity";
-import { Title } from "../domain/vo/title";
-import { Content } from "../domain/vo/content";
+import { Title } from "../domain/title";
+import { Content } from "../domain/content";
 import { ForbiddenException } from "@nestjs/common";
 
 describe("Question Entity", () => {

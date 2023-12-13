@@ -8,8 +8,8 @@ import { AppModule } from 'src/app.module';
 import { QuestionsRepository } from '../domain/repository/questions.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Title } from '../domain/vo/title';
-import { Content } from '../domain/vo/content';
+import { Title } from '../domain/title';
+import { Content } from '../domain/content';
 
 describe('QuestoinsRepository', () => {
   let app: INestApplication;

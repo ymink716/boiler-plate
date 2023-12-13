@@ -9,9 +9,9 @@ import { CommentsRepository } from '../domain/repository/comments.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { Comment } from '../infrastructure/entity/comment.entity';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Content as QuestionContent } from 'src/questions/domain/vo/content';
-import {Content} from 'src/comments/domain/vo/content';
-import { Title } from 'src/questions/domain/vo/title';
+import { Content as QuestionContent } from 'src/questions/domain/content';
+import {Content} from 'src/comments/domain/content';
+import { Title } from 'src/questions/domain/title';
 
 describe('CommentsRepository', () => {
   let app: INestApplication;

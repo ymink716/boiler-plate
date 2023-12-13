@@ -2,7 +2,7 @@ import { ICommandHandler } from "@nestjs/cqrs";
 import { WriteCommentCommand } from "./write-comment.command";
 import { Inject, Injectable } from "@nestjs/common";
 import { QuestionsService } from "src/questions/application/questions.service";
-import { Content } from "src/comments/domain/vo/content";
+import { Content } from "src/comments/domain/content";
 import { Comment } from "src/comments/domain/comment";
 import { CommentsRepository } from "src/comments/domain/repository/comments.repository";
 import { COMMENTS_REPOSITORY } from "src/common/constants/tokens.constant";

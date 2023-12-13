@@ -11,9 +11,9 @@ import { Comment } from '../infrastructure/entity/comment.entity';
 import { UpdateCommentDto } from '../presentation/dto/update-comment.dto';
 import { QuestionsService } from 'src/questions/application/questions.service';
 import { COMMENTS_REPOSITORY } from '../../common/constants/tokens.constant';
-import { Title } from 'src/questions/domain/vo/title';
-import { Content as QuestionContent } from 'src/questions/domain/vo/content';
-import Content from 'src/comments/domain/vo/content';
+import { Title } from 'src/questions/domain/title';
+import { Content as QuestionContent } from 'src/questions/domain/content';
+import Content from 'src/comments/domain/content';
 
 describe('CommentsService', () => {
   let app: INestApplication;

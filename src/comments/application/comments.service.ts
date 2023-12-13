@@ -5,7 +5,7 @@ import { QuestionsService } from 'src/questions/application/questions.service';
 import { UpdateCommentDto } from '../presentation/dto/update-comment.dto';
 import { CommentNotFound } from 'src/common/exception/error-types';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Content } from '../domain/vo/content';
+import { Content } from '../domain/content';
 import { Comment } from '../domain/comment';
 import { User } from 'src/users/domain/user';
 

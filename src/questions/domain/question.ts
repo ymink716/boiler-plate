@@ -1,6 +1,6 @@
 import { User } from 'src/users/domain/user';
-import { Content } from './vo/content';
-import { Title } from './vo/title';
+import { Content } from './content';
+import { Title } from './title';
 import { ForbiddenException } from '@nestjs/common';
 import { IsNotQuestionWriter } from 'src/common/exception/error-types';
 

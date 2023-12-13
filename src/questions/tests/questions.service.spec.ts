@@ -9,8 +9,8 @@ import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { CreateQuestionDto } from '../presentation/dto/create-question.dto';
 import { UpdateQuestionDto } from '../presentation/dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Title } from '../domain/vo/title';
-import { Content } from '../domain/vo/content';
+import { Title } from '../domain/title';
+import { Content } from '../domain/content';
 
 describe('QuestionsService', () => {
   let app: INestApplication;

@@ -1,6 +1,6 @@
 import { Comment } from "src/comments/domain/comment";
 import { CommentEntity } from "../entity/comment.entity";
-import { Content } from "src/comments/domain/vo/content";
+import { Content } from "src/comments/domain/content";
 
 
 export class CommentMapper {

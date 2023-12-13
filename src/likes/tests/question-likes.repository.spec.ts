@@ -9,8 +9,8 @@ import { setUpTestingAppModule } from 'src/config/app-test.config';
 import { QuestionLikesRepository } from '../domain/repository/question-likes.repository';
 import { QuestionLike } from '../infrastructure/entity/question-like.entity';
 import { QUESTION_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Title } from 'src/questions/domain/vo/title';
-import { Content } from 'src/questions/domain/vo/content';
+import { Title } from 'src/questions/domain/title';
+import { Content } from 'src/questions/domain/content';
 
 describe('QuestionLikesRepository', () => {
   let app: INestApplication;

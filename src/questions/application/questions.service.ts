@@ -4,8 +4,8 @@ import { QuestionsRepository } from '../domain/repository/questions.repository';
 import { QuestionNotFound } from 'src/common/exception/error-types';
 import { UpdateQuestionDto } from '../presentation/dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { Title } from '../domain/vo/title';
-import { Content } from '../domain/vo/content';
+import { Title } from '../domain/title';
+import { Content } from '../domain/content';
 import { Question } from '../domain/question';
 import { User } from 'src/users/domain/user';
 
@@ -15,23 +15,6 @@ export class QuestionsService {
     @Inject(QUESTIONS_REPOSITORY)
     private readonly questionsRepository: QuestionsRepository,
   ) {}
-
-  public async postQuestion(
-    createQuestionDto: CreateQuestionDto, 
-    user: User,
-  ): Promise<Question> {
-    const { title, content } = createQuestionDto;
-
-    const question = new Question({ 
-      title: new Title(title), 
-      content: new Content(content), 
-      userId: user.getId(),
-    });
-    
-    const newQuestion = this.questionsRepository.save(question);
-
-    return newQuestion;
-  }
 
   public async getQuestions(): Promise<FidnOn[]> {
     return await this.questionQueryRepository._____();
