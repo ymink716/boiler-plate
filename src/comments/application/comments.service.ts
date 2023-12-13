@@ -17,20 +17,20 @@ export class CommentsService {
     private readonly questionsService: QuestionsService,
   ) {}
 
-  public async writeComment(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
-    const { questionId, content } = createCommentDto;
+  // public async writeComment(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
+  //   const { questionId, content } = createCommentDto;
 
-    const question = await this.questionsService.getQuestion(questionId);
+  //   const question = await this.questionsService.getQuestion(questionId);
 
-    let comment = new Comment({ 
-      content: new Content(content), 
-      userId: user.getId(), 
-      questionId: question.getId(),
-    });
+  //   let comment = new Comment({ 
+  //     content: new Content(content), 
+  //     userId: user.getId(), 
+  //     questionId: question.getId(),
+  //   });
 
-    comment = await this.commentsRepository.save(comment);
-    return comment;
-  }
+  //   comment = await this.commentsRepository.save(comment);
+  //   return comment;
+  // }
 
   public async editComment(updateCommentDto: UpdateCommentDto, commentId: number, user: User): Promise<Comment> {
     const comment = await this.commentsRepository.findOneById(commentId);
