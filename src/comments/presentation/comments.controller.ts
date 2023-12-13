@@ -1,5 +1,4 @@
 import { Controller, Post, UseGuards, Body, Put, Param, ParseIntPipe, Delete } from '@nestjs/common';
-import { CommentsService } from '../application/comments.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
@@ -10,6 +9,7 @@ import { User } from 'src/users/domain/user';
 import { CommandBus } from '@nestjs/cqrs';
 import { WriteCommentCommand } from '../application/command/write-comment.command';
 import { EditCommentCommand } from '../application/command/edit-comment.command';
+import { DeleteCommentCommand } from '../application/command/delete-comment.command';
 
 @ApiTags('comments')
 @Controller('comments')
@@ -55,7 +55,7 @@ export class CommentsController {
     const { content } = updateCommentDto;
 
     const command = new EditCommentCommand(commentId, content, userId);
-    
+
     return this.commandBus.execute(command);
   }
 
@@ -67,11 +67,11 @@ export class CommentsController {
   @Delete('/:commentId')
   @UseGuards(JwtAuthGuard)
   async deleteComment(
-    @GetUser() user: User,
+    @GetUser('id') userId: number,
     @Param('commentId', ParseIntPipe) commentId: number,
   ) {
-    await this.commentsService.deleteComment(commentId, user);
+    const command = new DeleteCommentCommand(commentId, userId);
 
-    return { success: true };
+    return this.commandBus.execute(command);
   }
 }
