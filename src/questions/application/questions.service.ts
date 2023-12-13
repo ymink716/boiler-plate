@@ -31,25 +31,6 @@ export class QuestionsService {
     return question;
   }
 
-  public async updateQuestion(
-    questionId: number, 
-    user: User, 
-    updateQuestionDto: UpdateQuestionDto
-    ): Promise<Question> {
-    const question = await this.questionsRepository.findOneById(questionId);
-
-    if (!question) {
-      throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
-    }
-
-    question.checkIsAuthor(user);
-
-    const { title, content } = updateQuestionDto;
-    question.update(title, content);
-
-    return await this.questionsRepository.save(question);
-  }
-
   public async deleteQuestion(questionId: number, user: User): Promise<void> {
     const question = await this.questionsRepository.findOneById(questionId);
 

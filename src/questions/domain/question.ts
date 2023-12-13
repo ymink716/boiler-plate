@@ -35,12 +35,12 @@ export class Question {
 
   private userId: number;
 
-  public checkIsAuthor(user: User): void {
-    const userId = user.getId();
-
+  public checkIsAuthor(userId: number): void {
     if (this.userId !== userId) {
       throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
     }
+
+    return;
   }
 
   public update(title: string, content: string): void {

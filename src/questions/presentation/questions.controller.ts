@@ -9,6 +9,7 @@ import { Question } from '../domain/question';
 import { User } from 'src/users/domain/user';
 import { CommandBus } from '@nestjs/cqrs';
 import { PostQuestionCommand } from '../application/command/post-question.command';
+import { UpdateQuestionCommand } from '../application/command/update-question.command';
 
 @ApiTags('questions')
 @Controller('questions')
@@ -84,10 +85,14 @@ export class QuestionsController {
   @UseGuards(JwtAuthGuard)
   async updateQuestion(
     @Param('questionId', ParseIntPipe) questionId: number,
-    @GetUser() user: User,
+    @GetUser('id') userId: number,
     @Body() updateQuestionDto: UpdateQuestionDto,
   ) {
-    return await this.questionsService.updateQuestion(questionId, user, updateQuestionDto);
+    const { title, content } = updateQuestionDto;
+
+    const command = new UpdateQuestionCommand(questionId, title, content, userId);
+
+    return this.commandBus.execute(command);  
   }
 
   @ApiOperation({ 
