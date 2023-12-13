@@ -17,16 +17,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('question')
 export class QuestionEntity {
-  // constructor(options: {
-  //   title: string;
-  //   content: string;
-  // }) {
-  //   if (options) {
-  //     this.title = options.title;
-  //     this.content = options.content;
-  //   }
-  // }
-
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;

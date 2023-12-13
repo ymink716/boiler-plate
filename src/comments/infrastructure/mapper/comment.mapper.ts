@@ -5,12 +5,13 @@ import { Content } from "src/comments/domain/vo/content";
 
 export class CommentMapper {
   public static toDomain(commentEntity: CommentEntity): Comment {
-    const { id, content, createdAt, question, user } = commentEntity;
+    const { id, content, createdAt, updatedAt, deletedAt, question, user } = commentEntity;
     
     const comment = new Comment({
       id, 
       content: new Content(content), 
       createdAt, 
+      updatedAt,
       userId: user.id, 
       questionId: question.id, 
     });
@@ -21,7 +22,6 @@ export class CommentMapper {
   public static toPersistence(comment: Comment): CommentEntity {
     const id = comment['id'];
     const content = comment['content'];
-
 
     const commentEntity = new CommentEntity();
 

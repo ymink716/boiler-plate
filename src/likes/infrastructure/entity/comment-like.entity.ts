@@ -9,16 +9,6 @@ import {
 
 @Entity('comment_like')
 export class CommentLikeEntity {
-  // constructor(options: {
-  //   user: User,
-  //   comment: CommentEntity
-  // }) {
-  //   if (options) {
-  //     this.user = options.user;
-  //     this.comment = options.comment;
-  //   }
-  // }
-
   @PrimaryGeneratedColumn()
   id: number;
 

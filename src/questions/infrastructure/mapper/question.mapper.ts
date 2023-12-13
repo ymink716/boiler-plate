@@ -6,17 +6,14 @@ import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 export class QuestionMapper {
   public static toDomain(questionEntity: QuestionEntity): Question {
-    const { id, title, content, createdAt, user, comments, likes, bookmarks } = questionEntity;
+    const { id, title, content, createdAt, user } = questionEntity;
 
     const question = new Question({
       id, 
       title: new Title(title), 
       content: new Content(content), 
-      createdAt, 
+      createdAt,
       userId: user.id, 
-      commentIds: comments.map((comment) => comment.id), 
-      likeIds: likes.map((like) => like.id), 
-      bookmarkIds: bookmarks.map((boomark) => boomark.id),
     });
 
     return question;

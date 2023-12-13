@@ -1,13 +1,15 @@
 import { User } from "src/users/domain/user";
 import { UserEntity } from "../entity/user.entity";
+import { Provider } from "src/users/domain/provider";
+import { Profile } from "src/users/domain/profile";
 
 export class UserMapper {
   public static toDomain(userEntity: UserEntity): User {
-    const { id, email, name, provider, providerId, picture, createdAt } = userEntity;
+    const { id, email, nickname, providerType, providerId, picture, createdAt } = userEntity;
 
-    const user = new User({
-      id, email, provider, providerId, picture, createdAt, name,
-    });
+    const profile = new Profile({ nickname, email, picture });
+    const provider = new Provider({ providerType, providerId });
+    const user = new User({ id, createdAt, profile, provider });
 
     return user;
   }
@@ -15,10 +17,10 @@ export class UserMapper {
   public static toPersistence(user: User): UserEntity {
     const id = user['id'];
     const email = user['email'];
-    const provider = user['provider'];
-    const providerId = user['providerId'];
-    const name = user['name'];
-    const picture = user['picture'];
+    const providerType = user['provider']['providerType'];
+    const providerId = user['provider']['providerId'];
+    const nickname = user['profile']['nickname'];
+    const picture = user['profile']['picture'];
 
     const userEntity = new UserEntity();
 
@@ -26,9 +28,9 @@ export class UserMapper {
       userEntity.id = id;
     }
     userEntity.email = email;
-    userEntity.provider = provider;
+    userEntity.providerType = providerType;
     userEntity.providerId = providerId;
-    userEntity.name = name;
+    userEntity.nickname = nickname;
     userEntity.picture = picture;
 
     return userEntity;

@@ -7,11 +7,10 @@ import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 export class QeustionLikeMapper {
   public static toDomain(questionLikeEntity: QuestionLikeEntity): QuestionLike {
-    const { id, createdAt, user, question } = questionLikeEntity;
+    const { id, user, question } = questionLikeEntity;
 
     const questionLike = new QuestionLike({
       id, 
-      createdAt, 
       userId: user.id, 
       questionId: question.id
     });

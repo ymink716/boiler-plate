@@ -15,18 +15,6 @@ import { UserEntity } from 'src/users/infrastructure/entity/user.entity';
 
 @Entity('comment')
 export class CommentEntity {
-  // constructor(options: {
-  //   content: string;
-  //   writer: User;
-  //   question: QuestionEntity;
-  // }) {
-  //   if (options) {
-  //     this.content = options.content;
-  //     this.writer = options.writer;
-  //     this.question = options.question;
-  //   }
-  // }
-
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;

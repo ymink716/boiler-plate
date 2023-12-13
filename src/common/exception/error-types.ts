@@ -15,6 +15,11 @@ export const UserNotExist = {
   message: '해당 사용자를 찾을 수 없습니다.',
 }
 
+export const InvalidUserNickname = {
+  name: 'InvalidUserNickname',
+  message: '닉네임은 2글자 이상 10글자 이하여야 합니다.',
+}
+
 // Question
 export const QuestionNotFound = {
   name: 'QuestionNotFound',

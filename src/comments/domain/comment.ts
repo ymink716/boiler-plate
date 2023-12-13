@@ -8,6 +8,7 @@ export class Comment {
     id?: number; 
     content: Content;
     createdAt?: Date;
+    deletedAt?: Date;
     userId: number;
     questionId: number;
   }) {
@@ -17,6 +18,9 @@ export class Comment {
       }
       if (options.createdAt) {
         this.createdAt = options.createdAt;
+      }
+      if (options.deletedAt) {
+        this.deletedAt = options.deletedAt;
       }
       this.content = options.content;
       this.userId = options.userId;
@@ -30,15 +34,11 @@ export class Comment {
 
   private createdAt: Date;
 
-  private updatedAt: Date;
-
   private deletedAt: Date;
 
   private userId: number;
 
   private questionId: number;
-
-  private likeIds: number[];
 
   public checkIsAuthor(user: User): void {
     const userId = user.getId();

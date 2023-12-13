@@ -3,14 +3,10 @@ export class CommentLike {
     id?: number; 
     userId: number;
     commentId: number;
-    createdAt?: Date;
   }) {
     if (options) {
       if (options.id) {
         this.id = options.id;
-      }
-      if (options.createdAt) {
-        this.createdAt = options.createdAt;
       }
       this.userId = options.userId;
       this.commentId = options.commentId;
@@ -18,8 +14,6 @@ export class CommentLike {
   }
 
   private id: number;
-
-  private createdAt: Date;
 
   private userId: number;
 

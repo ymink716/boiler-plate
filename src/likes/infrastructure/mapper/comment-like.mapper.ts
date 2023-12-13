@@ -6,11 +6,10 @@ import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 export class CommentLikeMapper {
   public static toDomain(commentLikeEntity: CommentLikeEntity): CommentLike {
-    const { id, createdAt, user, comment } = commentLikeEntity;
+    const { id, user, comment } = commentLikeEntity;
 
     const commentLike = new CommentLike({
       id, 
-      createdAt, 
       userId: user.id, 
       commentId: comment.id
     });

@@ -33,7 +33,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, GOOGLE_OAUTH_GUAR
     const { id, name, emails, photos } = profile;
     
     const oauthPayload: OauthPayload = {
-      provider: UserProvider.GOOGLE,
+      providerType: UserProvider.GOOGLE,
       providerId: id,
       name: name!.givenName,
       email: emails![0].value,

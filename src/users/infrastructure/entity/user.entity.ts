@@ -8,23 +8,6 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Up
 
 @Entity('user')
 export class UserEntity {
-
-  // constructor(options: {
-  //   email: string;
-  //   provider: UserProvider;
-  //   providerId: string;
-  //   name: string;
-  //   picture: string;
-  // }) {
-  //   if (options) {
-  //     this.email = options.email;
-  //     this.provider = options.provider;
-  //     this.providerId = options.providerId;
-  //     this.name = options.name;
-  //     this.picture = options.picture;
-  //   }
-  // }
-
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -35,7 +18,7 @@ export class UserEntity {
 
   @ApiProperty()
   @Column({ type: 'enum', enum: UserProvider })
-  provider: UserProvider;
+  providerType: UserProvider;
 
   @ApiProperty()
   @Column()
@@ -43,7 +26,7 @@ export class UserEntity {
 
   @ApiProperty()
   @Column()
-  name: string;
+  nickname: string;
 
   @ApiProperty()
   @Column()

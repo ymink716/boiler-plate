@@ -11,9 +11,6 @@ export class Question {
     content: Content;
     createdAt?: Date;
     userId: number;
-    commentIds: number[];
-    likeIds: number[];
-    bookmarkIds: number[];
   }) {
     if (options) {
       if (options.id) {
@@ -25,9 +22,6 @@ export class Question {
         this.createdAt = options.createdAt;
       }
       this.userId = options.userId;
-      this.commentIds = options.commentIds;
-      this.likeIds = options.likeIds;
-      this.bookmarkIds = options.bookmarkIds;
     }
   }
 
@@ -41,12 +35,6 @@ export class Question {
 
   private userId: number;
 
-  private commentIds: number[];
-
-  private likeIds: number[];
-
-  private bookmarkIds: number[];
-
   public checkIsAuthor(user: User): void {
     const userId = user.getId();
 
@@ -55,7 +43,7 @@ export class Question {
     }
   }
 
-  public update(title: string, content: string, user?: User): void {
+  public update(title: string, content: string): void {
     this.title = new Title(title);
     this.content = new Content(content);
   }

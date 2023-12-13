@@ -26,9 +26,6 @@ export class QuestionsService {
       title: new Title(title), 
       content: new Content(content), 
       userId: user.getId(),
-      commentIds: [],
-      likeIds: [],
-      bookmarkIds: [],
     });
     
     const newQuestion = this.questionsRepository.save(question);
@@ -36,8 +33,9 @@ export class QuestionsService {
     return newQuestion;
   }
 
-  public async getQuestions(): Promise<Question[]> {
-    return await this.questionsRepository.findAll();
+  public async getQuestions(): Promise<FidnOn[]> {
+    return await this.questionQueryRepository._____();
+    // return await this.questionsRepository.findAll();
   }
 
   public async getQuestion(questionId: number): Promise<Question> {
