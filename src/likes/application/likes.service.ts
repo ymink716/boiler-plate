@@ -19,25 +19,7 @@ export class LikesService {
     private readonly commentLikesRepository: CommentLikesRepository,
     private readonly commentsService: CommentsService,
   ) {}
-
-  async uplikeQuestion(questionId: number, user: User): Promise<void> {
-    const question = await this.questionsService.getQuestion(questionId);
-    
-    const userId = user.getId();
-    const questionLikesCount = await this.questionLikesRepository.count(userId, questionId);
-
-    if (questionLikesCount > 0) {
-      throw new BadRequestException(QuestionAlreadyLiked.message, QuestionAlreadyLiked.name);
-    }
-
-    const qustionLike = new QuestionLike({ 
-      userId: user.getId(), 
-      questionId: question.getId(), 
-    });
-
-    await this.questionLikesRepository.save(qustionLike);
-  }
-
+  
   async unlikeQuestion(questionId: number, userId: number): Promise<void> {
     const questionLikes = await this.questionLikesRepository.findByUserIdAndQeustionId(userId, questionId);
 

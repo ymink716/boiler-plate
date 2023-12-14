@@ -1,14 +1,15 @@
 import { Controller, Delete, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
-import { LikesService } from '../application/likes.service';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/users/domain/user';
+import { UplikeQuestionCommand } from '../application/command/uplike-question.command';
+import { CommandBus } from '@nestjs/cqrs';
 
 @ApiTags('likes')
 @Controller('likes')
 export class LikesController {
-  constructor(private readonly likesService: LikesService) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @ApiOperation({ 
     summary: '질문에 대한 좋아요', 
@@ -19,12 +20,12 @@ export class LikesController {
   @ApiCreatedResponse({ description: '좋아요 추가 성공' })
   @UseGuards(JwtAuthGuard)
   async uplikeQuestion(
-    @GetUser() user: User,
+    @GetUser('id') userId: number,
     @Param('questionId', ParseIntPipe) questionId: number, 
   ) {
-    await this.likesService.uplikeQuestion(questionId, user);
+    const command = new UplikeQuestionCommand(questionId, userId);
 
-    return { success: true };
+    return await this.commandBus.execute(command);
   }
 
   @ApiOperation({ 
