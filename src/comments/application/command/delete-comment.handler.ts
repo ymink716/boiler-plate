@@ -1,13 +1,12 @@
-import { ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { CommentsRepository } from "src/comments/domain/repository/comments.repository";
 import { COMMENTS_REPOSITORY } from "src/common/constants/tokens.constant";
-import { EditCommentCommand } from "./edit-comment.command";
 import { CommentNotFound } from "src/common/exception/error-types";
-import { Comment } from "src/comments/domain/comment";
 import { DeleteCommentCommand } from "./delete-comment.command";
 
 @Injectable()
+@CommandHandler(DeleteCommentCommand)
 export class DeleteCommentHandler implements ICommandHandler<DeleteCommentCommand> {
   constructor(
     @Inject(COMMENTS_REPOSITORY)

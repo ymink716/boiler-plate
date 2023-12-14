@@ -7,11 +7,13 @@ import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { BookmarkEntity } from './infrastructure/entity/bookmark.entity';
 import { AddBookmarkHandler } from './application/command/add-bookmark.handler';
 import { DeleteBookmarkHandler } from './application/command/delete-bookmark.handler';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([BookmarkEntity]),
-    QuestionsModule,
+    //QuestionsModule,
+    CqrsModule,
   ],
   controllers: [BookmarksController],
   providers: [

@@ -10,7 +10,10 @@ export const setUp = (app: INestApplication) => {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-      transform: true
+      transform: true,  // mapping class로 변환 허용
+      transformOptions: {
+        enableImplicitConversion: true,  // 암묵적으로 타입을 변환
+      }
     })
   );
 

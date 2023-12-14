@@ -1,4 +1,4 @@
-import { ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { CommentsRepository } from "src/comments/domain/repository/comments.repository";
 import { COMMENTS_REPOSITORY } from "src/common/constants/tokens.constant";
@@ -7,6 +7,7 @@ import { CommentNotFound } from "src/common/exception/error-types";
 import { Comment } from "src/comments/domain/comment";
 
 @Injectable()
+@CommandHandler(EditCommentCommand)
 export class EditCommentHandler implements ICommandHandler<EditCommentCommand> {
   constructor(
     @Inject(COMMENTS_REPOSITORY)
@@ -17,7 +18,7 @@ export class EditCommentHandler implements ICommandHandler<EditCommentCommand> {
     const { commentId, content, userId } = command;
     
     const comment = await this.commentsRepository.findOneById(commentId);
-
+    console.log(comment);
     if (!comment) {
       throw new NotFoundException(CommentNotFound.message, CommentNotFound.name);
     }

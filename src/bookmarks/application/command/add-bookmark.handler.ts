@@ -1,4 +1,4 @@
-import { ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { BookmarksRepository } from "src/bookmarks/domain/repository/bookmarks.repository";
 import { BOOKMARKS_REPOSITORY } from "src/common/constants/tokens.constant";
@@ -7,6 +7,7 @@ import { QuestionAlreadyBookmarked } from "src/common/exception/error-types";
 import { Bookmark } from "src/bookmarks/domain/bookmark";
 
 @Injectable()
+@CommandHandler(AddBookmarkCommand)
 export class AddBookmarkHandler implements ICommandHandler<AddBookmarkCommand> {
   constructor(
     @Inject(BOOKMARKS_REPOSITORY)

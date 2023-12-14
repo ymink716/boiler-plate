@@ -1,4 +1,4 @@
-import { ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { QUESTIONS_REPOSITORY } from "src/common/constants/tokens.constant";
 import { QuestionsRepository } from "src/questions/domain/repository/questions.repository";
@@ -6,6 +6,7 @@ import { QuestionNotFound } from "src/common/exception/error-types";
 import { DeleteQuestionCommand } from "./delete-question.command";
 
 @Injectable()
+@CommandHandler(DeleteQuestionCommand)
 export class DeleteQuestionHandler implements ICommandHandler<DeleteQuestionCommand> {
   constructor(
     @Inject(QUESTIONS_REPOSITORY)

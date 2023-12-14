@@ -3,6 +3,7 @@ import { Content } from './content';
 import { Title } from './title';
 import { ForbiddenException } from '@nestjs/common';
 import { IsNotQuestionWriter } from 'src/common/exception/error-types';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Question {
   constructor(options: {
@@ -25,14 +26,19 @@ export class Question {
     }
   }
 
+  @ApiProperty()
   private id: number;
   
+  @ApiProperty()
   private title: Title;
 
+  @ApiProperty()
   private content: Content;
 
+  @ApiProperty()
   private createdAt: Date;
 
+  @ApiProperty()
   private userId: number;
 
   public checkIsAuthor(userId: number): void {

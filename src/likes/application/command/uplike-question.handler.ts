@@ -1,4 +1,4 @@
-import { ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import {  QUESTION_LIKES_REPOSITORY } from "src/common/constants/tokens.constant";
 import { UplikeQuestionCommand } from "./uplike-question.command";
@@ -7,6 +7,7 @@ import { QuestionLike } from "src/likes/domain/question.like";
 import { QuestionAlreadyLiked } from "src/common/exception/error-types";
 
 @Injectable()
+@CommandHandler(UplikeQuestionCommand)
 export class UplikeQuestionHandler implements ICommandHandler<UplikeQuestionCommand> {
   constructor(
     @Inject(QUESTION_LIKES_REPOSITORY)

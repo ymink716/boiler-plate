@@ -1,10 +1,11 @@
-import { ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { Inject, Injectable } from "@nestjs/common";
 import { BookmarksRepository } from "src/bookmarks/domain/repository/bookmarks.repository";
 import { BOOKMARKS_REPOSITORY } from "src/common/constants/tokens.constant";
 import { DeleteBookmarkCommand } from "./delete-bookmark.command";
 
 @Injectable()
+@CommandHandler(DeleteBookmarkCommand)
 export class DeleteBookmarkHandler implements ICommandHandler<DeleteBookmarkCommand> {
   constructor(
     @Inject(BOOKMARKS_REPOSITORY)

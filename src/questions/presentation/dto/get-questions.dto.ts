@@ -3,7 +3,7 @@ import { IsOptional, Max, MaxLength, Min } from "class-validator";
 
 
 export class GetQuestionsDto {
-  @ApiProperty({ description: '검색어', example: '서울', nullable: true })
+  @ApiProperty({ description: '검색어', example: '서울' })
   @IsOptional()
   @MaxLength(50)
   search: string;

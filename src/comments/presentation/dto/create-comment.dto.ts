@@ -9,7 +9,7 @@ export class CreateCommentDto {
   @IsNotEmpty()
   readonly content: string;
 
-  @ApiProperty({ description: '질문글 ID', example: 1 })
+  @ApiProperty({ description: '질문글 ID', example: 1, default: 1 })
   @IsNumber()
   @IsNotEmpty()
   readonly questionId: number;

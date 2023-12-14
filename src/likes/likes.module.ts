@@ -12,12 +12,14 @@ import { UplikeQuestionHandler } from './application/command/uplike-question.han
 import { UnlikeQuestionHandler } from './application/command/unlike-question.handler';
 import { UplikeCommentHandler } from './application/command/uplike-comment.handler';
 import { UnlikeCommentHandler } from './application/command/unlike-comment.handler';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports:[
     TypeOrmModule.forFeature([QuestionLikeEntity, CommentLikeEntity]),
-    QuestionsModule,
-    CommentsModule
+    // QuestionsModule,
+    // CommentsModule,
+    CqrsModule,
   ],
   controllers: [LikesController],
   providers: [

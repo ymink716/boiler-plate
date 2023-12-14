@@ -16,9 +16,9 @@ export class UserMapper {
 
   public static toPersistence(user: User): UserEntity {
     const id = user['id'];
-    const email = user['email'];
     const providerType = user['provider']['providerType'];
     const providerId = user['provider']['providerId'];
+    const email = user['profile']['email'];
     const nickname = user['profile']['nickname'];
     const picture = user['profile']['picture'];
 

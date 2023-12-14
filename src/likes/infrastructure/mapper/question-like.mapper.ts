@@ -28,8 +28,14 @@ export class QeustionLikeMapper {
     if (id) {
       questionLikeEntity.id = id;
     }
-    questionLikeEntity.user = Object.assign(new UserEntity(), { id: userId });
-    questionLikeEntity.question = Object.assign(new QuestionEntity(), { id: questionId });
+
+    const userEntity = new UserEntity();
+    userEntity.id = userId;
+    questionLikeEntity.user = userEntity;
+
+    const questionEntity = new QuestionEntity();
+    questionEntity.id = questionId;
+    questionLikeEntity.question = questionEntity;
 
     return questionLikeEntity;
   }

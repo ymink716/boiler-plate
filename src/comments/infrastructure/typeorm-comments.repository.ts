@@ -16,7 +16,7 @@ export class TypeormCommentsRepository implements CommentsRepository {
   public async findOneById(id: number): Promise<Comment | null> {
     const commentEntity = await this.commentRepository.findOne({ 
       where: { id },
-      relations: ['user'],
+      relations: ['user', 'question'],
     });
 
     if (!commentEntity) {

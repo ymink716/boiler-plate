@@ -10,6 +10,7 @@ import { UpdateQuestionHandler } from './application/command/update-question.han
 import { DeleteQuestionHandler } from './application/command/delete-question.handler';
 import { GetQuestionHandler } from './application/query/get-question.handler';
 import { GetQuestionsHandler } from './application/query/get-questions.handler';
+import { TypeormQuestionsQueryRepository } from './infrastructure/typeorm-questions-query.repository';
 
 @Module({
   imports:[
@@ -26,7 +27,8 @@ import { GetQuestionsHandler } from './application/query/get-questions.handler';
     {
       provide: QUESTIONS_REPOSITORY,
       useClass: TypeormQuestionsRepository,
-    }
+    },
+    TypeormQuestionsQueryRepository,
   ],
 })
 
