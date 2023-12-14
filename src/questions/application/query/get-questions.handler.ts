@@ -1,7 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { QuestionNotFound } from 'src/common/exception/error-types';
 import { ResponseQuestionDto } from 'src/questions/presentation/dto/response-question.dto';
 import { TypeormQuestionsQueryRepository } from 'src/questions/infrastructure/typeorm-questions-query.repository';
 import { GetQuestionsQuery } from './get-questions.query';

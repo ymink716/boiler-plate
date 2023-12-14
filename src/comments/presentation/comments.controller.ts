@@ -5,7 +5,6 @@ import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Comment } from '../domain/comment';
-import { User } from 'src/users/domain/user';
 import { CommandBus } from '@nestjs/cqrs';
 import { WriteCommentCommand } from '../application/command/write-comment.command';
 import { EditCommentCommand } from '../application/command/edit-comment.command';

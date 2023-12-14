@@ -8,6 +8,8 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { PostQuestionHandler } from './application/command/post-question.handler';
 import { UpdateQuestionHandler } from './application/command/update-question.handler';
 import { DeleteQuestionHandler } from './application/command/delete-question.handler';
+import { GetQuestionHandler } from './application/query/get-question.handler';
+import { GetQuestionsHandler } from './application/query/get-questions.handler';
 
 @Module({
   imports:[
@@ -19,6 +21,8 @@ import { DeleteQuestionHandler } from './application/command/delete-question.han
     PostQuestionHandler,
     UpdateQuestionHandler,
     DeleteQuestionHandler,
+    GetQuestionHandler,
+    GetQuestionsHandler,
     {
       provide: QUESTIONS_REPOSITORY,
       useClass: TypeormQuestionsRepository,
