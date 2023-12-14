@@ -15,7 +15,8 @@ export class DeleteBookmarkHandler implements ICommandHandler<DeleteBookmarkComm
     const { userId, questionId } = command;
 
     const bookmarks = await this.bookmarksRepository.findByUserIdAndQuestionId(userId, questionId);
-
     await this.bookmarksRepository.remove(bookmarks);
+
+    return { success: true }
   }
 }

@@ -7,7 +7,7 @@ import { QuestionLike } from "src/likes/domain/question.like";
 import { QuestionAlreadyLiked } from "src/common/exception/error-types";
 
 @Injectable()
-export class AddBookmarkHandler implements ICommandHandler<UplikeQuestionCommand> {
+export class UplikeQuestionHandler implements ICommandHandler<UplikeQuestionCommand> {
   constructor(
     @Inject(QUESTION_LIKES_REPOSITORY)
     private readonly questionLikesRepository: QuestionLikesRepository,

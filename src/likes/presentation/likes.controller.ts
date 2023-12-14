@@ -2,9 +2,11 @@ import { Controller, Delete, Param, ParseIntPipe, Post, UseGuards } from '@nestj
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/users/domain/user';
 import { UplikeQuestionCommand } from '../application/command/uplike-question.command';
 import { CommandBus } from '@nestjs/cqrs';
+import { UnlikeQuestionCommand } from '../application/command/unlike-question.command';
+import { UplikeCommentCommand } from '../application/command/uplike-comment.command';
+import { UnlikeCommentCommand } from '../application/command/unlike-comment.command';
 
 @ApiTags('likes')
 @Controller('likes')
@@ -40,9 +42,9 @@ export class LikesController {
     @GetUser('id') userId: number,
     @Param('questionId', ParseIntPipe) questionId: number, 
   ) {
-    await this.likesService.unlikeQuestion(questionId, userId);
+    const command = new UnlikeQuestionCommand(questionId, userId);
 
-    return { success: true };
+    return await this.commandBus.execute(command);
   }
 
   @ApiOperation({ 
@@ -54,12 +56,12 @@ export class LikesController {
   @Post('/comments/:commentId')
   @UseGuards(JwtAuthGuard)
   async uplikeComment(
-    @GetUser() user: User,
+    @GetUser('id') userId: number,
     @Param('commentId', ParseIntPipe) commentId: number, 
   ) {
-    await this.likesService.uplikeComment(commentId, user);
+    const command = new UplikeCommentCommand(commentId, userId);
 
-    return { success: true };
+    return await this.commandBus.execute(command);
   }
 
   @ApiOperation({ 
@@ -74,8 +76,8 @@ export class LikesController {
     @GetUser('id') userId: number,
     @Param('commentId', ParseIntPipe) commentId: number, 
   ) {
-    await this.likesService.unlikeComment(commentId, userId);
+    const command = new UnlikeCommentCommand(commentId, userId);
 
-    return { success: true };
+    return await this.commandBus.execute(command);
   }
 }
