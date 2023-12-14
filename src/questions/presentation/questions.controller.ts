@@ -1,16 +1,17 @@
-import { Body, Controller, Delete, Get, Post, Put, UseGuards, Param, ParseIntPipe } from '@nestjs/common';
-import { QuestionsService } from '../application/questions.service';
+import { Body, Controller, Delete, Get, Post, Put, UseGuards, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Question } from '../domain/question';
-import { User } from 'src/users/domain/user';
 import { CommandBus } from '@nestjs/cqrs';
 import { PostQuestionCommand } from '../application/command/post-question.command';
 import { UpdateQuestionCommand } from '../application/command/update-question.command';
 import { DeleteQuestionCommand } from '../application/command/delete-question.command';
+import { GetQuestionQuery } from '../application/query/get-question.query';
+import { GetQuestionsDto } from './dto/get-questions.dto';
+import { GetQuestionsQuery } from '../application/query/get-questions.query';
 
 @ApiTags('questions')
 @Controller('questions')
@@ -51,9 +52,16 @@ export class QuestionsController {
     description: '질문 목록 가져오기 성공',
     type: Question,
   })
+  @ApiQuery({ name: 'search', required: false, description: '검색어', example: '서울', allowEmptyValue: true })
+  @ApiQuery({ name: 'page', required: false, description: '페이지', example: 1, allowEmptyValue: false })
+  @ApiQuery({ name: 'take', required: false, description: '개수', example: 10, allowEmptyValue: false })
   @Get()
-  async getQuestions() {
-    return await this.questionsService.getQuestions();
+  async getQuestions(@Query() getQuestionsDto: GetQuestionsDto) {
+    const { search, page, take } = getQuestionsDto;
+
+    const command = new GetQuestionsQuery(search, page, take);
+
+    return this.commandBus.execute(command);
   }
 
   @ApiOperation({ 
@@ -68,7 +76,9 @@ export class QuestionsController {
   })
   @Get('/:questionId')
   async getQuestionDetail(@Param('questionId', ParseIntPipe) questionId: number) {
-    return await this.questionsService.getQuestion(questionId);
+    const command = new GetQuestionQuery(questionId);
+
+    return this.commandBus.execute(command);
   }
 
   @ApiOperation({ 

@@ -13,30 +13,24 @@ import {
 } from 'typeorm';
 import { QuestionLikeEntity } from 'src/likes/infrastructure/entity/question-like.entity';
 import { BookmarkEntity } from 'src/bookmarks/infrastructure/entity/bookmark.entity';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('question')
 export class QuestionEntity {
-  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty()
   @Column()
   title: string;
 
-  @ApiProperty()
   @Column({ type: 'text' })
   content: string;
 
-  @ApiProperty()
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   createdAt: Date;
 
-  @ApiProperty()
   @UpdateDateColumn({
     type: 'timestamp',
     nullable: true,
