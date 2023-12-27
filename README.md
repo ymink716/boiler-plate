@@ -45,18 +45,20 @@
 src
 ├── questions
 │   └── application
-│       └── service.ts
+│       └── questins.service.ts
 │   └── domain
 │       └── repository
-│       └── vo
+│       └── content.ts
+│       └── title.ts
 │       └── questin.ts
 │   └── infrastructure
 │       └── entity(data model)
 │       └── mapper
-│       └── typeorm-*.repository.ts
+│       └── typeorm-questions.repository.ts
+│       └── test-questions.repository.ts
 │   └── presentation
 │       ├── dto
-│       └── controller.ts
+│       └── questions.controller.ts
 ├── auth
 ├── bookmarks
 ├── comments
