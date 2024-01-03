@@ -38,7 +38,7 @@ jobs:
           echo "OAUTH_GOOGLE_CALLBACK=${{ secrets.OAUTH_GOOGLE_CALLBACK_DEV }}" >> .development.env
           echo "JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}" >> .development.env
           echo "JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" >> .development.env
-          echo "JWT_REFRESH_TOKEN_SECRET=${{ secrets.RefreshTokenSecretTest }}" >> .development.env
+          echo "JWT_REFRESH_TOKEN_SECRET=${{ secrets.JWT_REFRESH_TOKEN_SECRET }}" >> .development.env
           echo "JWT_REFRESH_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }}" >> .development.env
           echo "PORT=${{ secrets.APP_PORT_DEV }}" >> .development.env
           cat .development.env
