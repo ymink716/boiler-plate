@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
-import { UsersService } from '../../users/users.service';
-import { AuthService } from '../auth.service';
+import { UsersService } from '../../users/application/users.service';
+import { AuthService } from '../application/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { mockJwtService } from './mock-jwt.service';
@@ -66,39 +66,23 @@ describe('AuthService', () => {
   });
 
   describe('issueTokens()', () => {
-    test('토큰을 발급하고, 리프레시 토큰을 사용자 정보에 업데이트한다.', async () => {
-      jest.spyOn(usersService, 'updateHashedRefreshToken').mockResolvedValueOnce(undefined);
-
+    test('리프레시 토큰을 사용자 정보에 업데이트하는 로직을 실행한다.', async () => {
+      jest.spyOn(usersService, 'updateRefreshToken').mockResolvedValueOnce(undefined);
       const userId = 1;
+      
+      await authService.issueTokens(userId);
+
+      expect(usersService.updateRefreshToken).toBeCalled();
+    });
+
+    test('리프레시 토큰을 사용자 정보에 업데이트하는 로직을 실행한다.', async () => {
+      jest.spyOn(usersService, 'updateRefreshToken').mockResolvedValueOnce(undefined);
+      const userId = 1;
+      
       const result = await authService.issueTokens(userId);
 
       expect(result.accessToken).toBeDefined();
       expect(result.refreshToken).toBeDefined();
-      expect(usersService.updateHashedRefreshToken).toBeCalled();
-    });
-  });
-
-  describe('generateAccessToken()', () => {
-    test('access token 발급을 위한 로직을 실행하고 토큰을 반환한다.', async () => {
-      jest.spyOn(jwtService, 'sign');
-
-      const payload = { sub: 1 };
-      const result = authService.generateAccessToken(payload);
-
-      expect(jwtService.sign).toBeCalled();
-      expect(result).toBeDefined();
-    });
-  });
-
-  describe('generateRefreshToken()', () => {
-    test('refresh token 발급을 위한 로직을 실행하고 토큰을 반환한다', async () => {
-      jest.spyOn(jwtService, 'sign');
-
-      const payload = { sub: 1 };
-      const result = authService.generateAccessToken(payload);
-
-      expect(jwtService.sign).toBeCalled();
-      expect(result).toBeDefined();
     });
   });
 

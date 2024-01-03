@@ -1,13 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
-import { UsersService } from '../users.service';
+import { UsersService } from '../application/users.service';
 import { TestUsersRepository } from './test-users.repository';
 import { OauthPayload } from 'src/common/interface/oauth-payload';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
-import * as bcrypt from 'bcryptjs';
 import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('UsersService', () => {
@@ -65,22 +64,18 @@ describe('UsersService', () => {
     });
   });
 
-  describe('updateHashedRefreshToken()', () => {
-    test('DB에 저장된 refresh_token을 갱신한다.', async () => {
+  describe('updateRefreshToken()', () => {
+    test('DB에 저장된 refresh token을 갱신한다.', async () => {
       const user = new User({ ...payload });
-      const refreshToken = 'validRefreshToken';
+      const refreshToken = 'updatedRefreshToken';
 
-      user.hashedRefreshToken = refreshToken;
+      user.updateRefreshToken(refreshToken);
       await usersRepository.save(user);
-
-      jest.spyOn(bcrypt, 'genSalt').mockResolvedValue('saltText');
-      const newRefreshToken = 'newRefreshToken';
-      jest.spyOn(bcrypt, 'hash').mockResolvedValue(newRefreshToken);
       
-      await usersService.updateHashedRefreshToken(user.id, refreshToken);
+      await usersService.updateRefreshToken(user.id, refreshToken);
 
       const updatedUser = await usersRepository.findOneById(user.id);
-      expect(updatedUser?.hashedRefreshToken).toBe(newRefreshToken);
+      expect(updatedUser?.refreshToken).toBe(refreshToken);
     });
 
     test('사용자를 찾을 수 없다면 NotFoundException이 발생한다.', async () => {
@@ -88,7 +83,7 @@ describe('UsersService', () => {
       const refreshToken = 'validRefreshToken';
 
       await expect(
-        usersService.updateHashedRefreshToken(notExistedUserId, refreshToken)
+        usersService.updateRefreshToken(notExistedUserId, refreshToken)
       ).rejects.toThrow(NotFoundException);    
     });
   });
@@ -97,15 +92,13 @@ describe('UsersService', () => {
     test('클라이언트와 DB의 refresh_token이 일치한다면, user 정보를 반환한다.', async () => {
       const user = new User({ ...payload });
       const refreshToken = 'validRefreshToken';
-      user.hashedRefreshToken = refreshToken;
+      user.updateRefreshToken(refreshToken);
       await usersRepository.save(user);
-
-      jest.spyOn(usersService, 'checkRefreshToken').mockResolvedValueOnce(undefined);
 
       const result = await usersService.getUserIfRefreshTokenisMatched(refreshToken, user.id);
 
       expect(result).toEqual(user);
-      expect(result.hashedRefreshToken).toBe(refreshToken);
+      expect(result.refreshToken).toBe(refreshToken);
     });
 
     test('사용자를 찾을 수 없다면 NotFoundException이 발생한다.', async () => {
@@ -118,30 +111,17 @@ describe('UsersService', () => {
     });
   });
 
-  describe('checkRefreshToken()', () => {
-    test('클라이언트와 DB의 저장된 토큰이 일치하지 않다면 UnauthorizedException이 발생한다.', async () => {
-      const clientToken = 'aaa';
-      const savedToken = 'bbb';
-
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
-
-      await expect(
-        usersService.checkRefreshToken(clientToken, savedToken)
-      ).rejects.toThrow(UnauthorizedException);
-    });
-  });
-
   describe('removeRefreshToken()', () => {
     test('DB에 저장된 해당 사용자의 refresh_token을 삭제합니다.', async () => {
       const user = new User({ ...payload });
       const refreshToken = 'validRefreshToken';
-      user.hashedRefreshToken = refreshToken;
+      user.updateRefreshToken(refreshToken);
       await usersRepository.save(user);
 
       await usersService.removeRefreshToken(user.id);
 
       const updatedUser = await usersRepository.findOneById(user.id);
-      expect(updatedUser?.hashedRefreshToken).toBeNull();
+      expect(updatedUser?.refreshToken).toBeNull();
     });
 
     test('사용자를 찾을 수 없다면 NotFoundException이 발생한다.', async () => {
@@ -154,7 +134,7 @@ describe('UsersService', () => {
   });
 
   describe('findUserById()', () => {
-    test('해당 id의 사용자 정보를 반환합니다.', async () => {
+    test('해당 id의 사용자 정보를 반환한다.', async () => {
       const user = new User({ ...payload });
       await usersRepository.save(user);
 

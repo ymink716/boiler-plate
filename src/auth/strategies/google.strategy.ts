@@ -1,5 +1,5 @@
 import { UnauthorizedUser } from './../../common/exception/error-types';
-import { UsersService } from './../../users/users.service';
+import { UsersService } from '../../users/application/users.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -33,7 +33,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, GOOGLE_OAUTH_GUAR
     const { id, name, emails, photos } = profile;
     
     const oauthPayload: OauthPayload = {
-      provider: UserProvider.GOOGLE,
+      providerType: UserProvider.GOOGLE,
       providerId: id,
       name: name!.givenName,
       email: emails![0].value,

@@ -1,20 +1,24 @@
 import { Module } from '@nestjs/common';
-import { BookmarksController } from './bookmarks.controller';
-import { BookmarksService } from './bookmarks.service';
+import { BookmarksController } from './presentation/bookmarks.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Bookmark } from './entity/bookmark.entity';
-import { TypeormBookmarksRepository } from './typeorm-bookmarks.repository';
+import { TypeormBookmarksRepository } from './infrastructure/typeorm-bookmarks.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
 import { BOOKMARKS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { BookmarkEntity } from './infrastructure/entity/bookmark.entity';
+import { AddBookmarkHandler } from './application/command/add-bookmark.handler';
+import { DeleteBookmarkHandler } from './application/command/delete-bookmark.handler';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Bookmark]),
-    QuestionsModule,
+    TypeOrmModule.forFeature([BookmarkEntity]),
+    //QuestionsModule,
+    CqrsModule,
   ],
   controllers: [BookmarksController],
   providers: [
-    BookmarksService,
+    AddBookmarkHandler,
+    DeleteBookmarkHandler,
     {
       provide: BOOKMARKS_REPOSITORY,
       useClass: TypeormBookmarksRepository,

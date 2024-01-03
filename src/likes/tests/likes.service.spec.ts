@@ -1,17 +1,17 @@
-import { QuestionLike } from 'src/likes/entity/question-like.entity';
+import { QuestionLike } from 'src/likes/infrastructure/entity/question-like.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
-import { Question } from 'src/questions/entity/question.entity';
-import { User } from 'src/users/entity/user.entity';
+import { Question } from 'src/questions/infrastructure/entity/question.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { AppModule } from 'src/app.module';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
-import { QuestionLikesRepository } from '../question-likes.repository';
-import { QuestionsService } from 'src/questions/questions.service';
-import { CommentLikesRepository } from '../comment-likes.repository';
-import { CommentsService } from 'src/comments/comments.service';
-import { Comment } from 'src/comments/entity/comment.entity';
-import { LikesService } from '../likes.service';
-import { CommentLike } from '../entity/comment-like.entity';
+import { QuestionLikesRepository } from '../domain/repository/question-likes.repository';
+import { QuestionsService } from 'src/questions/application/questions.service';
+import { CommentLikesRepository } from '../domain/repository/comment-likes.repository';
+import { CommentsService } from 'src/comments/application/comments.service';
+import { Comment } from 'src/comments/infrastructure/entity/comment.entity';
+import { LikesService } from '../application/likes.service';
+import { CommentLike } from '../infrastructure/entity/comment-like.entity';
 import { QUESTION_LIKES_REPOSITORY, COMMENT_LIKES_REPOSITORY } from 'src/common/constants/tokens.constant';
 
 describe('LikesService', () => {
@@ -46,23 +46,13 @@ describe('LikesService', () => {
     await app.init();
 
     user = { id: 1 } as User;
-    question = {
-      id: 1,
-      title: "test",
-      content: "test question content...",
-      writer: user,
-    } as Question;
-    comment = {
-      id: 1,
-      content: 'test comment content...'
-    } as Comment;
+    question = { id: 1 } as Question;
+    comment = { id: 1 } as Comment;
   });
 
   describe('uplikeQuestion()', () => {
     test('질문에 대한 좋아요 정보를 DB에 저장하는 로직을 실행한다.', async () => {
-      const questionLike = new QuestionLike({
-        user, question,
-      });
+      const questionLike = new QuestionLike({ user, question });
 
       jest.spyOn(questionsService, 'getQuestion').mockResolvedValue(question);
       jest.spyOn(questionLikesRepository, 'count').mockResolvedValue(0);
@@ -88,19 +78,17 @@ describe('LikesService', () => {
       const questionLikes = [new QuestionLike({ user, question })];
 
       jest.spyOn(questionLikesRepository, 'findByUserIdAndQeustionId').mockResolvedValue(questionLikes);
-      jest.spyOn(questionLikesRepository, 'delete').mockResolvedValue(undefined);
+      jest.spyOn(questionLikesRepository, 'remove').mockResolvedValue(undefined);
 
       await likesService.unlikeQuestion(question.id, user.id);
 
-      expect(questionLikesRepository.delete).toBeCalledTimes(1);
+      expect(questionLikesRepository.remove).toBeCalledTimes(1);
     });
   });
 
   describe('uplikeComment()', () => {
     test('답변의 좋아요 정보를 DB에 저장하는 로직을 실행한다.', async () => {
-      const commentLike = new CommentLike({
-        user, comment,
-      });
+      const commentLike = new CommentLike({ user, comment });
 
       jest.spyOn(commentsService, 'getComment').mockResolvedValue(comment);
       jest.spyOn(commentLikesRepository, 'count').mockResolvedValue(0);
@@ -126,11 +114,11 @@ describe('LikesService', () => {
       const commentLikes = [new CommentLike({ user, comment })];
 
       jest.spyOn(commentLikesRepository, 'findByUserIdAndCommentId').mockResolvedValue(commentLikes);
-      jest.spyOn(commentLikesRepository, 'delete').mockResolvedValue(undefined);
+      jest.spyOn(commentLikesRepository, 'remove').mockResolvedValue(undefined);
 
       await likesService.unlikeComment(comment.id, user.id);
 
-      expect(commentLikesRepository.delete).toBeCalledTimes(1);
+      expect(commentLikesRepository.remove).toBeCalledTimes(1);
     });
   });
 

@@ -4,7 +4,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { JwtPayload } from 'src/common/interface/jwt-payload';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/application/users.service';
 import { JWT_REFRESH_GUARD } from 'src/common/constants/guards.constant';
 import { JWT_REFRESH_TOKEN_SECRET } from 'src/common/constants/config.constant';
 

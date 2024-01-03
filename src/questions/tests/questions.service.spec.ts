@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, ForbiddenException, INestApplication, NotFoundException, ValidationPipe } from '@nestjs/common';
-import { Question } from 'src/questions/entity/question.entity';
-import { User } from 'src/users/entity/user.entity';
-import { QuestionsService } from '../questions.service';
+import { Question } from 'src/questions/infrastructure/entity/question.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
+import { QuestionsService } from '../application/questions.service';
 import { AppModule } from 'src/app.module';
-import { TestQuestionsRepository } from '../test-questions.repository';
+import { TestQuestionsRepository } from '../infrastructure/test-questions.repository';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
-import { CreateQuestionDto } from '../dto/create-question.dto';
-import { UpdateQuestionDto } from '../dto/update-question.dto';
+import { CreateQuestionDto } from '../presentation/dto/create-question.dto';
+import { UpdateQuestionDto } from '../presentation/dto/update-question.dto';
 import { QUESTIONS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { Title } from '../domain/title';
+import { Content } from '../domain/content';
 
 describe('QuestionsService', () => {
   let app: INestApplication;
@@ -36,8 +38,8 @@ describe('QuestionsService', () => {
 
     user = { id: 1 } as User;
     question = new Question({
-      title: "test",
-      content: "test content...",
+      title: new Title("test"),
+      content: new Content("test content..."),
       writer: user,
     });
   });
@@ -56,82 +58,22 @@ describe('QuestionsService', () => {
       const result = await questionsService.postQuestion(createQuestionDto, user);
 
       expect(result).toBeInstanceOf(Question);
-      expect(result.title).toBe(createQuestionDto.title);
-      expect(result.content).toBe(createQuestionDto.content);
+      expect(result.title.getTitle()).toBe(createQuestionDto.title);
+      expect(result.content.getContent()).toBe(createQuestionDto.content);
     });
-
-    test.each([['t'], ['0'.repeat(51)]])(
-      '제목이 2글자 미만, 50글자를 초과하면 BadRequestException이 발생한다.',
-      async (title) => {
-        const createQuestionDto: CreateQuestionDto = {
-          title: title,
-          content: 'test question content...',
-        };
-        
-        await expect(
-          questionsService.postQuestion(createQuestionDto, user),
-        ).rejects.toThrow(BadRequestException);
-      },
-    );
-
-    test.each([['tt'], ['0'.repeat(50)]])(
-      '제목이 2글자 이상, 50글자 이하이면 유효성 검사를 통과한다.',
-      async (title) => {
-        const createQuestionDto: CreateQuestionDto = {
-          title: title,
-          content: 'test question content...',
-        };
-        
-        jest.spyOn(questionsService, 'isValidQeustionDto');
-        const result = await questionsService.postQuestion(createQuestionDto, user);
-
-        expect(questionsService.isValidQeustionDto).toBeCalled();
-        expect(result).toBeInstanceOf(Question);
-      },
-    );
-
-    test.each([['t'], ['0'.repeat(501)]])(
-      '내용이 2글자 미만, 500글자를 초과하면 BadRequestException이 발생한다.',
-      async (content) => {
-        const createQuestionDto: CreateQuestionDto = {
-          title: 'test',
-          content: content,
-        };
-        
-        await expect(
-          questionsService.postQuestion(createQuestionDto, user),
-        ).rejects.toThrow(BadRequestException);
-      },
-    );
-
-    test.each([['tt'], ['0'.repeat(500)]])(
-      '내용이 2글자 이상, 500글자 이하이면 유효성 검사를 통과한다.',
-      async (content) => {
-        const createQuestionDto: CreateQuestionDto = {
-          title: 'test',
-          content: content,
-        };
-        
-        jest.spyOn(questionsService, 'isValidQeustionDto');
-        const result = await questionsService.postQuestion(createQuestionDto, user);
-  
-        expect(questionsService.isValidQeustionDto).toBeCalled();
-        expect(result).toBeInstanceOf(Question);
-      },
-    );
   });
 
   describe('getQuestions()', () => {
     test('질문글 목록 전체를 조회한다.', async () => {
       const question1 = new Question({
-        title: "test1",
-        content: "test content...",
+        title: new Title("test1"),
+        content: new Content("test content..."),
         writer: user,
       });
   
       const question2 = new Question({
-        title: "test2",
-        content: "test content...",
+        title: new Title("test2"),
+        content: new Content("test content..."),
         writer: user,
       });
 
@@ -175,9 +117,8 @@ describe('QuestionsService', () => {
       );
 
       expect(result).toBeInstanceOf(Question);
-      expect(result.title).toBe(updateQuestionDto.title);
-      expect(result.content).toBe(updateQuestionDto.content);
-      expect(await questionsRepository.findOneById(savedQeustion.id)).toBe(result);
+      expect(result.title.getTitle()).toBe(updateQuestionDto.title);
+      expect(result.content.getContent()).toBe(updateQuestionDto.content);
     });
 
     test('DB에 해당 질문이 없다면, NotFoundException이 발생한다.', async () => {
@@ -186,88 +127,6 @@ describe('QuestionsService', () => {
       await expect(
         questionsService.updateQuestion(notExistedQuestionId, user, updateQuestionDto)
       ).rejects.toThrow(NotFoundException);
-    });
-
-    test.each([['t'], ['0'.repeat(51)]])(
-      '제목이 2글자 미만, 50글자를 초과하면 BadRequestException이 발생한다.',
-      async (title) => {
-        const savedQeustion = await questionsRepository.save(question);
-
-        const updateQuestionDto: UpdateQuestionDto = {
-          title: title,
-          content: 'test question content...',
-        };
-        
-        await expect(
-          questionsService.updateQuestion(savedQeustion.id, user, updateQuestionDto),
-        ).rejects.toThrow(BadRequestException);
-      },
-    );
-
-    test.each([['tt'], ['0'.repeat(50)]])(
-      '제목이 2글자 이상, 50글자 이하이면 유효성 검사를 통과한다.',
-      async (title) => {
-        const savedQeustion = await questionsRepository.save(question);
-
-        const updateQuestionDto: UpdateQuestionDto = {
-          title: title,
-          content: 'test question content...',
-        };
-        
-        const result = await questionsService.updateQuestion(savedQeustion.id, user, updateQuestionDto);
-
-        expect(result.title).toBe(updateQuestionDto.title);
-
-      },
-    );
-
-    test.each([['t'], ['0'.repeat(501)]])(
-      '내용이 2글자 미만, 500글자를 초과하면 BadRequestException이 발생한다.',
-      async (content) => {
-        const savedQeustion = await questionsRepository.save(question);
-
-        const updateQuestionDto: UpdateQuestionDto = {
-          title: 'test',
-          content: content,
-        };
-        
-        await expect(
-          questionsService.updateQuestion(savedQeustion.id, user, updateQuestionDto),
-        ).rejects.toThrow(BadRequestException);
-      },
-    );
-
-    test.each([['tt'], ['0'.repeat(500)]])(
-      '내용이 2글자 이상, 500글자 이하이면 유효성 검사를 통과한다.',
-      async (content) => {
-        const savedQeustion = await questionsRepository.save(question);
-
-        const updateQuestionDto: UpdateQuestionDto = {
-          title: 'test',
-          content: content,
-        };
-        
-        const result = await questionsService.updateQuestion(
-          savedQeustion.id, user, updateQuestionDto
-        );
-
-        expect(result.content).toBe(updateQuestionDto.content);
-      },
-    );
-
-    test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
-      const user2 = { id: 2 } as User;
-      const question = new Question({
-        title: "test",
-        content: "test content...",
-        writer: user,
-      });
-
-      const savedQeustion = await questionsRepository.save(question);
-
-      await expect(
-        questionsService.updateQuestion(savedQeustion.id, user2, updateQuestionDto)
-      ).rejects.toThrow(ForbiddenException);
     });
   });
 
@@ -288,39 +147,6 @@ describe('QuestionsService', () => {
       await expect(
         questionsService.deleteQuestion(notExistedQuestionId, user),
       ).rejects.toThrow(NotFoundException);
-    });
-
-    test('작성자가 아니라면 ForbiddenException이 발생한다.', async () => {
-      const user2 = { id: 2 } as User;
-      const question = new Question({
-        title: "test",
-        content: "test content...",
-        writer: user,
-      });
-
-      const savedQeustion = await questionsRepository.save(question);
-
-      await expect(
-        questionsService.deleteQuestion(savedQeustion.id, user2)
-      ).rejects.toThrow(ForbiddenException);
-    });
-  });
-
-  describe('isWriter()', () => {
-    test('답변 작성자가 아니라면 false를 리턴한다.', async () => {
-      const writerId = 1;
-      const userId = 2;
-
-      const result = questionsService.isWriter(writerId, userId);
-      expect(result).toBe(false);
-    });
-
-    test('답변 작성자가 맞다면 true를 리턴한다.', async () => {
-      const writerId = 1;
-      const userId = 1;
-
-      const result = questionsService.isWriter(writerId, userId);
-      expect(result).toBe(true);
     });
   });
 

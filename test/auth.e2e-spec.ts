@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { DataSource } from "typeorm"
-import { User } from 'src/users/entity/user.entity';
+import { User } from 'src/users/infrastructure/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { GoogleOauthGuard } from 'src/auth/guards/google-oauth.guard';
 import { JwtRefreshGuard } from 'src/auth/guards/jwt-refresh.guard';
