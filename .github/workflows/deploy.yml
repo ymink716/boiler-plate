@@ -28,7 +28,7 @@ jobs:
         run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
 
       - name: Tag Docker Image
-        run: docker tag ez-ask-app-dev ${{ steps.login-ecr.outputs.registry }}ez-ask-app-dev:latest
+        run: docker tag ez-ask-app-dev ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
         
       - name: Push Docker Image To ECR
         run: docker push ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
