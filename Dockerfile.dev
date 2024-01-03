@@ -1,0 +1,17 @@
+FROM node:alpine
+
+WORKDIR /usr/src/app
+
+COPY ./package*.json ./
+
+COPY ./.development.env ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+CMD npm run start:dev
+
+EXPOSE 3000

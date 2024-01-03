@@ -1,0 +1,69 @@
+name: Deploy Development
+
+on:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+  deployment:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      
+      - name: generate .env file
+        run: |
+          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .development.env
+          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .development.env
+          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .development.env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .development.env
+          echo "DATABASE_SYNCHRONIZE=${{ secrets.DATABASE_SYNCHRONIZE }}" >> .development.env
+          echo "DATABASE_SCHEMA=${{ secrets.DATABASE_DEV_SCHEMA }}" >> .development.env
+          echo "DATABASE_TEST_SCHEMA=${{ secrets.DATABASE_TEST_SCHEMA }}" >> .development.env
+          echo "OAUTH_GOOGLE_ID=${{ secrets.OAUTH_GOOGLE_ID }}" >> .development.env
+          echo "OAUTH_GOOGLE_SECRET=${{ secrets.OAUTH_GOOGLE_SECRET }}" >> .development.env
+          echo "OAUTH_GOOGLE_CALLBACK=${{ secrets.OAUTH_GOOGLE_CALLBACK_DEV }}" >> .development.env
+          echo "JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}" >> .development.env
+          echo "JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" >> .development.env
+          echo "JWT_REFRESH_TOKEN_SECRET=${{ secrets.JWT_REFRESH_TOKEN_SECRET }}" >> .development.env
+          echo "JWT_REFRESH_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }}" >> .development.env
+          echo "PORT=${{ secrets.APP_PORT_DEV }}" >> .development.env
+          cat .development.env
+
+      - name: Build Docker Image
+        run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
+      
+      - name: Run Test Code
+        run: docker run -i ez-ask-app-dev npm run test:ci
+
+      - name: Tag Docker Image
+        run: docker tag ez-ask-app-dev ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
+        
+      - name: Push Docker Image To ECR
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker stop ez-ask-app-dev || true
+            docker rm ez-ask-app-dev || true
+            docker pull ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
+            docker run -d --name ez-ask-app-dev -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
