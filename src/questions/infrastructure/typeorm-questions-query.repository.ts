@@ -42,6 +42,10 @@ export class TypeormQuestionsQueryRepository {
     return questionEntity;
   }
 
+  async findOneByIdUsingQueryBuilder(userId: number) {
+
+  }
+
   async find(search: string, page: number, take: number): Promise<QuestionEntity[]> {
     const questionsEntity = await this.questionRepository.find({
       where: [
