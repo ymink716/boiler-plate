@@ -3,14 +3,14 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { DataSource } from "typeorm"
-import { User } from 'src/users/infrastructure/entity/user.entity';
+import { UserEntity } from 'src/users/infrastructure/entity/user.entity';
 import { UserProvider } from 'src/common/enums/user-provider.enum';
 import { GoogleOauthGuard } from 'src/auth/guards/google-oauth.guard';
 import { JwtRefreshGuard } from 'src/auth/guards/jwt-refresh.guard';
 import { mockAuthGuard } from './mock-auth.guard';
 import { setUpTestingAppModule } from 'src/config/app-test.config';
 
-describe('QuestionsController (e2e)', () => {
+describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
 
@@ -32,13 +32,14 @@ describe('QuestionsController (e2e)', () => {
 
     dataSource = app.get<DataSource>(DataSource);
 
-    user = await dataSource.manager.save(new User({
-      email: 'test@gmmail.com',
-      provider: UserProvider.GOOGLE,
-      providerId: 'valid providerId1',
-      name: 'tester',
-      picture: 'pictureURL1',
-    }));
+    user = new UserEntity();
+    user.email = 'test@gmmail.com';
+    user.provider = UserProvider.GOOGLE;
+    user.providerId = 'valid providerId1';
+    user.nickname = 'tester',
+    user.picture = 'pictureURL1';
+
+    await dataSource.manager.save(user);
   });
 
   describe('GET /auth/google/callback', () => {

@@ -10,4 +10,3 @@ Dockerfile
 dist
 coverage
 node_modules
-test
