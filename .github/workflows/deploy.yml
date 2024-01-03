@@ -27,6 +27,9 @@ jobs:
       - name: Build Docker Image
         run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
       
+      - name: check
+        run: docker run -i ez-ask-app-dev ls -al
+      
       - name: Run Test Code
         run: docker run -i ez-ask-app-dev npm run test:ci
 
