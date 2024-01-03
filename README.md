@@ -36,7 +36,7 @@
 * Library & Framework: NestJS
 * Database: MySQL
 * ORM: TypeORM
-* Deploy: AWS(EC2, RDS, ELB, Route53)
+* Deploy: AWS(EC2, RDS, ELB, Route53) 
 
 ## 📂 Project Structure
 ---
