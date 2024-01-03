@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
-import { DATABASE_HOST, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_SCHEMA, DATABASE_SYNCHRONIZE, DATABASE_TEST_SCHEMA, DATABASE_USERNAME, NODE_ENV } from "src/common/constants/config.constant";
+import { DATABASE_HOST, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_SCHEMA, DATABASE_SYNCHRONIZE, DATABASE_TEST_SCHEMA, DATABASE_USERNAME, NODE_ENV, TEST } from "src/common/constants/config.constant";
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {

@@ -16,3 +16,4 @@ export const DATABASE_TEST_SCHEMA = 'DATABASE_TEST_SCHEMA';
 export const DATABASE_SCHEMA = 'DATABASE_SCHEMA';
 export const DATABASE_SYNCHRONIZE = 'DATABASE_SYNCHRONIZE';
 export const PORT = 'PORT';
+export const TEST = 'TEST';

@@ -23,6 +23,25 @@ jobs:
       - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+      
+      - name: generate .env file
+        run: |
+          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .development.env
+          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .development.env
+          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .development.env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .development.env
+          echo "DATABASE_SYNCHRONIZE=${{ secrets.DATABASE_SYNCHRONIZE }}" >> .development.env
+          echo "DATABASE_SCHEMA=${{ secrets.DATABASE_DEV_SCHEMA }}" >> .development.env
+          echo "DATABASE_TEST_SCHEMA=${{ secrets.DATABASE_TEST_SCHEMA }}" >> .development.env
+          echo "OAUTH_GOOGLE_ID=${{ secrets.OAUTH_GOOGLE_ID }}" >> .development.env
+          echo "OAUTH_GOOGLE_SECRET=${{ secrets.OAUTH_GOOGLE_SECRET }}" >> .development.env
+          echo "OAUTH_GOOGLE_CALLBACK=${{ secrets.OAUTH_GOOGLE_CALLBACK_DEV }}" >> .development.env
+          echo "JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}" >> .development.env
+          echo "JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" >> .development.env
+          echo "JWT_REFRESH_TOKEN_SECRET=${{ secrets.RefreshTokenSecretTest }}" >> .development.env
+          echo "JWT_REFRESH_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }}" >> .development.env
+          echo "PORT=${{ secrets.APP_PORT_DEV }}" >> .development.env
+          cat .development.env
 
       - name: Build Docker Image
         run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
