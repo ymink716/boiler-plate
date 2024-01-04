@@ -26,21 +26,7 @@ jobs:
       
       - name: generate .env file
         run: |
-          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .production.env
-          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .production.env
-          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .production.env
-          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .production.env
-          echo "DATABASE_SYNCHRONIZE=${{ secrets.DATABASE_SYNCHRONIZE }}" >> .production.env
-          echo "DATABASE_SCHEMA=${{ secrets.DATABASE_SCHEMA }}" >> .production.env
-          echo "DATABASE_TEST_SCHEMA=${{ secrets.DATABASE_TEST_SCHEMA }}" >> .production.env
-          echo "OAUTH_GOOGLE_ID=${{ secrets.OAUTH_GOOGLE_ID }}" >> .production.env
-          echo "OAUTH_GOOGLE_SECRET=${{ secrets.OAUTH_GOOGLE_SECRET }}" >> .production.env
-          echo "OAUTH_GOOGLE_CALLBACK=${{ secrets.OAUTH_GOOGLE_CALLBACK }}" >> .production.env
-          echo "JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}" >> .production.env
-          echo "JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" >> .production.env
-          echo "JWT_REFRESH_TOKEN_SECRET=${{ secrets.JWT_REFRESH_TOKEN_SECRET }}" >> .production.env
-          echo "JWT_REFRESH_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }}" >> .production.env
-          echo "PORT=${{ secrets.APP_PORT }}" >> .production.env
+          echo "${{ secrets.PRODUCTION_ENV }}" >> .production.env
           cat .production.env
 
       - name: Build Docker Image
