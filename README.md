@@ -44,7 +44,7 @@
 ```
 src
 ├── questions
-│   └── application
+│   └── application 
 │       └── questins.service.ts
 │   └── domain
 │       └── repository
