@@ -17,6 +17,9 @@ export const setUp = (app: INestApplication) => {
     })
   );
 
+  // TODO: 개발 환경에 따라 다르게 처리
+  app.enableCors();
+
   const documentOptions = new BaseAPIDocumentation().initializeOptions();
   const document = SwaggerModule.createDocument(app, documentOptions);
   SwaggerModule.setup('api-docs', app, document);

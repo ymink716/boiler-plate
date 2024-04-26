@@ -73,9 +73,9 @@ export class QuestionsController {
     description: '질문 목록 가져오기 성공',
     type: ResponseQuestionDto,
   })
-  @ApiQuery({ name: 'search', required: true, description: '검색어', example: '서울', allowEmptyValue: true })
-  @ApiQuery({ name: 'page', required: true, description: '페이지', example: 1, allowEmptyValue: false })
-  @ApiQuery({ name: 'take', required: true, description: '개수', example: 10, allowEmptyValue: false })
+  @ApiQuery({ name: 'search', required: false, description: '검색어', example: '서울', allowEmptyValue: true })
+  @ApiQuery({ name: 'page', required: false, description: '페이지', example: 1, allowEmptyValue: true })
+  @ApiQuery({ name: 'take', required: false, description: '개수', example: 10, allowEmptyValue: true })
   @Get()
   async getQuestions(@Query() getQuestionsDto: GetQuestionsDto) {
     const { search, page, take } = getQuestionsDto;
