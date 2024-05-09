@@ -5,21 +5,15 @@ import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Question } from '../domain/question';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { PostQuestionCommand } from '../application/command/post-question.command';
-import { UpdateQuestionCommand } from '../application/command/update-question.command';
-import { DeleteQuestionCommand } from '../application/command/delete-question.command';
-import { GetQuestionQuery } from '../application/query/get-question.query';
 import { GetQuestionsDto } from './dto/get-questions.dto';
-import { GetQuestionsQuery } from '../application/query/get-questions.query';
 import { ResponseQuestionDto } from './dto/response-question.dto';
+import { QuestionsService } from '../application/question.service';
 
 @ApiTags('questions')
 @Controller('questions')
 export class QuestionsController {
   constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
+    private readonly questionsService: QuestionsService,
   ) {}
 
   @ApiOperation({ 
@@ -38,12 +32,10 @@ export class QuestionsController {
   async postQuestion(
     @Body() createQuestionDto: CreateQuestionDto,
     @GetUser('id') userId: number,
-  ) {
+  ): Promise<Question> {
     const { title, content } = createQuestionDto;
 
-    const command = new PostQuestionCommand(title, content, userId);
-
-    return this.commandBus.execute(command);
+    return await this.questionsService.postQuestion(title, content, userId);
   }
 
   @ApiOperation({ 
@@ -57,10 +49,10 @@ export class QuestionsController {
     type: ResponseQuestionDto,
   })
   @Get('/:questionId')
-  async getQuestionDetail(@Param('questionId', ParseIntPipe) questionId: number) {
-    const command = new GetQuestionQuery(questionId);
-
-    return this.queryBus.execute(command);
+  async getQuestionDetail(
+    @Param('questionId', ParseIntPipe) questionId: number,
+  ): Promise<ResponseQuestionDto> {
+    return await this.questionsService.getQuestion(questionId);
   }
 
   @ApiOperation({ 
@@ -77,12 +69,10 @@ export class QuestionsController {
   @ApiQuery({ name: 'page', required: false, description: '페이지', example: 1, allowEmptyValue: true })
   @ApiQuery({ name: 'take', required: false, description: '개수', example: 10, allowEmptyValue: true })
   @Get()
-  async getQuestions(@Query() getQuestionsDto: GetQuestionsDto) {
+  async getQuestions(@Query() getQuestionsDto: GetQuestionsDto): Promise<ResponseQuestionDto[]> {
     const { search, page, take } = getQuestionsDto;
 
-    const command = new GetQuestionsQuery(search, page, take);
-
-    return this.queryBus.execute(command);
+    return await this.questionsService.getQuestions(search, page, take);
   }
 
   @ApiOperation({ 
@@ -102,12 +92,10 @@ export class QuestionsController {
     @Param('questionId', ParseIntPipe) questionId: number,
     @GetUser('id') userId: number,
     @Body() updateQuestionDto: UpdateQuestionDto,
-  ) {
+  ): Promise<Question> {
     const { title, content } = updateQuestionDto;
 
-    const command = new UpdateQuestionCommand(questionId, title, content, userId);
-
-    return this.commandBus.execute(command);  
+    return await this.questionsService.updateQuestion(questionId, title, content, userId);
   }
 
   @ApiOperation({ 
@@ -125,8 +113,6 @@ export class QuestionsController {
     @Param('questionId', ParseIntPipe) questionId: number,
     @GetUser('id') userId: number,
   ) {
-    const command = new DeleteQuestionCommand(questionId, userId);
-
-    return this.commandBus.execute(command);  
+    return await this.questionsService.deleteQuestion(questionId, userId);  
   }
 }

@@ -1,6 +1,6 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { QuestionEntity } from "./entity/question.entity";
-import { Like, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 export class TypeormQuestionsQueryRepository {
   constructor(
@@ -42,10 +42,6 @@ export class TypeormQuestionsQueryRepository {
     return questionEntity;
   }
 
-  async findOneByIdUsingQueryBuilder(userId: number) {
-
-  }
-
   async find(search: string, page: number, take: number): Promise<QuestionEntity[]> {
     if (page === undefined) {
       page = 1;
@@ -76,37 +72,6 @@ export class TypeormQuestionsQueryRepository {
       .take(take)
       .skip((page - 1) * take)
       .getMany();
-
-    // const questionsEntity = await this.questionRepository.find({
-    //   where: [
-    //     { title: Like(`%${search}%`) },
-    //     { content: Like(`%${search}%`) },
-    //   ],
-    //   take,
-    //   skip: (page - 1) * take,
-    //   relations: ['user', 'comments', 'bookmarks', 'likes'],
-    //   select: {
-    //     id: true,
-    //     title: true,
-    //     content: true,
-    //     createdAt: true,
-    //     user: {
-    //       id: true,
-    //       nickname: true,
-    //     },
-    //     comments: {
-    //       id: true,
-    //       content: true,
-    //       user: {
-    //         id: true,
-    //         nickname: true,
-    //       },
-    //       likes: true,
-    //     },
-    //     bookmarks: true,
-    //     likes: true,
-    //   }
-    // });
 
     return questions;
   }
