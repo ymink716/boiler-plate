@@ -7,7 +7,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } 
 import { Question } from '../domain/question';
 import { GetQuestionsDto } from './dto/get-questions.dto';
 import { ResponseQuestionDto } from './dto/response-question.dto';
-import { QuestionsService } from '../application/question.service';
+import { QuestionsService } from '../application/questions.service';
 
 @ApiTags('questions')
 @Controller('questions')
@@ -113,6 +113,8 @@ export class QuestionsController {
     @Param('questionId', ParseIntPipe) questionId: number,
     @GetUser('id') userId: number,
   ) {
-    return await this.questionsService.deleteQuestion(questionId, userId);  
+    await this.questionsService.deleteQuestion(questionId, userId);  
+
+    return { success: true }
   }
 }

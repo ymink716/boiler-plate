@@ -5,15 +5,12 @@ import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Comment } from '../domain/comment';
-import { CommandBus } from '@nestjs/cqrs';
-import { WriteCommentCommand } from '../application/command/write-comment.command';
-import { EditCommentCommand } from '../application/command/edit-comment.command';
-import { DeleteCommentCommand } from '../application/command/delete-comment.command';
+import { CommentsService } from '../application/comments.service';
 
 @ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly commentsService: CommentsService) {}
 
   @ApiOperation({ 
     summary: '답변하기', 
@@ -32,9 +29,7 @@ export class CommentsController {
   ) {
     const { questionId, content } = createCommentDto;
 
-    const command = new WriteCommentCommand(questionId, content, userId);
-
-    return this.commandBus.execute(command);
+    return await this.commentsService.writeComment(questionId, content, userId);
   }
 
   @ApiOperation({ summary: '답변 수정', description: '답변을 수정합니다.' })
@@ -53,9 +48,7 @@ export class CommentsController {
   ) {
     const { content } = updateCommentDto;
 
-    const command = new EditCommentCommand(commentId, content, userId);
-
-    return this.commandBus.execute(command);
+    return await this.commentsService.editComment(commentId, content, userId);
   }
 
   @ApiOperation({ summary: '답변 삭제', description: '답변을 삭제합니다.' })
@@ -69,8 +62,8 @@ export class CommentsController {
     @GetUser('id') userId: number,
     @Param('commentId', ParseIntPipe) commentId: number,
   ) {
-    const command = new DeleteCommentCommand(commentId, userId);
+    await this.commentsService.deleteComment(commentId, userId);
 
-    return this.commandBus.execute(command);
+    return { success: true };
   }
 }

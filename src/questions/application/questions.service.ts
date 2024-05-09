@@ -61,7 +61,7 @@ export class QuestionsService {
     return await this.questionsRepository.save(question);
   }
 
-  public async deleteQuestion(questionId: number, userId: number) {
+  public async deleteQuestion(questionId: number, userId: number): Promise<void> {
     const question = await this.questionsRepository.findOneById(questionId);
 
     if (!question) {
@@ -70,7 +70,5 @@ export class QuestionsService {
     
     question.checkIsAuthor(userId);
     await this.questionsRepository.softDelete(questionId);
-
-    return { success: true }
   }
 }
