@@ -11,7 +11,7 @@ export class TypeormQuestionsQueryRepository {
   async findOneById(id: number): Promise<QuestionEntity | null> {
     const questionEntity = await this.questionRepository.findOne({ 
       where: { id },
-      relations: ['user', 'comments', 'bookmarks', 'likes'],
+      relations: ['user', 'comments', 'bookmarks'],
       select: {
         id: true,
         title: true,
@@ -30,8 +30,6 @@ export class TypeormQuestionsQueryRepository {
           },
           likes: true,
         },
-        bookmarks: true,
-        likes: true,
       }
     });
   
@@ -58,8 +56,6 @@ export class TypeormQuestionsQueryRepository {
       'question.title',
       'question.createdAt',
     ])
-    .leftJoin('question.likes', 'questionLike')
-    .loadRelationCountAndMap('question.likes', 'question.likes')
     .loadRelationCountAndMap('question.comments', 'question.comments')
     .loadRelationCountAndMap('question.bookmarks', 'question.bookmarks');
 

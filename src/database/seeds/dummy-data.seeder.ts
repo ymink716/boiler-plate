@@ -2,7 +2,6 @@ import { BookmarkEntity } from "src/bookmarks/infrastructure/entity/bookmark.ent
 import { CommentEntity } from "src/comments/infrastructure/entity/comment.entity";
 import { UserProvider } from "src/common/enums/user-provider.enum";
 import { CommentLikeEntity } from "src/likes/infrastructure/entity/comment-like.entity";
-import { QuestionLikeEntity } from "src/likes/infrastructure/entity/question-like.entity";
 import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
 import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 import { DataSource } from "typeorm";
@@ -106,35 +105,6 @@ export default class DummyDataSeeder implements Seeder {
 
     //   const bookmarksRepository = dataSource.getRepository(BookmarkEntity);
     //   await bookmarksRepository.insert(bookmarkInputs);
-    // }
-
-    // for (let k = 0; k < 50; k++) {
-    //   const users = await dataSource
-    //     .getRepository(UserEntity)
-    //     .createQueryBuilder()
-    //     .select()
-    //     .orderBy('RAND()')
-    //     .take(10000)
-    //     .getMany();
-
-    //   const questions = await dataSource
-    //     .getRepository(QuestionEntity)
-    //     .createQueryBuilder()
-    //     .select()
-    //     .orderBy('RAND()')
-    //     .take(10000)
-    //     .getMany();
-
-    //   const questionLikeInputs: any[] = [];
-    //   for (let i = 0; i < 10000; i++) {
-    //     questionLikeInputs.push({
-    //       user: users[i],
-    //       question: questions[i],
-    //     })
-    //   };
-      
-    //   const questionLikeRepository = dataSource.getRepository(QuestionLikeEntity);
-    //   await questionLikeRepository.insert(questionLikeInputs);
     // }
 
     // for (let k = 0; k < 50; k++) {

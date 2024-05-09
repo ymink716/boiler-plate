@@ -5,27 +5,24 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeormCommentsRepository } from './infrastructure/typeorm-comments.repository';
 import { QuestionsModule } from 'src/questions/questions.module';
 import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
-import { CqrsModule } from '@nestjs/cqrs';
-import { WriteCommentHandler } from './application/command/write-comment.handler';
-import { EditCommentHandler } from './application/command/edit-comment.handler';
-import { DeleteCommentHandler } from './application/command/delete-comment.handler';
+import { CommentsService } from './application/comments.service';
 
 @Module({
   imports:[
     TypeOrmModule.forFeature([CommentEntity]),
     QuestionsModule,
-    CqrsModule,
   ],
   controllers: [CommentsController],
   providers: [
-    WriteCommentHandler,
-    EditCommentHandler,
-    DeleteCommentHandler,
+    CommentsService,
     {
       provide: COMMENTS_REPOSITORY,
       useClass: TypeormCommentsRepository,
     }
   ],
+  exports: [
+    CommentsService,
+  ]
 })
 
 export class CommentsModule {}

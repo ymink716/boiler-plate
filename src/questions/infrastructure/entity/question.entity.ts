@@ -11,7 +11,6 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { QuestionLikeEntity } from 'src/likes/infrastructure/entity/question-like.entity';
 import { BookmarkEntity } from 'src/bookmarks/infrastructure/entity/bookmark.entity';
 
 @Entity('question')
@@ -50,9 +49,6 @@ export class QuestionEntity {
 
   @OneToMany(() => CommentEntity, comment => comment.question)
   comments: CommentEntity[];
-
-  @OneToMany(() => QuestionLikeEntity, questionLike => questionLike.question)
-  likes: QuestionLikeEntity[];
 
   @OneToMany(() => BookmarkEntity, bookmark => bookmark.question)
   bookmarks: BookmarkEntity[];

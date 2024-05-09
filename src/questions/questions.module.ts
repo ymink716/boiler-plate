@@ -23,6 +23,9 @@ import { TypeormQuestionsQueryRepository } from './infrastructure/typeorm-questi
       useClass: TypeormQuestionsQueryRepository,
     }
   ],
+  exports: [
+    QuestionsService,
+  ]
 })
 
 export class QuestionsModule {}
