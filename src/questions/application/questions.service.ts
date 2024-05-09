@@ -17,7 +17,7 @@ export class QuestionsService {
     private readonly questionsQueryRepository: TypeormQuestionsQueryRepository,
   ) {}
 
-  public async postQuestion(title: string, content: string,userId: number): Promise<Question> {
+  public async postQuestion(title: string, content: string, userId: number): Promise<Question> {
     const question = new Question({ 
       title: new Title(title), 
       content: new Content(content), 
