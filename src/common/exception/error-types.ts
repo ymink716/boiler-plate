@@ -58,11 +58,6 @@ export const InvalidCommentContent = {
 }
 
 // Like
-export const QuestionAlreadyLiked = {
-  name: 'QuestionsAlreadyLiked',
-  message: '이미 좋아요를 누른 질문입니다.'
-}
-
 export const CommentAlreadyLiked = {
   name: 'CommentAlreadyLiked',
   message: '이미 좋아요를 누른 답변입니다.',
