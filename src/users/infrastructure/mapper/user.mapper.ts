@@ -5,9 +5,9 @@ import { Profile } from "src/users/domain/profile";
 
 export class UserMapper {
   public static toDomain(userEntity: UserEntity): User {
-    const { id, email, nickname, providerType, providerId, picture, createdAt } = userEntity;
+    const { id, email, nickname, providerType, providerId, createdAt } = userEntity;
 
-    const profile = new Profile({ nickname, email, picture });
+    const profile = new Profile({ nickname, email });
     const provider = new Provider({ providerType, providerId });
     const user = new User({ id, createdAt, profile, provider });
 
@@ -20,7 +20,6 @@ export class UserMapper {
     const providerId = user['provider']['providerId'];
     const email = user['profile']['email'];
     const nickname = user['profile']['nickname'];
-    const picture = user['profile']['picture'];
 
     const userEntity = new UserEntity();
 
@@ -31,7 +30,6 @@ export class UserMapper {
     userEntity.providerType = providerType;
     userEntity.providerId = providerId;
     userEntity.nickname = nickname;
-    userEntity.picture = picture;
 
     return userEntity;
   }

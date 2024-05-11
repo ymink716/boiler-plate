@@ -4,8 +4,6 @@ import { setUp } from './config/app.config';
 import { ConfigService } from '@nestjs/config';
 import { PORT } from './common/constants/config.constant';
 
-
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
     

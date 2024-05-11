@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './presentation/auth.controller';
-import { GoogleStrategy } from './strategies/google.strategy';
+// import { GoogleStrategy } from './strategies/google.strategy';
 import { AuthService } from './application/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -16,7 +16,7 @@ import { UsersModule } from 'src/users/users.module';
   ],
   controllers: [AuthController],
   providers: [
-    GoogleStrategy, 
+    // GoogleStrategy, 
     JwtStrategy,
     JwtRefreshStrategy,
     AuthService, 

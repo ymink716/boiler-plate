@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Post, Res } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Res, Param, Body } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { GoogleOauthGuard } from '../guards/google-oauth.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
@@ -13,30 +13,36 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  @ApiOperation({ 
-    description: '구글 로그인 페이지로 이동하는 테스트용 API', 
-  })
-  @Get('google')
-  @UseGuards(GoogleOauthGuard)
-  async redirectGoogleAuthPage(): Promise<void> {}
+  // @ApiOperation({ 
+  //   description: '구글 로그인 페이지로 이동하는 테스트용 API', 
+  // })
+  // @Get('google')
+  // @UseGuards(GoogleOauthGuard)
+  // async redirectGoogleAuthPage(): Promise<void> {}
 
-  @ApiOperation({ 
-    description: '구글 로그인 callback', 
-    summary: '구글 로그인' 
-  })
-  @ApiResponse({
-    status: 200,
-    description: '성공 시 access_token과 refresh_token을 리턴합니다.',
-  })
-  @Get('google/callback')
-  @UseGuards(GoogleOauthGuard)
-  async signInWithGoogle(@GetUser('id') userId: number) {
-    const { accessToken, refreshToken } = await this.authService.signIn(userId);
+  // @ApiOperation({ 
+  //   description: '구글 로그인 callback', 
+  //   summary: '구글 로그인' 
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: '성공 시 access_token과 refresh_token을 리턴합니다.',
+  // })
 
-    return { 
-      access_token: accessToken, 
-      refresh_token: refreshToken 
-    };
+  // @Get('google/callback')
+  // @UseGuards(GoogleOauthGuard)
+  // async signInWithGoogle(@GetUser('id') userId: number) {
+  //   const { accessToken, refreshToken } = await this.authService.signIn(userId);
+
+  //   return { 
+  //     access_token: accessToken, 
+  //     refresh_token: refreshToken 
+  //   };
+  // }
+
+  @Post('/login/google')
+  async signinUsingGoogleAccount(@Body('code') code: string) {
+    return await this.authService.loginWithGoogleAccount(code);
   }
 
   @ApiOperation({ 

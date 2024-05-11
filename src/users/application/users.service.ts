@@ -6,6 +6,7 @@ import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { User } from '../domain/user';
 import { Profile } from '../domain/profile';
 import { Provider } from '../domain/provider';
+import { UserProvider } from 'src/common/enums/user-provider.enum';
 
 @Injectable()
 export class UsersService {
@@ -14,22 +15,32 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
   ) {}
   
-  public async findByProviderIdOrSave(payload: OauthPayload) {
-    const { providerId, email, name, providerType, picture } = payload;
+  // public async findByProviderIdOrSave(payload: OauthPayload) {
+  //   const { providerId, email, name, providerType, picture } = payload;
 
-    const existedUser = await this.usersRepository.findByProviderId(providerId);
+  //   const existedUser = await this.usersRepository.findByProviderId(providerId);
 
-    if (existedUser) {
-      return existedUser;
-    }
+  //   if (existedUser) {
+  //     return existedUser;
+  //   }
     
-    const profile = new Profile({ email, nickname: name, picture });
+  //   const profile = new Profile({ email, nickname: name });
+  //   const provider = new Provider({ providerType, providerId });
+  //   const user = new User({ profile, provider });
+    
+  //   return await this.usersRepository.save(user);
+  // }
+
+  public async register(providerId: string, email: string, providerType: UserProvider) {
+    const nickname = 'tester';
+
+    const profile = new Profile({ email, nickname });
     const provider = new Provider({ providerType, providerId });
     const user = new User({ profile, provider });
     
     return await this.usersRepository.save(user);
   }
-
+  
   public async updateRefreshToken(id: number, refreshToken: string) {    
     const user = await this.usersRepository.findOneById(id);
 
@@ -68,6 +79,12 @@ export class UsersService {
 
   public async findUserById(userId: number) {
     const user = await this.usersRepository.findOneById(userId);
+
+    return user;
+  }
+
+  public async findUserByProviderId(providerId: string) {
+    const user = await this.usersRepository.findByProviderId(providerId);
 
     return user;
   }
