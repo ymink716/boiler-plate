@@ -1,6 +1,5 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { InvalidToken, UserNotExist } from '../../common/exception/error-types';
-import { OauthPayload } from 'src/common/interface/oauth-payload';
+import { RefreshTokenHasExpired, UserNotExist } from '../../common/exception/error-types';
 import { UsersRepository } from '../domain/repository/users.repository';
 import { USERS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { User } from '../domain/user';
@@ -14,22 +13,6 @@ export class UsersService {
     @Inject(USERS_REPOSITORY)
     private readonly usersRepository: UsersRepository,
   ) {}
-  
-  // public async findByProviderIdOrSave(payload: OauthPayload) {
-  //   const { providerId, email, name, providerType, picture } = payload;
-
-  //   const existedUser = await this.usersRepository.findByProviderId(providerId);
-
-  //   if (existedUser) {
-  //     return existedUser;
-  //   }
-    
-  //   const profile = new Profile({ email, nickname: name });
-  //   const provider = new Provider({ providerType, providerId });
-  //   const user = new User({ profile, provider });
-    
-  //   return await this.usersRepository.save(user);
-  // }
 
   public async register(providerId: string, email: string, providerType: UserProvider) {
     const nickname = 'tester';
@@ -58,24 +41,24 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(UserNotExist.message, UserNotExist.name);
     }
-
+    
     if (!user.isMatchedRefreshToken(refreshToken)) {
-      throw new UnauthorizedException(InvalidToken.message, InvalidToken.name);
+      throw new UnauthorizedException(RefreshTokenHasExpired.message, RefreshTokenHasExpired.name);
     }
     
     return user;
   }
 
-  public async removeRefreshToken(id: number) {
-    const user = await this.usersRepository.findOneById(id);
+  // public async removeRefreshToken(id: number) {
+  //   const user = await this.usersRepository.findOneById(id);
 
-    if (!user) {
-      throw new NotFoundException(UserNotExist.message, UserNotExist.name);
-    }
+  //   if (!user) {
+  //     throw new NotFoundException(UserNotExist.message, UserNotExist.name);
+  //   }
     
-    user.updateRefreshToken(null);
-    await this.usersRepository.save(user);
-  }
+  //   user.updateRefreshToken(null);
+  //   await this.usersRepository.save(user);
+  // }
 
   public async findUserById(userId: number) {
     const user = await this.usersRepository.findOneById(userId);

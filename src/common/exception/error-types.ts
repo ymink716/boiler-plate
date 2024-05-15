@@ -4,9 +4,14 @@ export const UnauthorizedUser = {
   message: '인증되지 않은 사용자입니다.', 
 }
 
-export const InvalidToken = {
-  name: 'TokenHasExpired',
-  message: '만료되거나 유효하지 않은 토큰입니다.',
+export const AccessTokenHasExpired = {
+  name: 'AccessTokenHasExpired',
+  message: 'access token이 만료되었습니다.',
+}
+
+export const RefreshTokenHasExpired = {
+  name: 'RefreshTokenHasExpired',
+  message: 'refresh token이 만료되었습니다.',
 }
 
 // User

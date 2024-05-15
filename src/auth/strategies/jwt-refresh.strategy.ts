@@ -16,7 +16,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, JWT_REFRESH_G
     private readonly usersService: UsersService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromBodyField('refresh_token'),
+      jwtFromRequest: ExtractJwt.fromBodyField('refresh'),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>(JWT_REFRESH_TOKEN_SECRET),
       passReqToCallback: true,
@@ -24,7 +24,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, JWT_REFRESH_G
   }
 
   async validate(req: Request, payload: JwtPayload) {
-    const refreshToken: string = req.body.refresh_token;
+    const refreshToken: string = req.body.refresh;
     const userId = payload.sub;
 
     const user = await this.usersService.getUserIfRefreshTokenisMatched(refreshToken, userId);
