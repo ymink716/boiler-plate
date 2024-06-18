@@ -66,4 +66,9 @@ export class CommentsController {
 
     return { success: true };
   }
+
+
+  // async getCommentsByQuestion() {
+  //   return await this.commentsService.getCommentsByQuestion();
+  // }
 }

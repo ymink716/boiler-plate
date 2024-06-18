@@ -42,7 +42,6 @@ export class QuestionsController {
     summary: '질문 상세보기',
     description: '해당 ID의 질문 상세보기.' 
   })
-  @ApiBearerAuth('access_token')
   @ApiResponse({
     status: 200,
     description: '질문 상세보기 성공',
@@ -59,7 +58,6 @@ export class QuestionsController {
     summary: '질문글 목록 가져오기',
     description: '질문글 리스트를 가져옵니다.' 
   })
-  @ApiBearerAuth('access_token')
   @ApiResponse({
     status: 200,
     description: '질문 목록 가져오기 성공',

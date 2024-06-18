@@ -59,4 +59,8 @@ export class CommentsService {
 
     return comment;
   }
+
+  public async getCommentsByQuestion(questionId: number): Promise<Comment[]> {
+    throw new Error('Method not implemented.');
+  }
 }
