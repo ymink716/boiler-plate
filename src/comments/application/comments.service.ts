@@ -6,6 +6,7 @@ import { Comment } from '../domain/comment';
 import { COMMENTS_QUERY_REPOSITORY, COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { Content } from '../domain/content';
 import { TypeormCommentQueryRepository } from '../infrastructure/typeorm-comments-query-repository';
+import { ResponseCommentDto } from '../presentation/dto/response-comment-dto';
 
 @Injectable()
 export class CommentsService {
@@ -63,7 +64,9 @@ export class CommentsService {
     return comment;
   }
 
-  public async getCommentsByQuestion(questionId: number): Promise<Comment[]> {
-    throw new Error('Method not implemented.');
+  public async getCommentsByQuestion(questionId: number): Promise<ResponseCommentDto[]> {
+    const comments = await this.commentQueryRepository.findByQuestionId(questionId);
+
+    return comments.map((comment) => new ResponseCommentDto(comment));
   }
 }

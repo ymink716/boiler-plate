@@ -15,6 +15,7 @@ export class TypeormCommentQueryRepository {
     .leftJoinAndSelect('comment.user', 'user')
     .leftJoinAndSelect('comment.question', 'question')
     .leftJoinAndSelect('comment.likes', 'like')
+    .leftJoinAndSelect('like.user', 'likedUser')
     .select([
       'comment.id',
       'comment.content',
@@ -23,7 +24,7 @@ export class TypeormCommentQueryRepository {
       'user.nickname',
       'question.id',
       'like.id',
-      'like.userId',
+      'likedUser.id',
     ])
     .where('question.id = :questionId', { questionId })
     .orderBy('comment.createdAt', 'DESC')

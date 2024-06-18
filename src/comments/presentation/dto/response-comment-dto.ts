@@ -10,7 +10,6 @@ export class ResponseCommentDto {
     this.content = comment.content;
     this.createdAt = comment.createdAt;
     this.user = comment.user;
-    this.question = comment.question;
     this.likes = comment.likes;
   }
 
@@ -25,10 +24,7 @@ export class ResponseCommentDto {
   
   @ApiProperty()
   private readonly user: UserEntity;
-  
-  @ApiProperty()
-  private readonly question: QuestionEntity;
-  
+    
   @ApiProperty()
   private readonly likes: CommentLikeEntity[];
 }
