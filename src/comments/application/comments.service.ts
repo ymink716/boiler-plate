@@ -3,14 +3,17 @@ import { CommentsRepository } from '../domain/repository/comments.repository';
 import { QuestionsService } from 'src/questions/application/questions.service';
 import { CommentNotFound } from 'src/common/exception/error-types';
 import { Comment } from '../domain/comment';
-import { COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
+import { COMMENTS_QUERY_REPOSITORY, COMMENTS_REPOSITORY } from 'src/common/constants/tokens.constant';
 import { Content } from '../domain/content';
+import { TypeormCommentQueryRepository } from '../infrastructure/typeorm-comments-query-repository';
 
 @Injectable()
 export class CommentsService {
   constructor(
     @Inject(COMMENTS_REPOSITORY)
     private readonly commentsRepository: CommentsRepository,
+    @Inject(COMMENTS_QUERY_REPOSITORY)
+    private readonly commentQueryRepository: TypeormCommentQueryRepository,
     private readonly questionsService: QuestionsService,
   ) {}
 

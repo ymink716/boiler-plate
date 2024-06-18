@@ -1,11 +1,12 @@
-import { Controller, Post, UseGuards, Body, Put, Param, ParseIntPipe, Delete } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Body, Put, Param, ParseIntPipe, Delete } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Comment } from '../domain/comment';
 import { CommentsService } from '../application/comments.service';
+import { ResponseCommentDto } from './dto/response-comment-dto';
 
 @ApiTags('comments')
 @Controller('comments')
@@ -67,8 +68,20 @@ export class CommentsController {
     return { success: true };
   }
 
-
-  // async getCommentsByQuestion() {
-  //   return await this.commentsService.getCommentsByQuestion();
-  // }
+  @ApiOperation({ 
+    summary: '질문에 대한 답변 목록', 
+    description: '해당 질문에 대한 답변 목록을 가져옵니다.' 
+  })
+  @ApiOkResponse({
+    description: '해당 질문에 대한 답변 목록 조회 성공',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '답변 목록 가져오기 성공',
+    type: ResponseCommentDto,
+  })
+  @Get('/question/:questionId')
+  async getCommentsByQuestion(@Param('questionId', ParseIntPipe) questionId: number) {
+    return await this.commentsService.getCommentsByQuestion(questionId);
+  }
 }
