@@ -73,7 +73,7 @@ export class CommentsController {
     description: '해당 질문에 대한 답변 목록을 가져옵니다.' 
   })
   @ApiOkResponse({
-    description: '해당 질문에 대한 답변 목록 조회 성공',
+    description: '해당 질문에 대한 답변 목록 조회',
   })
   @ApiResponse({
     status: 200,

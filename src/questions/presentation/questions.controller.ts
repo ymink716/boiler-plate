@@ -39,6 +39,38 @@ export class QuestionsController {
   }
 
   @ApiOperation({ 
+    summary: '작성글 목록',
+    description: '사용자가 작성한 질문 리스트를 가져옵니다.' 
+  })
+  @ApiBearerAuth('access_token')
+  @ApiResponse({
+    status: 200,
+    description: '작성한 질문 목록 가져오기 성공',
+    type: ResponseQuestionDto,
+  })
+  @Get('/user')
+  @UseGuards(JwtAuthGuard)
+  async getQeustionsByUser(@GetUser('id') userId: number): Promise<ResponseQuestionDto[]> {
+    return await this.questionsService.getQuestionsByUser(userId);
+  }
+
+  @ApiOperation({ 
+    summary: '북마크한 글 목록',
+    description: '사용자가 북마크한 질문 리스트를 가져옵니다.' 
+  })
+  @ApiBearerAuth('access_token')
+  @ApiResponse({
+    status: 200,
+    description: '북마크한 질문 목록 가져오기 성공',
+    type: ResponseQuestionDto,
+  })
+  @Get('/bookmarks')
+  @UseGuards(JwtAuthGuard)
+  async getQuestionsByBookmark(@GetUser('id') userId: number): Promise<ResponseQuestionDto[]> {
+    return await this.questionsService.getQuestionsByBookmarks(userId);
+  }
+
+  @ApiOperation({ 
     summary: '질문 상세보기',
     description: '해당 ID의 질문 상세보기.' 
   })
@@ -53,6 +85,8 @@ export class QuestionsController {
   ): Promise<ResponseQuestionDto> {
     return await this.questionsService.getQuestion(questionId);
   }
+
+
 
   @ApiOperation({ 
     summary: '질문글 목록 가져오기',

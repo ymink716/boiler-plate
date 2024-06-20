@@ -11,7 +11,7 @@ export class TypeormQuestionsQueryRepository {
   async findOneById(id: number): Promise<QuestionEntity | null> {
     const questionEntity = await this.questionRepository.findOne({ 
       where: { id },
-      relations: ['user', 'comments', 'bookmarks'],
+      relations: ['user', 'comments', 'bookmarks', 'comments.user', 'bookmarks.user'],
       select: {
         id: true,
         title: true,
@@ -30,6 +30,12 @@ export class TypeormQuestionsQueryRepository {
           },
           likes: true,
         },
+        bookmarks: {
+          id: true,
+          user: {
+            id: true,
+          }
+        }
       }
     });
   
@@ -67,6 +73,43 @@ export class TypeormQuestionsQueryRepository {
     const questions = await queryBuilder.orderBy('question.createdAt', 'DESC')
       .take(take)
       .skip((page - 1) * take)
+      .getMany();
+
+    return questions;
+  }
+
+  public async findByUser(userId: number) {
+    const questions = this.questionRepository
+      .createQueryBuilder('question')
+      .select([
+        'question.id',
+        'question.title',
+        'question.createdAt',
+      ])
+      .loadRelationCountAndMap('question.comments', 'question.comments')
+      .loadRelationCountAndMap('question.bookmarks', 'question.bookmarks')
+      .leftJoin('question.user', 'user')
+      .where('user.id = :userId', { userId })
+      .orderBy('question.createdAt', 'DESC')
+      .getMany();
+
+    return questions;
+  }
+
+  public async findByBookmarks(userId: number) {
+    const questions = this.questionRepository
+      .createQueryBuilder('question')
+      .select([
+        'question.id',
+        'question.title',
+        'question.createdAt',
+      ])
+      .loadRelationCountAndMap('question.comments', 'question.comments')
+      .loadRelationCountAndMap('question.bookmarks', 'question.bookmarks')
+      .leftJoin('question.bookmarks', 'bookmark')
+      .leftJoin('bookmark.user', 'bookmarkedUser')
+      .where('bookmarkedUser.id = :userId', { userId })
+      .orderBy('question.createdAt', 'DESC')
       .getMany();
 
     return questions;

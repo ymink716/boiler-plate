@@ -1,4 +1,4 @@
-import { Controller, Delete, Post, UseGuards, Param } from '@nestjs/common';
+import { Controller, Delete, Post, UseGuards, Param, ParseIntPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -21,7 +21,7 @@ export class BookmarksController {
   @UseGuards(JwtAuthGuard)
   async addBookmark(
     @GetUser('id') userId: number,
-    @Param('questionId') questionId: number,
+    @Param('questionId', ParseIntPipe) questionId: number,
   ) {
     await this.bookmarksService.addBookmark(userId, questionId);
 
@@ -40,7 +40,7 @@ export class BookmarksController {
   @UseGuards(JwtAuthGuard)
   async deleteBookmark(
     @GetUser('id') userId: number,
-    @Param('questionId') questionId: number,
+    @Param('questionId', ParseIntPipe) questionId: number,
   ) {
     await this.bookmarksService.deleteBookmark(userId, questionId);
 

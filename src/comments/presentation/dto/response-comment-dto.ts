@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { CommentEntity } from "src/comments/infrastructure/entity/comment.entity";
 import { CommentLikeEntity } from "src/likes/infrastructure/entity/comment-like.entity";
-import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
 import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 export class ResponseCommentDto {

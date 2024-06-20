@@ -71,4 +71,16 @@ export class QuestionsService {
     question.checkIsAuthor(userId);
     await this.questionsRepository.softDelete(questionId);
   }
+
+  public async getQuestionsByUser(userId: number): Promise<ResponseQuestionDto[]> {
+    const questions = await this.questionsQueryRepository.findByUser(userId);
+
+    return questions.map((question) => new ResponseQuestionDto(question));
+  }
+
+  public async getQuestionsByBookmarks(userId: number):  Promise<ResponseQuestionDto[]> {
+    const questions = await this.questionsQueryRepository.findByBookmarks(userId);
+
+    return questions.map((question) => new ResponseQuestionDto(question));
+  }
 }
