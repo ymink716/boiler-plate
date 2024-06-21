@@ -18,11 +18,14 @@ export class QuestionEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   title: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'varchar', length: 500 })
   content: string;
+
+  @Column({ type: 'int', default: 0 })
+  views: number;
 
   @CreateDateColumn({
     type: 'timestamp',

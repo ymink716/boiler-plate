@@ -9,6 +9,7 @@ export class Question {
     id?: number; 
     title: Title;
     content: Content;
+    views?: number;
     createdAt?: Date;
     userId: number;
   }) {
@@ -18,6 +19,11 @@ export class Question {
       }
       this.title = options.title;
       this.content = options.content;
+      if (options.views) {
+        this.views = options.views;
+      } else {
+        this.views = 0;
+      }    
       if (options.createdAt) {
         this.createdAt = options.createdAt;
       }
@@ -40,6 +46,9 @@ export class Question {
   @ApiProperty()
   private userId: number;
 
+  @ApiProperty()
+  private views: number;
+
   public checkIsAuthor(userId: number): void {
     if (this.userId !== userId) {
       throw new ForbiddenException(IsNotQuestionWriter.message, IsNotQuestionWriter.name);
@@ -51,6 +60,10 @@ export class Question {
   public update(title: string, content: string): void {
     this.title = new Title(title);
     this.content = new Content(content);
+  }
+
+  public increaseViews() {
+    this.views += 1;
   }
 
   public getId() {

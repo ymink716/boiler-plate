@@ -9,6 +9,7 @@ export class ResponseQuestionDto {
     this.id = question.id;
     this.title = question.title;
     this.content = question.content;
+    this.views = question.views;
     this.createdAt = question.createdAt;
     this.user = question.user;
     this.comments = question.comments;
@@ -23,6 +24,9 @@ export class ResponseQuestionDto {
 
   @ApiProperty()
   private readonly content: string;
+
+  @ApiProperty()
+  private readonly views: number;
 
   @ApiProperty()
   private readonly createdAt: Date;

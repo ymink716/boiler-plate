@@ -28,6 +28,8 @@ export class QuestionsService {
   }
 
   public async getQuestion(questionId: number): Promise<ResponseQuestionDto> {
+    await this.increaseViews(questionId);
+
     const question = await this.questionsQueryRepository.findOneById(questionId);
     
     if (!question) {
@@ -82,5 +84,16 @@ export class QuestionsService {
     const questions = await this.questionsQueryRepository.findByBookmarks(userId);
 
     return questions.map((question) => new ResponseQuestionDto(question));
+  }
+
+  private async increaseViews(questionId: number): Promise<void> {
+    const question = await this.questionsRepository.findOneById(questionId);
+
+    if (!question) {
+      throw new NotFoundException(QuestionNotFound.message, QuestionNotFound.name);
+    }
+
+    question.increaseViews();
+    await this.questionsRepository.save(question);
   }
 }

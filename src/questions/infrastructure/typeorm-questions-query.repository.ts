@@ -42,7 +42,7 @@ export class TypeormQuestionsQueryRepository {
     if (!questionEntity) {
       return null;
     }
-  
+
     return questionEntity;
   }
 

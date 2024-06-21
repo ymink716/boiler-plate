@@ -86,8 +86,6 @@ export class QuestionsController {
     return await this.questionsService.getQuestion(questionId);
   }
 
-
-
   @ApiOperation({ 
     summary: '질문글 목록 가져오기',
     description: '질문글 리스트를 가져옵니다.' 
