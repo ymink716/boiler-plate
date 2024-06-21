@@ -1,6 +1,7 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { QuestionEntity } from "./entity/question.entity";
 import { Repository } from "typeorm";
+import { QuestionsSortCondition } from "src/common/enums/questions-sort-condition.enum";
 
 export class TypeormQuestionsQueryRepository {
   constructor(
@@ -16,6 +17,7 @@ export class TypeormQuestionsQueryRepository {
         id: true,
         title: true,
         content: true,
+        views: true,
         createdAt: true,
         user: {
           id: true,
@@ -46,7 +48,9 @@ export class TypeormQuestionsQueryRepository {
     return questionEntity;
   }
 
-  async find(search: string, page: number, take: number): Promise<QuestionEntity[]> {
+  async find(
+    search: string, page: number, take: number, sort: QuestionsSortCondition
+  ): Promise<QuestionEntity[]> {
     if (page === undefined) {
       page = 1;
     }
@@ -60,6 +64,7 @@ export class TypeormQuestionsQueryRepository {
     .select([
       'question.id',
       'question.title',
+      'question.views',
       'question.createdAt',
     ])
     .loadRelationCountAndMap('question.comments', 'question.comments')
@@ -70,10 +75,19 @@ export class TypeormQuestionsQueryRepository {
         .orWhere('question.content like :content', { content: `%${search}%` });
     };
 
-    const questions = await queryBuilder.orderBy('question.createdAt', 'DESC')
+    let questions;
+
+    if (sort === QuestionsSortCondition.LATEST || sort === undefined) {
+      questions = await queryBuilder.orderBy('question.createdAt', 'DESC')
       .take(take)
       .skip((page - 1) * take)
       .getMany();
+    } else if (sort === QuestionsSortCondition.VIEWS) {
+      questions = await queryBuilder.orderBy('question.views', 'DESC')
+      .take(take)
+      .skip((page - 1) * take)
+      .getMany();
+    }
 
     return questions;
   }
@@ -84,6 +98,7 @@ export class TypeormQuestionsQueryRepository {
       .select([
         'question.id',
         'question.title',
+        'question.views',
         'question.createdAt',
       ])
       .loadRelationCountAndMap('question.comments', 'question.comments')
@@ -102,6 +117,7 @@ export class TypeormQuestionsQueryRepository {
       .select([
         'question.id',
         'question.title',
+        'question.views',
         'question.createdAt',
       ])
       .loadRelationCountAndMap('question.comments', 'question.comments')

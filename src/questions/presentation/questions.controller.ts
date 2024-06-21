@@ -98,11 +98,12 @@ export class QuestionsController {
   @ApiQuery({ name: 'search', required: false, description: '검색어', example: '서울', allowEmptyValue: true })
   @ApiQuery({ name: 'page', required: false, description: '페이지', example: 1, allowEmptyValue: true })
   @ApiQuery({ name: 'take', required: false, description: '개수', example: 10, allowEmptyValue: true })
+  @ApiQuery({ name: 'sort', required: false, description: '정렬 조건 LATEST | VIEWS', example: 'LATEST', allowEmptyValue: true })
   @Get()
   async getQuestions(@Query() getQuestionsDto: GetQuestionsDto): Promise<ResponseQuestionDto[]> {
-    const { search, page, take } = getQuestionsDto;
+    const { search, page, take, sort } = getQuestionsDto;
 
-    return await this.questionsService.getQuestions(search, page, take);
+    return await this.questionsService.getQuestions(search, page, take, sort);
   }
 
   @ApiOperation({ 

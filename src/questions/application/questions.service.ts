@@ -7,6 +7,7 @@ import { Content } from '../domain/content';
 import { Question } from '../domain/question';
 import { ResponseQuestionDto } from '../presentation/dto/response-question.dto';
 import { TypeormQuestionsQueryRepository } from '../infrastructure/typeorm-questions-query.repository';
+import { QuestionsSortCondition } from 'src/common/enums/questions-sort-condition.enum';
 
 @Injectable()
 export class QuestionsService {
@@ -39,8 +40,10 @@ export class QuestionsService {
     return new ResponseQuestionDto(question);
   }
 
-  public async getQuestions(search: string, page: number, take: number): Promise<ResponseQuestionDto[]> {
-    const questions = await this.questionsQueryRepository.find(search, page, take);
+  public async getQuestions(
+    search: string, page: number, take: number, sort: QuestionsSortCondition
+  ): Promise<ResponseQuestionDto[]> {
+    const questions = await this.questionsQueryRepository.find(search, page, take, sort);
 
     return questions.map((question) => new ResponseQuestionDto(question));
   }

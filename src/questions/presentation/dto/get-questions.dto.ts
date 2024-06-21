@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, Max, MaxLength, Min, MinLength } from "class-validator";
+import { IsEnum, IsOptional, Max, MaxLength, Min, MinLength } from "class-validator";
+import { QuestionsSortCondition } from "src/common/enums/questions-sort-condition.enum";
 
 
 export class GetQuestionsDto {
@@ -19,4 +20,9 @@ export class GetQuestionsDto {
   @Min(10)
   @Max(50)
   take: number;
+
+  @ApiProperty({ description: '정렬 조건 LATEST | VIEWS (최신순 | 조회순)', example: 'LATEST', required: false})
+  @IsOptional()
+  @IsEnum(QuestionsSortCondition)
+  sort: QuestionsSortCondition;
 }
