@@ -20,7 +20,7 @@ export class CommentEntity {
   id: number;
 
   @ApiProperty()
-  @Column({ type: 'text' })
+  @Column({ type: 'varchar', length: 255 })
   content: string;
 
   @ApiProperty()

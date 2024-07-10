@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BookmarkEntity } from "src/bookmarks/infrastructure/entity/bookmark.entity";
 import { CommentEntity } from "src/comments/infrastructure/entity/comment.entity";
 import { UserProvider } from "src/common/enums/user-provider.enum";
-import { QuestionLikeEntity } from "src/likes/infrastructure/entity/question-like.entity";
+import { CommentLikeEntity } from "src/likes/infrastructure/entity/comment-like.entity";
 import { QuestionEntity } from "src/questions/infrastructure/entity/question.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -59,9 +59,8 @@ export class UserEntity {
   @OneToMany(() => CommentEntity, comments => comments.user)
   comments: CommentEntity[];
 
-
-  @OneToMany(() => QuestionLikeEntity, questionLike => questionLike.user)
-  questionLikes: QuestionLikeEntity[];
+  @OneToMany(() => CommentLikeEntity, commentLike => commentLike.user)
+  commentLikes: CommentLikeEntity[];
 
   @OneToMany(() => BookmarkEntity, bookmark => bookmark.user)
   bookmarks: BookmarkEntity[];

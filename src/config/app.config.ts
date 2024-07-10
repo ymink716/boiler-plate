@@ -1,6 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { BaseAPIDocumentation } from './swagger.config';
 import { SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 
 export const setUp = (app: INestApplication) => {
   
@@ -16,6 +17,14 @@ export const setUp = (app: INestApplication) => {
       }
     })
   );
+
+  app.enableCors({
+    origin: '*',
+    methods: "GET, POST, PATCH, DELETE, PUT",
+    allowedHeaders: "Content-Type, Authorization",
+  });
+  
+  app.use(cookieParser());
 
   const documentOptions = new BaseAPIDocumentation().initializeOptions();
   const document = SwaggerModule.createDocument(app, documentOptions);

@@ -6,6 +6,7 @@ export class User {
   constructor(options: {
     id?: number; 
     createdAt?: Date;
+    refreshToken?: string | null;
     profile: Profile;
     provider: Provider;
   }) {
@@ -15,6 +16,9 @@ export class User {
       }
       if (options.createdAt) {
         this.createdAt = options.createdAt;
+      }
+      if (options.refreshToken) {
+        this.refreshToken = options.refreshToken;
       }
       this.profile = options.profile;
       this.provider = options.provider;

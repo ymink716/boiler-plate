@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BookmarkEntity } from 'src/bookmarks/infrastructure/entity/bookmark.entity';
 import { CommentEntity } from 'src/comments/infrastructure/entity/comment.entity';
-import { QuestionLikeEntity } from 'src/likes/infrastructure/entity/question-like.entity';
 import { QuestionEntity } from 'src/questions/infrastructure/entity/question.entity';
 import { UserEntity } from 'src/users/infrastructure/entity/user.entity';
 
@@ -10,10 +9,10 @@ export class ResponseQuestionDto {
     this.id = question.id;
     this.title = question.title;
     this.content = question.content;
+    this.views = question.views;
     this.createdAt = question.createdAt;
     this.user = question.user;
     this.comments = question.comments;
-    this.likes = question.likes;
     this.bookmarks = question.bookmarks;
   }
 
@@ -27,6 +26,9 @@ export class ResponseQuestionDto {
   private readonly content: string;
 
   @ApiProperty()
+  private readonly views: number;
+
+  @ApiProperty()
   private readonly createdAt: Date;
 
   @ApiProperty()
@@ -34,9 +36,6 @@ export class ResponseQuestionDto {
 
   @ApiProperty()
   private readonly comments: CommentEntity[];
-
-  @ApiProperty()
-  private readonly likes: QuestionLikeEntity[];
 
   @ApiProperty()
   private readonly bookmarks: BookmarkEntity[];

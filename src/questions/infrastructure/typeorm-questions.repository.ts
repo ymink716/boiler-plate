@@ -34,7 +34,7 @@ export class TypeormQuestionsRepository implements QuestionsRepository {
     return QuestionMapper.toDomain(savedQuestionEntity);
   }
 
-  async findAll(): Promise<Question[]> {
+  async find(): Promise<Question[]> {
     const questionEntities = await this.questionRepository.find();
     
     return questionEntities.map((entity) => QuestionMapper.toDomain(entity));
