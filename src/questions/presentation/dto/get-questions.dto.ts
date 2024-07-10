@@ -1,11 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, Max, MaxLength, Min, MinLength } from "class-validator";
+import { IsEnum, IsOptional, Max, MaxLength, Min, MinLength } from "class-validator";
+import { QuestionsSortCondition } from "src/common/enums/questions-sort-condition.enum";
 
 
 export class GetQuestionsDto {
-  @ApiProperty({ description: '검색어 (2~10글자 사이)', example: '서울', required: false })
+  @ApiProperty({ description: '검색어 (1~10글자 사이)', example: '서울', required: false })
   @IsOptional()
-  @MinLength(2)
+  @MinLength(1)
   @MaxLength(10)
   search: string;
 
@@ -19,4 +20,8 @@ export class GetQuestionsDto {
   @Min(10)
   @Max(50)
   take: number;
+
+  @ApiProperty({ description: '정렬 조건 LATEST | VIEWS (최신순 | 조회순)', example: 'LATEST', required: false})
+  @IsOptional()
+  sort: QuestionsSortCondition;
 }

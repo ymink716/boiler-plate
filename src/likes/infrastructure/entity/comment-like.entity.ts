@@ -18,7 +18,7 @@ export class CommentLikeEntity {
   })
   createdAt: Date;
 
-  @ManyToOne(() => UserEntity, user => user.questionLikes, {
+  @ManyToOne(() => UserEntity, user => user.commentLikes, {
     onDelete: 'CASCADE',
     nullable: false
   })

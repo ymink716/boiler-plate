@@ -6,12 +6,13 @@ import { UserEntity } from "src/users/infrastructure/entity/user.entity";
 
 export class QuestionMapper {
   public static toDomain(questionEntity: QuestionEntity): Question {
-    const { id, title, content, createdAt, user } = questionEntity;
+    const { id, title, content, views, createdAt, user } = questionEntity;
 
     const question = new Question({
       id, 
       title: new Title(title), 
       content: new Content(content), 
+      views,
       createdAt,
       userId: user.id, 
     });
@@ -23,6 +24,7 @@ export class QuestionMapper {
     const id = question['id'];
     const title = question['title'];
     const content = question['content'];
+    const views = question['views'];
     const userId = question['userId'];
     
     const questionEntity = new QuestionEntity();
@@ -32,6 +34,7 @@ export class QuestionMapper {
     }
     questionEntity.title = title.getTitle();
     questionEntity.content = content.getContent();
+    questionEntity.views = views;
     questionEntity.user = Object.assign(new UserEntity(), { id: userId });
 
     return questionEntity;

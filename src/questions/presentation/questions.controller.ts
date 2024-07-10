@@ -5,21 +5,15 @@ import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Question } from '../domain/question';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { PostQuestionCommand } from '../application/command/post-question.command';
-import { UpdateQuestionCommand } from '../application/command/update-question.command';
-import { DeleteQuestionCommand } from '../application/command/delete-question.command';
-import { GetQuestionQuery } from '../application/query/get-question.query';
 import { GetQuestionsDto } from './dto/get-questions.dto';
-import { GetQuestionsQuery } from '../application/query/get-questions.query';
 import { ResponseQuestionDto } from './dto/response-question.dto';
+import { QuestionsService } from '../application/questions.service';
 
 @ApiTags('questions')
 @Controller('questions')
 export class QuestionsController {
   constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
+    private readonly questionsService: QuestionsService,
   ) {}
 
   @ApiOperation({ 
@@ -38,36 +32,64 @@ export class QuestionsController {
   async postQuestion(
     @Body() createQuestionDto: CreateQuestionDto,
     @GetUser('id') userId: number,
-  ) {
+  ): Promise<Question> {
     const { title, content } = createQuestionDto;
 
-    const command = new PostQuestionCommand(title, content, userId);
+    return await this.questionsService.postQuestion(title, content, userId);
+  }
 
-    return this.commandBus.execute(command);
+  @ApiOperation({ 
+    summary: '작성글 목록',
+    description: '사용자가 작성한 질문 리스트를 가져옵니다.' 
+  })
+  @ApiBearerAuth('access_token')
+  @ApiResponse({
+    status: 200,
+    description: '작성한 질문 목록 가져오기 성공',
+    type: ResponseQuestionDto,
+  })
+  @Get('/user')
+  @UseGuards(JwtAuthGuard)
+  async getQeustionsByUser(@GetUser('id') userId: number): Promise<ResponseQuestionDto[]> {
+    return await this.questionsService.getQuestionsByUser(userId);
+  }
+
+  @ApiOperation({ 
+    summary: '북마크한 글 목록',
+    description: '사용자가 북마크한 질문 리스트를 가져옵니다.' 
+  })
+  @ApiBearerAuth('access_token')
+  @ApiResponse({
+    status: 200,
+    description: '북마크한 질문 목록 가져오기 성공',
+    type: ResponseQuestionDto,
+  })
+  @Get('/bookmarks')
+  @UseGuards(JwtAuthGuard)
+  async getQuestionsByBookmark(@GetUser('id') userId: number): Promise<ResponseQuestionDto[]> {
+    return await this.questionsService.getQuestionsByBookmarks(userId);
   }
 
   @ApiOperation({ 
     summary: '질문 상세보기',
     description: '해당 ID의 질문 상세보기.' 
   })
-  @ApiBearerAuth('access_token')
   @ApiResponse({
     status: 200,
     description: '질문 상세보기 성공',
     type: ResponseQuestionDto,
   })
   @Get('/:questionId')
-  async getQuestionDetail(@Param('questionId', ParseIntPipe) questionId: number) {
-    const command = new GetQuestionQuery(questionId);
-
-    return this.queryBus.execute(command);
+  async getQuestionDetail(
+    @Param('questionId', ParseIntPipe) questionId: number,
+  ): Promise<ResponseQuestionDto> {
+    return await this.questionsService.getQuestion(questionId);
   }
 
   @ApiOperation({ 
     summary: '질문글 목록 가져오기',
     description: '질문글 리스트를 가져옵니다.' 
   })
-  @ApiBearerAuth('access_token')
   @ApiResponse({
     status: 200,
     description: '질문 목록 가져오기 성공',
@@ -76,13 +98,12 @@ export class QuestionsController {
   @ApiQuery({ name: 'search', required: false, description: '검색어', example: '서울', allowEmptyValue: true })
   @ApiQuery({ name: 'page', required: false, description: '페이지', example: 1, allowEmptyValue: true })
   @ApiQuery({ name: 'take', required: false, description: '개수', example: 10, allowEmptyValue: true })
+  @ApiQuery({ name: 'sort', required: false, description: '정렬 조건 LATEST | VIEWS', example: 'LATEST', allowEmptyValue: true })
   @Get()
-  async getQuestions(@Query() getQuestionsDto: GetQuestionsDto) {
-    const { search, page, take } = getQuestionsDto;
-
-    const command = new GetQuestionsQuery(search, page, take);
-
-    return this.queryBus.execute(command);
+  async getQuestions(@Query() getQuestionsDto: GetQuestionsDto): Promise<ResponseQuestionDto[]> {
+    const { search, page, take, sort } = getQuestionsDto;
+    console.log(getQuestionsDto)
+    return await this.questionsService.getQuestions(search, page, take, sort);
   }
 
   @ApiOperation({ 
@@ -102,12 +123,10 @@ export class QuestionsController {
     @Param('questionId', ParseIntPipe) questionId: number,
     @GetUser('id') userId: number,
     @Body() updateQuestionDto: UpdateQuestionDto,
-  ) {
+  ): Promise<Question> {
     const { title, content } = updateQuestionDto;
 
-    const command = new UpdateQuestionCommand(questionId, title, content, userId);
-
-    return this.commandBus.execute(command);  
+    return await this.questionsService.updateQuestion(questionId, title, content, userId);
   }
 
   @ApiOperation({ 
@@ -125,8 +144,8 @@ export class QuestionsController {
     @Param('questionId', ParseIntPipe) questionId: number,
     @GetUser('id') userId: number,
   ) {
-    const command = new DeleteQuestionCommand(questionId, userId);
+    await this.questionsService.deleteQuestion(questionId, userId);  
 
-    return this.commandBus.execute(command);  
+    return { success: true }
   }
 }

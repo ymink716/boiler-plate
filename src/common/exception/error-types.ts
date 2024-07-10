@@ -4,20 +4,20 @@ export const UnauthorizedUser = {
   message: '인증되지 않은 사용자입니다.', 
 }
 
-export const InvalidToken = {
-  name: 'TokenHasExpired',
-  message: '만료되거나 유효하지 않은 토큰입니다.',
+export const AccessTokenHasExpired = {
+  name: 'AccessTokenHasExpired',
+  message: 'access token이 만료되었습니다.',
+}
+
+export const RefreshTokenHasExpired = {
+  name: 'RefreshTokenHasExpired',
+  message: 'refresh token이 만료되었습니다.',
 }
 
 // User
 export const UserNotExist = {
   name: 'UserNotExist',
   message: '해당 사용자를 찾을 수 없습니다.',
-}
-
-export const InvalidUserNickname = {
-  name: 'InvalidUserNickname',
-  message: '닉네임은 2글자 이상 10글자 이하여야 합니다.',
 }
 
 // Question
@@ -58,11 +58,6 @@ export const InvalidCommentContent = {
 }
 
 // Like
-export const QuestionAlreadyLiked = {
-  name: 'QuestionsAlreadyLiked',
-  message: '이미 좋아요를 누른 질문입니다.'
-}
-
 export const CommentAlreadyLiked = {
   name: 'CommentAlreadyLiked',
   message: '이미 좋아요를 누른 답변입니다.',

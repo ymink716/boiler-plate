@@ -1,15 +1,13 @@
-import { Controller, Delete, Post, UseGuards, Param } from '@nestjs/common';
+import { Controller, Delete, Post, UseGuards, Param, ParseIntPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/common/custom-decorators/get-user.decorator';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AddBookmarkCommand } from '../application/command/add-bookmark.command';
-import { CommandBus } from '@nestjs/cqrs';
-import { DeleteBookmarkCommand } from '../application/command/delete-bookmark.command';
+import { BookmarksService } from '../application/bookmarksService';
 
 @Controller('bookmarks')
 @ApiTags('bookmarks')
 export class BookmarksController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly bookmarksService: BookmarksService) {}
 
   @ApiOperation({ 
     summary: '북마크 추가', 
@@ -23,11 +21,11 @@ export class BookmarksController {
   @UseGuards(JwtAuthGuard)
   async addBookmark(
     @GetUser('id') userId: number,
-    @Param('questionId') questionId: number,
+    @Param('questionId', ParseIntPipe) questionId: number,
   ) {
-    const command = new AddBookmarkCommand(questionId, userId);
+    await this.bookmarksService.addBookmark(userId, questionId);
 
-    return await this.commandBus.execute(command);
+    return { success: true };
   }
 
   @ApiOperation({ 
@@ -42,10 +40,10 @@ export class BookmarksController {
   @UseGuards(JwtAuthGuard)
   async deleteBookmark(
     @GetUser('id') userId: number,
-    @Param('questionId') questionId: number,
+    @Param('questionId', ParseIntPipe) questionId: number,
   ) {
-    const command = new DeleteBookmarkCommand(questionId, userId);
+    await this.bookmarksService.deleteBookmark(userId, questionId);
 
-    return await this.commandBus.execute(command);
+    return { success: true };
   }
 }
