@@ -50,6 +50,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
+          timeout: 60s
           script: |
             docker stop ez-ask-app-dev || true
             docker rm ez-ask-app-dev || true
