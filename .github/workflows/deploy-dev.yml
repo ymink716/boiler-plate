@@ -33,6 +33,7 @@ jobs:
       - name: Build Docker Image
         run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
       
+      # TODO: test 수정 후 활성화
       # - name: Run Test Code
       #   run: docker run -i ez-ask-app-dev npm run test:ci
 
