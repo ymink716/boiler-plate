@@ -23,6 +23,5 @@ export class GetQuestionsDto {
 
   @ApiProperty({ description: '정렬 조건 LATEST | VIEWS (최신순 | 조회순)', example: 'LATEST', required: false})
   @IsOptional()
-  @IsEnum(QuestionsSortCondition)
   sort: QuestionsSortCondition;
 }

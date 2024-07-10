@@ -26,6 +26,7 @@ jobs:
       
       - name: generate .env file
         run: |
+          touch .env.production
           echo "${{ secrets.PRODUCTION_ENV }}" >> .production.env
           cat .production.env
 

@@ -51,13 +51,17 @@ export class TypeormQuestionsQueryRepository {
   async find(
     search: string, page: number, take: number, sort: QuestionsSortCondition
   ): Promise<QuestionEntity[]> {
-    if (page === undefined) {
+    if (!page) {
       page = 1;
     }
 
-    if (take === undefined) {
+    if (!take) {
       take = 10;
     }
+
+    if (!sort) {
+      sort = QuestionsSortCondition.LATEST;
+    } 
 
     const queryBuilder = this.questionRepository
     .createQueryBuilder('question')
@@ -70,25 +74,25 @@ export class TypeormQuestionsQueryRepository {
     .loadRelationCountAndMap('question.comments', 'question.comments')
     .loadRelationCountAndMap('question.bookmarks', 'question.bookmarks');
 
-    if (search) {
+    if (search && search.length > 1) {
       queryBuilder.andWhere('question.title like :title', { title: `%${search}%` })
         .orWhere('question.content like :content', { content: `%${search}%` });
     };
 
     let questions;
 
-    if (sort === QuestionsSortCondition.LATEST || sort === undefined) {
+    if (sort === QuestionsSortCondition.LATEST) {
       questions = await queryBuilder.orderBy('question.createdAt', 'DESC')
       .take(take)
       .skip((page - 1) * take)
       .getMany();
-    } else if (sort === QuestionsSortCondition.VIEWS) {
+    } else if (sort == QuestionsSortCondition.VIEWS) {
       questions = await queryBuilder.orderBy('question.views', 'DESC')
       .take(take)
       .skip((page - 1) * take)
       .getMany();
     }
-
+    
     return questions;
   }
 

@@ -102,7 +102,7 @@ export class QuestionsController {
   @Get()
   async getQuestions(@Query() getQuestionsDto: GetQuestionsDto): Promise<ResponseQuestionDto[]> {
     const { search, page, take, sort } = getQuestionsDto;
-
+    console.log(getQuestionsDto)
     return await this.questionsService.getQuestions(search, page, take, sort);
   }
 
