@@ -52,17 +52,34 @@ jobs:
       - name: Push Docker Image To ECR
         run: docker push ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
       
-      - name: delete docker container and image
+      - name: stop docker container
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          timeout: 60s   
           script: |
             sudo docker stop ez-ask-app-dev
+            
+      - name: delete docker container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
             sudo docker rm ez-ask-app-dev
+      
+      - name: delete docker images
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
             sudo docker images -q | xargs -r docker rmi
 
       - name: Deploy
