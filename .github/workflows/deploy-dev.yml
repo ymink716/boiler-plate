@@ -37,7 +37,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            aws ecr batch-delete-image --profile ${{ secrets.IAM_PROFILE_USERNAME }} --repository-name ez-ask-app-dev --image-ids imageTag=latest
+            aws ecr batch-delete-image --repository-name ez-ask-app-dev --image-ids imageTag=latest
       
       - name: Build Docker Image
         run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
