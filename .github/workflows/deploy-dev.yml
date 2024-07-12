@@ -60,7 +60,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker ps -q --filter "name=ez-ask-app-dev" | grep -q . && docker stop ez-ask-app-dev && docker rm -fv ez-ask-app-dev
+            sudo docker ps -q --filter "name=ez-ask-app-dev" | grep -q . && sudo docker stop ez-ask-app-dev && sudo docker rm -fv ez-ask-app-dev
       # sudo docker stop ez-ask-app-dev || true 
       # sudo docker rm ez-ask-app-dev || true 
       # sudo docker images -q | xargs -r docker rmi
