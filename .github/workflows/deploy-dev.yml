@@ -67,8 +67,8 @@ jobs:
           script: |
             docker ps -q --filter "name=ez-ask-app-dev" | xargs -r docker stop ez-ask-app-dev
             docker ps -q --filter "name=ez-ask-app-dev" | xargs -r docker rm ez-ask-app-dev
-            docker images -q | xargs -r docker rmi
-            
+            docker images -q | xargs -r docker rmi ez-ask-app-dev
+
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
