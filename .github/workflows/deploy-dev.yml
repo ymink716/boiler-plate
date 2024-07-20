@@ -62,10 +62,13 @@ jobs:
           # docker stop ez-ask-app-dev || true 
           # docker rm ez-ask-app-dev || true 
           # docker images -q | xargs -r docker rmi
+          # docker ps -q --filter "name=ez-ask-app-dev" | grep -q . && sudo docker stop ez-ask-app-dev && sudo docker rm -fv ez-ask-app-dev
+          # docker ps -q --filter "name=ez-ask-app-dev" | xargs -r docker stop
           script: |
-            docker ps -q --filter "name=ez-ask-app-dev" | grep -q . && sudo docker stop ez-ask-app-dev && sudo docker rm -fv ez-ask-app-dev
-
-
+            docker ps -q --filter "name=ez-ask-app-dev" | xargs -r docker stop ez-ask-app-dev
+            docker ps -q --filter "name=ez-ask-app-dev" | xargs -r docker rm ez-ask-app-dev
+            docker images -q | xargs -r docker rmi
+            
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -75,5 +78,5 @@ jobs:
           port: ${{ secrets.PORT }}
           timeout: 60s   
           script: |
-            sudo docker pull ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
-            sudo docker run -d --name ez-ask-app-dev -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
+            docker pull ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
+            docker run -d --name ez-ask-app-dev -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
