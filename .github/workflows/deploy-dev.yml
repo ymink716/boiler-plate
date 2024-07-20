@@ -47,7 +47,7 @@ jobs:
       #   run: docker run -i ez-ask-app-dev npm run test:ci
 
       - name: Tag Docker Image
-        run: docker tag ez-ask-app-dev:latest ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
+        run: docker tag ez-ask-app-dev ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
         
       - name: Push Docker Image To ECR
         run: docker push ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
@@ -59,11 +59,11 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
+          # sudo docker ps -q --filter "name=ez-ask-app-dev" | grep -q . && sudo docker stop ez-ask-app-dev && sudo docker rm -fv ez-ask-app-dev
           script: |
-            sudo docker ps -q --filter "name=ez-ask-app-dev" | grep -q . && sudo docker stop ez-ask-app-dev && sudo docker rm -fv ez-ask-app-dev
-      # sudo docker stop ez-ask-app-dev || true 
-      # sudo docker rm ez-ask-app-dev || true 
-      # sudo docker images -q | xargs -r docker rmi
+            sudo docker stop ez-ask-app-dev || true 
+            sudo docker rm ez-ask-app-dev || true 
+            sudo docker images -q | xargs -r docker rmi
 
       - name: Deploy
         uses: appleboy/ssh-action@master
