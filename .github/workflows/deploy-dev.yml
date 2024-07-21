@@ -64,10 +64,13 @@ jobs:
           # docker images -q | xargs -r docker rmi
           # docker ps -q --filter "name=ez-ask-app-dev" | grep -q . && sudo docker stop ez-ask-app-dev && sudo docker rm -fv ez-ask-app-dev
           # docker ps -q --filter "name=ez-ask-app-dev" | xargs -r docker stop
+          # docker rmi $(docker images -f "dangling=true" -q)
+          # docker rmi $(docker images -f dangling=true -q)
           script: |
-            docker ps -q --filter "name=ez-ask-app-dev" | xargs -r docker stop ez-ask-app-dev
-            docker ps -q --filter "name=ez-ask-app-dev" | xargs -r docker rm ez-ask-app-dev
-            docker rmi $(docker images -f "dangling=true" -q)
+            docker ps -aq --filter "name=ez-ask-app-dev" | xargs -r docker stop ez-ask-app-dev
+            docker ps -aq --filter "name=ez-ask-app-dev" | xargs -r docker rm ez-ask-app-dev
+            docker image prune -af
+
 
       - name: Deploy
         uses: appleboy/ssh-action@master
