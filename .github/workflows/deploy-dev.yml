@@ -20,7 +20,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
       
-      - name: generate .env file
+      - name: Generate .env file
         run: |
           touch .env.development
           echo "${{ secrets.DEVELOPMENT_ENV }}" >> .development.env
@@ -29,6 +29,14 @@ jobs:
       - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
+
+      - name: Build Docker Image
+        run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
+
+      # TODO: test 수정 후 활성
+      # - name: Run Test Code
+      #   run: docker run -i ez-ask-app-dev npm run test:ci
 
       - name: delete ECR latest image
         uses: appleboy/ssh-action@master
@@ -39,13 +47,14 @@ jobs:
           script: |
             aws ecr batch-delete-image --repository-name ez-ask-app-dev --image-ids imageTag=latest
       
-      - name: Build Docker Image
-        run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
-
-      # TODO: test 수정 후 활성
-      # - name: Run Test Code
-      #   run: docker run -i ez-ask-app-dev npm run test:ci
-
+      - name: Login to ECR on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            aws ecr get-login-password --profile ${{ secrets.IAM_PROFILE_USERNAME }} --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
       - name: Tag Docker Image
         run: docker tag ez-ask-app-dev ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
         
