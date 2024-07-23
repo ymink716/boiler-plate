@@ -54,7 +54,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_URI_DEV }}
       
       - name: Tag Docker Image
         run: docker tag ez-ask-app-dev ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
