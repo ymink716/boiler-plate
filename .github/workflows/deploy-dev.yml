@@ -14,17 +14,17 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      
-      - name: generate .env file
+
+      - name: Generate .env file
         run: |
           touch .env.development
           echo "${{ secrets.DEVELOPMENT_ENV }}" >> .development.env
@@ -32,16 +32,46 @@ jobs:
 
       - name: Build Docker Image
         run: docker build -t ez-ask-app-dev -f ./Dockerfile.dev .
-      
+
       # TODO: test 수정 후 활성
       # - name: Run Test Code
       #   run: docker run -i ez-ask-app-dev npm run test:ci
 
+      - name: Delete ECR latest image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            aws ecr batch-delete-image --repository-name ez-ask-app-dev --image-ids imageTag=latest
+      
+      - name: Login to ECR on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_URI_DEV }}
+      
       - name: Tag Docker Image
         run: docker tag ez-ask-app-dev ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
         
       - name: Push Docker Image To ECR
         run: docker push ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
+      
+      - name: Delete unused Docker containers and images
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker ps -aq --filter "name=ez-ask-app-dev" | xargs -r docker stop ez-ask-app-dev
+            docker ps -aq --filter "name=ez-ask-app-dev" | xargs -r docker rm ez-ask-app-dev
+            docker image prune -af
 
       - name: Deploy
         uses: appleboy/ssh-action@master
@@ -52,7 +82,5 @@ jobs:
           port: ${{ secrets.PORT }}
           timeout: 60s   
           script: |
-            docker stop ez-ask-app-dev || true
-            docker rm ez-ask-app-dev || true
             docker pull ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
             docker run -d --name ez-ask-app-dev -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/ez-ask-app-dev:latest
