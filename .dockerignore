@@ -2,7 +2,6 @@
 .git
 .gitignore
 .dockerignore
-Dockerfile
 *.md
 *.sh
 *.yml
