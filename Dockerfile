@@ -16,6 +16,6 @@ EXPOSE 80
 
 CMD npm run start:prod
 
-# ENTRYPOINT ["/bin/bash", "-c", "sleep 500"]
-# ENTRYPOINT ["/bin/sh", "-c", "sleep 500"]
+# ENTRYPOINT ["/bin/bash", "-c", "sleep 5000"]
+# ENTRYPOINT ["/bin/sh", "-c", "sleep 5000"]
 
