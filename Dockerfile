@@ -19,3 +19,4 @@ CMD npm run start:prod
 # ENTRYPOINT ["/bin/bash", "-c", "sleep 5000"]
 # ENTRYPOINT ["/bin/sh", "-c", "sleep 5000"]
 
+# ENTRYPOINT [ "node", "dist/src/main.js" ]
